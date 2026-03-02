@@ -57,6 +57,28 @@
             bindings = <&kp ESC>;
             layers = <BASE>;
         };
+
+        // F + J = Caps Word（双食指归位键，输入蛇形命名超方便）
+        combo_caps_word {
+            timeout-ms = <50>;
+            key-positions = <28 31>;  // F 和 J
+            bindings = <&caps_word>;
+            layers = <BASE>;
+        };
+
+        // M + , = 音量↓
+        combo_vol_dn {
+            timeout-ms = <50>;
+            key-positions = <45 46>;  // M 和 ,
+            bindings = <&kp C_VOL_DN>;
+        };
+
+        // , + . = 音量↑
+        combo_vol_up {
+            timeout-ms = <50>;
+            key-positions = <46 47>;  // , 和 .
+            bindings = <&kp C_VOL_UP>;
+        };
     };
 
     // Conditional Layer: NAV + SYM 同时激活 → SYS

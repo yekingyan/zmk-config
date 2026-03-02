@@ -133,9 +133,13 @@ behaviors {
 
 同时按下 `J` 和 `K` 触发 `Escape`，退出 Insert 模式变成潜意识动作。key-positions `<31 32>`（Lily58 矩阵）。
 
-### Caps Word（Nav 层 G 位）
+### Caps Word（F + J Combo / Nav 层 G 位）
 
-按住 Nav 层后点击 G 位触发 `Caps Word`，之后输入的字母自动大写，遇到非字母/数字/下划线时自动取消。非常适合输入 `CONST_VALUE`、`MY_VARIABLE` 等蛇形命名。放在 Nav 层而非 Combo，不依赖外围键，兼容未来 Corne 迁移。
+两种触发方式：
+- **F + J 同时按**（Combo）：双手食指归位键，Base 层直接触发，最快捷
+- **Nav 层 G 位**：按住 Nav 后点击 G 位触发
+
+激活后输入的字母自动大写，遇到非字母/数字/下划线时自动取消。非常适合输入 `CONST_VALUE`、`MY_VARIABLE` 等蛇形命名。
 
 ### Conditional Layer (Tri-layer)
 
