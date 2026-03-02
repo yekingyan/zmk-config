@@ -92,17 +92,16 @@
 
         nav_layer {
             display-name = "Nav";
-// ------------------------------------------------------------------------------------------------------------
 // |       |     |     |      |      |      |                   |      |       |       |      |       |       |
-// |       | TAB |S-TAB| RET  | BSPC |      |                   | PGUP | HOME  | END   | PGDN |       |       |
-// |       | GUI | ALT | CTRL |SHIFT |      |                   |  ←   |   ↓   |   ↑   |  →   | C(←)  | C(→)  |
-// |       |C(Z) |C(X) | C(C) | C(V) |      | (none) |  |(none) |C(BSP)|C(DEL) | C(U)  | C(D) | ESC   |       |
+// |       | ESC |S-TAB| RET  | GUI  | BSPC |                   |C(←)  | END   | HOME  | C(→) |  DEL  |       |
+// |       | TAB | ALT | CTRL |SHIFT |CAPW  |                   |  ←   |   ↓   |   ↑   |  →   | PGUP  |       |
+// |       |C(Z) |C(X) | C(C) | C(V) |      | (none) |  |(none) |C(BSP)|C(DEL) | C(U)  | C(D) | PGDN   |       |
 //                     |      | ▓▓▓▓ |      | (none) |  |(none) |      |       |       |
             bindings = <
 &trans &trans     &trans       &trans     &trans     &trans                   &trans       &trans    &trans   &trans    &trans        &trans
-&trans &kp TAB   &kp LS(TAB)  &kp RET    &kp BSPC   &trans                   &kp PG_UP    &kp HOME  &kp END  &kp PG_DN &trans        &trans
-&trans &skq LGUI &skq LALT    &skq LCTRL &skq LSHFT &trans                   &kp LEFT     &kp DOWN  &kp UP   &kp RIGHT &kp LC(LEFT)  &kp LC(RIGHT)
-&trans &kp LC(Z) &kp LC(X)    &kp LC(C)  &kp LC(V)  &trans &none    &none    &kp LC(BSPC) &kp LC(DEL) &kp LC(U) &kp LC(D) &kp ESC     &trans
+&trans &kp ESC   &kp LS(TAB)  &kp RET    &skq LGUI  &kp BSPC                 &kp LC(LEFT) &kp END   &kp HOME  &kp LC(RIGHT) &kp DEL   &trans
+&trans &kp TAB   &skq LALT    &skq LCTRL &skq LSHFT &caps_word               &kp LEFT     &kp DOWN  &kp UP    &kp RIGHT     &kp PG_UP &trans
+&trans &kp LC(Z) &kp LC(X)    &kp LC(C)  &kp LC(V)  &trans &none    &none    &kp LC(BSPC) &kp LC(DEL) &kp LC(U) &kp LC(D)     &kp PG_DN &trans
                               &trans     &trans     &trans &none    &none    &trans       &trans    &trans
             >;
 
