@@ -113,16 +113,16 @@
             display-name = "Sym";
 // ------------------------------------------------------------------------------------------------------------
 // |       |     |     |      |      |      |                   |      |       |       |      |       |       |
-// |       |     |  7  |  8   |  9   |      |                   |  -   |  (    |  )    |  _   |       |       |
-// |       |     |  4  |  5   |  6   |      |                   |  =   |  {    |  }    |  +   |   |   |       |
-// |       |     |  1  |  2   |  3   |      | (none) |  |(none) |  `   |  [    |  ]    |  \   |   ~   |       |
+// |       |     |  7  |  8   |  9   |  -   |                   |  !   |  (    |  )    |  _   |   :   |       |
+// |       |     |  4  |  5   |  6   |  +   |                   |  ~   |  {    |  }    |  |   |   "   |       |
+// |       |  .  |  1  |  2   |  3   |  =   | (none) |  |(none) |  `   |  [    |  ]    |  \   |   ?   |       |
 //                     |  0   |      |      | (none) |  |(none) |      | ▓▓▓▓  |       |
             bindings = <
-&trans &trans &trans &trans &trans &trans                   &trans    &trans   &trans   &trans    &trans    &trans
-&trans &trans &kp N7 &kp N8 &kp N9 &trans                   &kp MINUS &kp LPAR &kp RPAR &kp UNDER &trans    &trans
-&trans &trans &kp N4 &kp N5 &kp N6 &trans                   &kp EQUAL &kp LBRC &kp RBRC &kp PLUS  &kp PIPE  &trans
-&trans &trans &kp N1 &kp N2 &kp N3 &trans &none    &none    &kp GRAVE &kp LBKT &kp RBKT &kp BSLH  &kp TILDE &trans
-                     &kp N0 &trans &trans  &none    &none    &trans    &trans   &trans
+&trans &trans    &trans &trans &trans &trans                    &trans     &trans   &trans   &trans    &trans     &trans
+&trans &trans    &kp N7 &kp N8 &kp N9 &kp MINUS               &kp EXCL   &kp LPAR &kp RPAR &kp UNDER &kp COLON  &trans
+&trans &trans    &kp N4 &kp N5 &kp N6 &kp PLUS                &kp TILDE  &kp LBRC &kp RBRC &kp PIPE  &kp DQT    &trans
+&trans &kp DOT  &kp N1 &kp N2 &kp N3 &kp EQUAL &none  &none   &kp GRAVE  &kp LBKT &kp RBKT &kp BSLH  &kp QMARK  &trans
+                       &kp N0 &trans &trans    &none   &none   &trans     &trans   &trans
             >;
 
             sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;
