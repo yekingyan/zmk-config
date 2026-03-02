@@ -36,6 +36,16 @@
             quick-release;
             ignore-modifiers;
         };
+
+        // 拇指层键：按住维持层，轻点 One-Shot 层
+        mo_sl: behavior_mo_sl {
+            compatible = "zmk,behavior-hold-tap";
+            label = "MO_SL";
+            #binding-cells = <2>;
+            flavor = "hold-preferred";
+            tapping-term-ms = <200>;
+            bindings = <&mo &sl>;
+        };
     };
 
     combos {
@@ -74,7 +84,7 @@
 &kp TAB   &kp Q  &kp W  &kp E    &kp R   &kp T                      &kp Y  &kp U    &kp I     &kp O   &kp P    &kp MINUS
 &kp LSHFT &kp A  &kp S  &kp D    &kp F   &kp G                      &kp H  &kp J    &kp K     &kp L   &kp SEMI &kp SQT
 &kp LCTRL &kp Z  &kp X  &kp C    &kp V   &kp B  &none      &none    &kp N  &kp M    &kp COMMA &kp DOT &kp FSLH &kp RSHFT
-                        &kp LALT &mo NAV &kp SPACE &none     &none    &kp RET &mo SYM &kp BSPC
+                        &kp LALT &mo_sl NAV NAV &kp SPACE &none     &none    &kp RET &mo_sl SYM SYM &kp BSPC
             >;
 
             sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;

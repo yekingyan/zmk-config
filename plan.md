@@ -31,6 +31,7 @@ Lily58 上实现"双核驱动"过渡方案，最终目标迁移到 Corne 36 键�
 
 ## 进行中
 
+- [x] 拇指层键添加 One-Shot 支持 (Hold = mo, Tap = sl)
 - [ ] Nav 层最终布局确认（按词移动/删除、剪贴板、编辑兜底）
 - [ ] 合并 `test/callum-osm` → `main`
 
