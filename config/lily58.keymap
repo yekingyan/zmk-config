@@ -1,16 +1,19 @@
 /*
  * Lily58 "双核驱动" 过渡版 (冗余常规键 + Callum OSM)
- * 进化路线：Lily58 (58键) → Silakka54 方式使用 → Corne (36键)
+ * 进化路线：Lily58 (58键) → Corne (36键)
  *
  * 核心特色：
  * 1. 外围保留全套标准键位（防忘、方便单手操作、打游戏）
  * 2. 核心区保留 Callum-style OSM 与 Vim 导航（追求极致编码效率）
  * 3. 严格遵循 3 拇指原则，全键盘仅 4 个键置空
  *
- * Layer 0: Base    - QWERTY + 外围冗余（物理 Shift/Ctrl/数字行）
- * Layer 1: Nav     - 左手 OSM 修饰键 + 右手 Vim HJKL + 翻页
- * Layer 2: Sym     - 左手九宫格数字 + 右手程序员符号
- * Layer 3: System  - F 键（与九宫格对齐）+ 蓝牙 + 音量 + Bootloader
+ * Layer 0: Base     - QWERTY + 外围冗余（物理 Shift/Ctrl/数字行）
+ * Layer 1: Nav      - 左手 OSM 修饰键 + 右手 Vim HJKL + 跳跃 + 翻页
+ * Layer 2: Numpad   - 左手算术运算 + 右手纯数字九宫格
+ * Layer 3: Symbols  - 左手符号区 + 右手 OSM 修饰键
+ * Layer 4: Function - 左手 OSM/BT + 右手 F 键九宫格
+ * Layer 5: Mouse    - 左手鼠标移动/滚轮/点击 + 右手 OSM
+ * Layer 6: Media    - 左手媒体/音量/亮度 + 右手 OSM
  *
  * SPDX-License-Identifier: MIT
  */
@@ -18,11 +21,20 @@
 #include <behaviors.dtsi>
 #include <dt-bindings/zmk/keys.h>
 #include <dt-bindings/zmk/bt.h>
+#include <dt-bindings/zmk/pointing.h>
 
-#define BASE 0
-#define NAV  1
-#define SYM  2
-#define SYS  3
+#define BASE  0
+#define NAV   1
+#define NUM   2
+#define SYM   3
+#define FUN   4
+#define MOUSE 5
+#define MEDIA 6
+
+// Caps Word：允许连字符不中断大写（支持 MY-CONST 风格命名）
+&caps_word {
+    continue-list = <UNDERSCORE MINUS>;
+};
 
 / {
     behaviors {
@@ -35,16 +47,6 @@
             release-after-ms = <1000>;
             quick-release;
             ignore-modifiers;
-        };
-
-        // 拇指层键：按住维持层，轻点 One-Shot 层
-        mo_sl: behavior_mo_sl {
-            compatible = "zmk,behavior-hold-tap";
-            label = "MO_SL";
-            #binding-cells = <2>;
-            flavor = "hold-preferred";
-            tapping-term-ms = <200>;
-            bindings = <&mo &sl>;
         };
     };
 
@@ -66,27 +68,12 @@
             layers = <BASE>;
         };
 
-        // M + , = 音量↓
-        combo_vol_dn {
+        // D + F = Ctrl+Shift（切换输入法）
+        combo_input_switch {
             timeout-ms = <50>;
-            key-positions = <45 46>;  // M 和 ,
-            bindings = <&kp C_VOL_DN>;
-        };
-
-        // , + . = 音量↑
-        combo_vol_up {
-            timeout-ms = <50>;
-            key-positions = <46 47>;  // , 和 .
-            bindings = <&kp C_VOL_UP>;
-        };
-    };
-
-    // Conditional Layer: NAV + SYM 同时激活 → SYS
-    conditional_layers {
-        compatible = "zmk,conditional-layers";
-        tri_layer {
-            if-layers = <NAV SYM>;
-            then-layer = <SYS>;
+            key-positions = <27 28>;  // D 和 F
+            bindings = <&kp LC(LSHFT)>;
+            layers = <BASE>;
         };
     };
 
@@ -95,18 +82,24 @@
 
         default_layer {
             display-name = "Base";
-// ------------------------------------------------------------------------------------------------------------
-// |  ESC  |  1  |  2  |  3   |  4   |  5   |                   |  6   |  7    |  8    |  9   |   0   |   `   |
-// |  TAB  |  Q  |  W  |  E   |  R   |  T   |                   |  Y   |  U    |  I    |  O   |   P   |   -   |
-// | SHIFT |  A  |  S  |  D   |  F   |  G   |                   |  H   |  J    |  K    |  L   |   ;   |   '   |
-// | CTRL  |  Z  |  X  |  C   |  V   |  B   | (none) |  |(none) |  N   |  M    |  ,    |  .   |   /   | SHIFT |
-//                     |  ALT |  NAV | SPACE| (none) |  |(none) | ENTER|  SYM  | BSPC  |
+// ┌─────┬─────┬─────┬─────┬─────┬─────┐               ┌─────┬─────┬─────┬─────┬─────┬─────┐
+// │  `  │  1  │  2  │  3  │  4  │  5  │               │  6  │  7  │  8  │  9  │  0  │  ~  │
+// ├─────┼─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┼─────┤
+// │ TAB │  Q  │  W  │  E  │  R  │  T  │               │  Y  │  U  │  I  │  O  │  P  │  -  │
+// ├─────┼─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┼─────┤
+// │SHIFT│  A  │  S  │  D  │  F  │  G  │               │  H  │  J  │  K  │  L  │  ;  │  '  │
+// ├─────┼─────┼─────┼─────┼─────┼─────┼─────┐   ┌─────┼─────┼─────┼─────┼─────┼─────┼─────┤
+// │CTRL │  Z  │  X  │  C  │  V  │  B  │none │   │none │  N  │  M  │  ,  │  .  │  /  │SHIFT│
+// └─────┴─────┴─────┼─────┼─────┼─────┼─────┤   ├─────┼─────┼─────┼─────┴─────┴─────┴─────┘
+//                   │ ESC │ TAB │SPACE│none │   │none │ENTER│BSPC │ DEL │
+//                   │(FUN)│(NAV)│(NUM)│     │   │     │(SYM)│(MOU)│(MED)│
+//                   └─────┴─────┴─────┴─────┘   └─────┴─────┴─────┴─────┘
             bindings = <
-&kp ESC   &kp N1 &kp N2 &kp N3   &kp N4  &kp N5                     &kp N6 &kp N7   &kp N8    &kp N9  &kp N0   &kp GRAVE
-&kp TAB   &kp Q  &kp W  &kp E    &kp R   &kp T                      &kp Y  &kp U    &kp I     &kp O   &kp P    &kp MINUS
-&kp LSHFT &kp A  &kp S  &kp D    &kp F   &kp G                      &kp H  &kp J    &kp K     &kp L   &kp SEMI &kp SQT
-&kp LCTRL &kp Z  &kp X  &kp C    &kp V   &kp B  &none      &none    &kp N  &kp M    &kp COMMA &kp DOT &kp FSLH &kp RSHFT
-                        &kp LALT &mo_sl NAV NAV &kp SPACE &none     &none    &kp RET &mo_sl SYM SYM &kp BSPC
+&kp GRAVE  &kp N1 &kp N2 &kp N3    &kp N4    &kp N5                       &kp N6    &kp N7    &kp N8    &kp N9  &kp N0   &kp TILDE
+&kp TAB    &kp Q  &kp W  &kp E     &kp R     &kp T                        &kp Y     &kp U     &kp I     &kp O   &kp P    &kp MINUS
+&kp LSHFT  &kp A  &kp S  &kp D     &kp F     &kp G                        &kp H     &kp J     &kp K     &kp L   &kp SEMI &kp SQT
+&kp LCTRL  &kp Z  &kp X  &kp C     &kp V     &kp B  &none        &none    &kp N     &kp M     &kp COMMA &kp DOT &kp FSLH &kp RSHFT
+                          &lt FUN ESC &lt NAV TAB &lt NUM SPACE &none  &none &lt SYM RET &lt MOUSE BSPC &lt MEDIA DEL
             >;
 
             sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;
@@ -114,17 +107,47 @@
 
         nav_layer {
             display-name = "Nav";
-// |       |     |     |      |      |      |                   |      |       |       |      |       |       |
-// |       | ESC |S-TAB| RET  | GUI  | BSPC |                   |C(←)  | END   | HOME  | C(→) |  DEL  |       |
-// |       | TAB | ALT | CTRL |SHIFT |CAPW  |                   |  ←   |   ↓   |   ↑   |  →   | PGUP  |       |
-// |       |C(Z) |C(X) | C(C) | C(V) |      | (none) |  |(none) |C(BSP)|C(DEL) | C(U)  | C(D) | PGDN   |       |
-//                     |      | ▓▓▓▓ |      | (none) |  |(none) |      |       |       |
+// ┌─────┬─────┬─────┬─────┬─────┬─────┐               ┌─────┬─────┬─────┬─────┬─────┬─────┐
+// │     │     │     │     │     │     │               │     │     │     │     │     │     │
+// ├─────┼─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┼─────┤
+// │     │ ESC │S-TAB│ RET │LSHFT│BSPC │               │C(←) │ C-D │ C-U │C(→) │ DEL │     │
+// ├─────┼─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┼─────┤
+// │     │ GUI │ ALT │CTRL │SHIFT│CAPW │               │  ←  │  ↓  │  ↑  │  →  │C(DEL)│    │
+// ├─────┼─────┼─────┼─────┼─────┼─────┼─────┐   ┌─────┼─────┼─────┼─────┼─────┼─────┼─────┤
+// │     │C(Z) │C(X) │C(C) │C(V) │     │none │   │none │HOME │PgUp │PgDn │ END │C(BS)│     │
+// └─────┴─────┴─────┼─────┼─────┼─────┼─────┤   ├─────┼─────┼─────┼─────┴─────┴─────┴─────┘
+//                   │     │▓▓▓▓▓│     │none │   │none │     │     │     │
+//                   └─────┴─────┴─────┴─────┘   └─────┴─────┴─────┴─────┘
             bindings = <
-&trans &trans     &trans       &trans     &trans     &trans                   &trans       &trans    &trans   &trans    &trans        &trans
-&trans &kp ESC   &kp LS(TAB)  &kp RET    &skq LGUI  &kp BSPC                 &kp LC(LEFT) &kp END   &kp HOME  &kp LC(RIGHT) &kp DEL   &trans
-&trans &kp TAB   &skq LALT    &skq LCTRL &skq LSHFT &caps_word               &kp LEFT     &kp DOWN  &kp UP    &kp RIGHT     &kp PG_UP &trans
-&trans &kp LC(Z) &kp LC(X)    &kp LC(C)  &kp LC(V)  &trans &none    &none    &kp LC(BSPC) &kp LC(DEL) &kp LC(U) &kp LC(D)     &kp PG_DN &trans
-                              &trans     &trans     &trans &none    &none    &trans       &trans    &trans
+&trans &trans     &trans       &trans     &trans     &trans                   &trans       &trans     &trans     &trans        &trans       &trans
+&trans &kp ESC    &kp LS(TAB)  &kp RET    &kp LSHFT  &kp BSPC                 &kp LC(LEFT) &kp LC(D)  &kp LC(U)  &kp LC(RIGHT) &kp DEL      &trans
+&trans &skq LGUI  &skq LALT    &skq LCTRL &skq LSHFT &caps_word               &kp LEFT     &kp DOWN   &kp UP     &kp RIGHT     &kp LC(DEL)  &trans
+&trans &kp LC(Z)  &kp LC(X)    &kp LC(C)  &kp LC(V)  &trans &none    &none    &kp HOME     &kp PG_UP  &kp PG_DN  &kp END       &kp LC(BSPC) &trans
+                               &trans     &trans     &trans &none    &none    &trans       &trans     &trans
+            >;
+
+            sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;
+        };
+
+        num_layer {
+            display-name = "Num";
+// ┌─────┬─────┬─────┬─────┬─────┬─────┐               ┌─────┬─────┬─────┬─────┬─────┬─────┐
+// │     │     │     │     │     │     │               │     │     │     │     │     │     │
+// ├─────┼─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┼─────┤
+// │     │     │     │     │     │     │               │     │  7  │  8  │  9  │  -  │     │
+// ├─────┼─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┼─────┤
+// │     │ GUI │ ALT │CTRL │SHIFT│     │               │     │  4  │  5  │  6  │  +  │     │
+// ├─────┼─────┼─────┼─────┼─────┼─────┼─────┐   ┌─────┼─────┼─────┼─────┼─────┼─────┼─────┤
+// │     │  .  │  /  │  *  │  =  │     │none │   │none │     │  1  │  2  │  3  │     │     │
+// └─────┴─────┴─────┼─────┼─────┼─────┼─────┤   ├─────┼─────┼─────┼─────┴─────┴─────┴─────┘
+//                   │     │     │▓▓▓▓▓│none │   │none │     │  0  │     │
+//                   └─────┴─────┴─────┴─────┘   └─────┴─────┴─────┴─────┘
+            bindings = <
+&trans &trans   &trans    &trans       &trans    &trans                   &trans &trans &trans &trans &trans    &trans
+&trans &trans   &trans    &trans       &trans    &trans                   &trans &kp N7 &kp N8 &kp N9 &kp MINUS &trans
+&trans &skq LGUI &skq LALT &skq LCTRL  &skq LSHFT &trans                &trans &kp N4 &kp N5 &kp N6 &kp PLUS  &trans
+&trans &kp DOT  &kp FSLH  &kp ASTRK   &kp EQUAL &trans &none    &none   &trans &kp N1 &kp N2 &kp N3 &trans    &trans
+                          &trans       &trans    &trans &none    &none   &trans &kp N0 &trans
             >;
 
             sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;
@@ -132,37 +155,95 @@
 
         sym_layer {
             display-name = "Sym";
-// ------------------------------------------------------------------------------------------------------------
-// |       |     |     |      |      |      |                   |      |       |       |      |       |       |
-// |       |     |  7  |  8   |  9   |  -   |                   |  !   |  (    |  )    |  _   |   :   |       |
-// |       |     |  4  |  5   |  6   |  +   |                   |  ~   |  {    |  }    |  |   |   "   |       |
-// |       |  .  |  1  |  2   |  3   |  =   | (none) |  |(none) |  `   |  [    |  ]    |  \   |   ?   |       |
-//                     |  0   |      |      | (none) |  |(none) |      | ▓▓▓▓  |       |
+// ┌─────┬─────┬─────┬─────┬─────┬─────┐               ┌─────┬─────┬─────┬─────┬─────┬─────┐
+// │     │     │     │     │     │     │               │     │     │     │     │     │     │
+// ├─────┼─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┼─────┤
+// │     │  !  │  @  │  #  │  $  │  %  │               │     │  ^  │  &  │  *  │  \  │  |  │
+// ├─────┼─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┼─────┤
+// │     │  (  │  {  │  [  │  <  │  ~  │               │     │SHIFT│CTRL │ ALT │ GUI │     │
+// ├─────┼─────┼─────┼─────┼─────┼─────┼─────┐   ┌─────┼─────┼─────┼─────┼─────┼─────┼─────┤
+// │     │  )  │  }  │  ]  │  >  │  `  │none │   │none │     │  _  │  :  │  "  │  ?  │     │
+// └─────┴─────┴─────┼─────┼─────┼─────┼─────┤   ├─────┼─────┼─────┼─────┴─────┴─────┴─────┘
+//                   │     │     │     │none │   │none │▓▓▓▓▓│     │     │
+//                   └─────┴─────┴─────┴─────┘   └─────┴─────┴─────┴─────┘
             bindings = <
-&trans &trans    &trans &trans &trans &trans                    &trans     &trans   &trans   &trans    &trans     &trans
-&trans &trans    &kp N7 &kp N8 &kp N9 &kp MINUS               &kp EXCL   &kp LPAR &kp RPAR &kp UNDER &kp COLON  &trans
-&trans &trans    &kp N4 &kp N5 &kp N6 &kp PLUS                &kp TILDE  &kp LBRC &kp RBRC &kp PIPE  &kp DQT    &trans
-&trans &kp DOT  &kp N1 &kp N2 &kp N3 &kp EQUAL &none  &none   &kp GRAVE  &kp LBKT &kp RBKT &kp BSLH  &kp QMARK  &trans
-                       &kp N0 &trans &trans    &none   &none   &trans     &trans   &trans
+&trans &trans    &trans   &trans   &trans &trans                    &trans &trans      &trans     &trans      &trans   &trans
+&trans &kp EXCL  &kp AT   &kp HASH &kp DLLR &kp PRCNT             &trans &kp CARET   &kp AMPS   &kp ASTRK   &kp BSLH &kp PIPE
+&trans &kp LPAR  &kp LBRC &kp LBKT &kp LT   &kp TILDE             &trans &skq RSHFT  &skq RCTRL &skq RALT   &skq RGUI &trans
+&trans &kp RPAR  &kp RBRC &kp RBKT &kp GT   &kp GRAVE &none &none &trans &kp UNDER   &kp COLON  &kp DQT     &kp QMARK &trans
+                          &trans   &trans   &trans    &none &none &trans &trans      &trans
             >;
 
             sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;
         };
 
-        sys_layer {
-            display-name = "System";
-// ------------------------------------------------------------------------------------------------------------
-// |       |     |     |      |      |      |                   |      |       |       |      |       |       |
-// |       |     |  F7 |  F8  |  F9  | F12  |                   | BT0  | BT1   | BT2   |BTCLR | BOOT  |       |
-// |       |     |  F4 |  F5  |  F6  | F11  |                   | MUTE | VOL-  | VOL+  | BRI- | BRI+  |       |
-// |       |     |  F1 |  F2  |  F3  | F10  | (none) |  |(none) |      | PREV  | PLAY  | NEXT |       |       |
-//                     |      | ▓▓▓▓ |      | (none) |  |(none) |      | ▓▓▓▓  |       |
+        fun_layer {
+            display-name = "Fun";
+// ┌─────┬─────┬─────┬─────┬─────┬─────┐               ┌─────┬─────┬─────┬─────┬─────┬─────┐
+// │     │     │     │     │     │     │               │     │     │     │     │     │     │
+// ├─────┼─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┼─────┤
+// │     │     │     │     │     │     │               │     │ F7  │ F8  │ F9  │ F12 │     │
+// ├─────┼─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┼─────┤
+// │     │ GUI │ ALT │CTRL │SHIFT│     │               │     │ F4  │ F5  │ F6  │ F11 │     │
+// ├─────┼─────┼─────┼─────┼─────┼─────┼─────┐   ┌─────┼─────┼─────┼─────┼─────┼─────┼─────┤
+// │     │BOOT │ BT0 │ BT1 │ BT2 │BTCLR│none │   │none │     │ F1  │ F2  │ F3  │ F10 │     │
+// └─────┴─────┴─────┼─────┼─────┼─────┼─────┤   ├─────┼─────┼─────┼─────┴─────┴─────┴─────┘
+//                   │▓▓▓▓▓│     │     │none │   │none │     │     │     │
+//                   └─────┴─────┴─────┴─────┘   └─────┴─────┴─────┴─────┘
             bindings = <
-&trans &trans  &trans &trans &trans &trans                   &trans         &trans         &trans         &trans       &trans       &trans
-&trans &trans  &kp F7 &kp F8 &kp F9 &kp F12                  &bt BT_SEL 0   &bt BT_SEL 1   &bt BT_SEL 2   &bt BT_CLR   &bootloader  &trans
-&trans &trans  &kp F4 &kp F5 &kp F6 &kp F11                  &kp C_MUTE     &kp C_VOL_DN   &kp C_VOL_UP   &kp C_BRI_DN &kp C_BRI_UP &trans
-&trans &trans  &kp F1 &kp F2 &kp F3 &kp F10 &none    &none   &trans         &kp C_PREV     &kp C_PP       &kp C_NEXT   &trans       &trans
-                             &trans &trans  &trans   &none    &none   &trans         &trans         &trans
+&trans &trans       &trans       &trans       &trans       &trans                       &trans &trans &trans &trans &trans  &trans
+&trans &trans       &trans       &trans       &trans       &trans                       &trans &kp F7 &kp F8 &kp F9 &kp F12 &trans
+&trans &skq LGUI    &skq LALT    &skq LCTRL   &skq LSHFT   &trans                      &trans &kp F4 &kp F5 &kp F6 &kp F11 &trans
+&trans &bootloader  &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_CLR &none    &none  &trans &kp F1 &kp F2 &kp F3 &kp F10 &trans
+                                 &trans       &trans       &trans     &none    &none   &trans &trans &trans
+            >;
+
+            sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;
+        };
+
+        mouse_layer {
+            display-name = "Mouse";
+// ┌─────┬─────┬─────┬─────┬─────┬─────┐               ┌─────┬─────┬─────┬─────┬─────┬─────┐
+// │     │     │     │     │     │     │               │     │     │     │     │     │     │
+// ├─────┼─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┼─────┤
+// │     │C(Z) │C(X) │C(C) │C(V) │C(S) │               │     │     │     │     │     │     │
+// ├─────┼─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┼─────┤
+// │     │CAPS │ ML  │ MD  │ MU  │ MR  │               │     │SHIFT│CTRL │ ALT │ GUI │     │
+// ├─────┼─────┼─────┼─────┼─────┼─────┼─────┐   ┌─────┼─────┼─────┼─────┼─────┼─────┼─────┤
+// │     │ INS │WH_L │WH_D │WH_U │WH_R │none │   │none │     │     │     │     │     │     │
+// └─────┴─────┴─────┼─────┼─────┼─────┼─────┤   ├─────┼─────┼─────┼─────┴─────┴─────┴─────┘
+//                   │LCLK │RCLK │MCLK │none │   │none │     │▓▓▓▓▓│     │
+//                   └─────┴─────┴─────┴─────┘   └─────┴─────┴─────┴─────┘
+            bindings = <
+&trans &trans     &trans            &trans            &trans            &trans                         &trans &trans     &trans     &trans    &trans    &trans
+&trans &kp LC(Z)  &kp LC(X)         &kp LC(C)         &kp LC(V)         &kp LC(S)                      &trans &trans     &trans     &trans    &trans    &trans
+&trans &kp CAPS   &mmv MOVE_LEFT    &mmv MOVE_DOWN    &mmv MOVE_UP      &mmv MOVE_RIGHT                &trans &skq RSHFT &skq RCTRL &skq RALT &skq RGUI &trans
+&trans &kp INS    &msc SCRL_LEFT    &msc SCRL_DOWN    &msc SCRL_UP      &msc SCRL_RIGHT &none   &none  &trans &trans     &trans     &trans    &trans    &trans
+                                    &mkp LCLK         &mkp RCLK         &mkp MCLK       &none   &none  &trans &trans     &trans
+            >;
+
+            sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;
+        };
+
+        media_layer {
+            display-name = "Media";
+// ┌─────┬─────┬─────┬─────┬─────┬─────┐               ┌─────┬─────┬─────┬─────┬─────┬─────┐
+// │     │     │     │     │     │     │               │     │     │     │     │     │     │
+// ├─────┼─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┼─────┤
+// │     │     │     │     │     │     │               │     │     │     │     │     │     │
+// ├─────┼─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┼─────┤
+// │     │     │PREV │VOL_D│VOL_U│NEXT │               │     │SHIFT│CTRL │ ALT │ GUI │     │
+// ├─────┼─────┼─────┼─────┼─────┼─────┼─────┐   ┌─────┼─────┼─────┼─────┼─────┼─────┼─────┤
+// │     │     │MUTE │BRI_D│BRI_U│PLAY │none │   │none │     │     │     │     │     │     │
+// └─────┴─────┴─────┼─────┼─────┼─────┼─────┤   ├─────┼─────┼─────┼─────┴─────┴─────┴─────┘
+//                   │     │     │     │none │   │none │     │     │▓▓▓▓▓│
+//                   └─────┴─────┴─────┴─────┘   └─────┴─────┴─────┴─────┘
+            bindings = <
+&trans &trans &trans      &trans      &trans      &trans                    &trans &trans     &trans     &trans    &trans    &trans
+&trans &trans &trans      &trans      &trans      &trans                    &trans &trans     &trans     &trans    &trans    &trans
+&trans &trans &kp C_PREV  &kp C_VOL_DN &kp C_VOL_UP &kp C_NEXT            &trans &skq RSHFT &skq RCTRL &skq RALT &skq RGUI &trans
+&trans &trans &kp C_MUTE  &kp C_BRI_DN &kp C_BRI_UP &kp C_PP &none &none  &trans &trans     &trans     &trans    &trans    &trans
+                          &trans      &trans      &trans    &none   &none  &trans &trans     &trans
             >;
 
             sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;
