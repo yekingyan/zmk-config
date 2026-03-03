@@ -99,6 +99,15 @@
             layers = <BASE>;
             require-prior-idle-ms = <150>;
         };
+
+        // S + D = Alt+Shift（切换窗口）
+        combo_alt_shift {
+            timeout-ms = <70>;
+            key-positions = <26 27>;  // S 和 D
+            bindings = <&kp LA(LSHFT)>;
+            layers = <BASE>;
+            require-prior-idle-ms = <150>;
+        };
     };
 
     keymap {
