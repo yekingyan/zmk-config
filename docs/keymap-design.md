@@ -26,14 +26,14 @@
     - 右手中行变成控制区：SHIFT(J), CTRL(K), ALT(L), GUI(;)
     - 左手变成功能区
 
-### 为什么选 Callum-style (OSM one-shot modifiers)
+### 社区最佳实践溯源
 
-Vim 操作的灵魂是**顺序敲击**（`c-a-w`），而非**同时按住**（`Ctrl+Shift+F`）。
+> 本方案集成了近几年 r/ErgoMechKeyboards 和 ZMK 社区几大流派的精髓。
 
-Home Row Mods 引入 Tapping Term 延迟，快速打字时极易误触。OSM 的优势：
-- **基础层 0 延迟**：字母区纯净，按下即触发
-- **拯救小拇指**：修饰键转移到左手主行 ASDF，通过"按住拇指切层→短按 OSM→松开拇指→敲目标键"完成
-- **完美契合 Vim**：所有系统快捷键变成类似 Vim 的顺序指令
+- **Callum-style OSM 流派**（Callum Oakley）：摒弃 Home Row Mods（HRM，主行长按触发修饰键）。HRM 在快速打字（特别是 Roll 连击）时极易误触（Tapping Term 冲突）。Callum 引入独立层 + Sticky Keys（OSM），实现基础层 0 延迟、0 误触，完美契合 Vim 的"顺序输入"哲学
+- **Miryoku 对侧控制 + 3x5+3 黄金法则**（Manna Harbour）：36 键配列的绝对真理——按住左手拇指切层，右手执行功能；反之亦然。本配置的 Numpad、Nav 等层完全继承此理念
+- **"双核驱动"渐进式降级**（分体键盘社区常见建议）：保留物理冗余作为安全网，核心区通过代码强制塑形（如置空 4 个拇指键），是克服大脑抗拒的最高效手段
+- **ZMK Caps Word**（ZMK 官方 Behaviors，借鉴自 QMK）：彻底淘汰 Caps Lock，通过 Combo 触发，遇到空格自动解除，专为 `SNAKE_CASE` 设计。`continue-list = <UNDERSCORE MINUS>` 确保连字符也不会中断大写
 
 
 ## 层总览
@@ -47,24 +47,29 @@ Home Row Mods 引入 Tapping Term 延迟，快速打字时极易误触。OSM 的
 | 4 | Function | 左拇指 ESC 长按 | 右手 | 左手 |
 | 5 | Mouse | 右拇指 BSPC 长按 | 左手 | 右手 |
 | 6 | Media | 右拇指 DEL 长按 | 左手 | 右手 |
+| 7 | Legacy | Fun 层热键 &to | 双手 | — |
 
 ## 键位布局总览
 
-### Layer 0: Base（QWERTY + 外围冗余）
+### Layer 0: Base（QWERTY 核心 + 外围置空）
 
 ```
 ┌─────┬─────┬─────┬─────┬─────┬─────┐               ┌─────┬─────┬─────┬─────┬─────┬─────┐
-│  `  │  1  │  2  │  3  │  4  │  5  │               │  6  │  7  │  8  │  9  │  0  │  ~  │
+│none │none │none │none │none │none │               │none │none │none │none │none │none │
 ├─────┼─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┼─────┤
-│ TAB │  Q  │  W  │  E  │  R  │  T  │               │  Y  │  U  │  I  │  O  │  P  │  -  │
+│none │  Q  │  W  │  E  │  R  │  T  │               │  Y  │  U  │  I  │  O  │  P  │none │
 ├─────┼─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┼─────┤
-│SHIFT│  A  │  S  │  D  │  F  │  G  │               │  H  │  J  │  K  │  L  │  ;  │  '  │
+│none │  A  │  S  │  D  │  F  │  G  │               │  H  │  J  │  K  │  L  │  ;  │none │
 ├─────┼─────┼─────┼─────┼─────┼─────┼─────┐   ┌─────┼─────┼─────┼─────┼─────┼─────┼─────┤
-│CTRL │  Z  │  X  │  C  │  V  │  B  │(none)│   │(none)│  N  │  M  │  ,  │  .  │  /  │SHIFT│
+│none │  Z  │  X  │  C  │  V  │  B  │(none)│   │(none)│  N  │  M  │  ,  │  .  │  /  │none │
 └─────┴─────┴─────┼─────┼─────┼─────┼─────┤   ├─────┼─────┼─────┼─────┴─────┴─────┴─────┘
                   │ ESC │ TAB │SPACE│(none)│  │(none)│ENTER│BSPC│DEL |
                   └─────┴─────┴─────┴─────┘   └─────┴─────┴─────┴─────┘
 ```
+
+- **外围全部置空 (`&none`)**：数字行 + 左右外侧列全部屏蔽，完全模拟 Corne 36 键物理约束
+- 被屏蔽的物理键均有层内替代：TAB→左拇指 Tap、Shift/Ctrl→OSM、`-`→Num 层、`'`→Sym 层 P 位
+- 需要完整键盘功能时，通过 Fun 层热键 `&to LEGACY` 切换到 Layer 7 兜底层
 
 ### Layer 1: Nav & Mods（左拇指按住 NAV 激活）
 
@@ -83,7 +88,8 @@ Home Row Mods 引入 Tapping Term 延迟，快速打字时极易误触。OSM 的
 ```
 
 - **左手上行**（编辑快捷区）：`ESC | S-TAB | RET | L-SHIFT | BSPC`
-  - `L-SHIFT`：独立 Shift 键，用于在 Nav 层内直接 Shift+方向键选中文本，避免多步 OSM 操作
+  - `L-SHIFT`（`&kp LSHFT`）：**普通 hold 型 Shift**，按住不放配合右手方向键，实现 Shift+方向键连续选中文本
+  - 与中行的 `&skq LSHFT`（OSM 点击型）**用途不同**：上行适合连续选中，中行适合单次大写或单次 Shift 组合
 - **左手中行**（OSM 修饰键 + Caps Word）：`GUI | ALT | CTRL | SHIFT | CAPW`
 - **左手下行**（剪贴板区）：`C(Z) | C(X) | C(C) | C(V)`，与 Base 层位置一致，零记忆成本
 - **右手上行**（跳跃线）：`C(←) | C-D | C-U | C(→) | DEL`，按词跳跃 + Vim 半页翻页
@@ -116,11 +122,11 @@ Home Row Mods 引入 Tapping Term 延迟，快速打字时极易误触。OSM 的
 ┌─────┬─────┬─────┬─────┬─────┬─────┐               ┌─────┬─────┬─────┬─────┬─────┬─────┐
 │     │     │     │     │     │     │               │     │     │     │     │     │     │
 ├─────┼─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┼─────┤
-│     │  !  │  @  │  #  │  $  │  %  │               │  ^  │  &  │  *  │     │     │     │
+│     │  !  │  @  │  #  │  $  │  %  │               │  ^  │  &  │  *  │  =  │  '  │     │
 ├─────┼─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┼─────┤
-│     │  (  │  {  │  [  │  <  │  ~  │               │  |  │SHIFT│CTRL │ ALT │ GUI │     │
+│     │  (  │  {  │  [  │  <  │  _  │               │  |  │SHIFT│CTRL │ ALT │ GUI │     │
 ├─────┼─────┼─────┼─────┼─────┼─────┼─────┐   ┌─────┼─────┼─────┼─────┼─────┼─────┼─────┤
-│     │  )  │  }  │  ]  │  >  │  `  │(none)│   │(none)│ \ │  _  │  :  │  "  │  ?  │     │
+│     │  )  │  }  │  ]  │  >  │  `  │(none)│   │(none)│ \ │  ~  │  :  │  "  │  ?  │     │
 └─────┴─────┴─────┼─────┼─────┼─────┼─────┤   ├─────┼─────┼─────┼─────┴─────┴─────┴─────┘
                   │     │     │     │(none)│   │(none)│ SYM │     │     │
                   └─────┴─────┴─────┴─────┘   └─────┴─────┴─────┴─────┘
@@ -128,13 +134,13 @@ Home Row Mods 引入 Tapping Term 延迟，快速打字时极易误触。OSM 的
 
 - 左手 = 核心符号区（按功能分行）：
   - 上行 `! @ # $ %`：Shift+1~5 的符号，严格对应数字行位置，零记忆成本
-  - 中行 `( { [ <` + `~`：四种左括号从外到内排列，右列补 `~`
+  - 中行 `( { [ <` + `_`：四种左括号从外到内排列，右列为高频 `_`（snake_case 核心键，食指内侧主行黄金位）
   - 下行 `) } ] >` + `` ` ``：四种右括号与上方左括号垂直配对，右列补 `` ` ``
   - 右手拇指长按 ENTER 激活，左手在核心区飞速输出一切符号
 - 右手 = 控制区与副标点：
-  - 上行 `^ & *`：与数字行 `6 7 8` 严格对齐（Shift+6~8），零记忆成本
+  - 上行 `^ & *` + `=` + `'`：`^ & *` 与数字行 `6 7 8` 严格对齐；`=` 填入空位（赋值/比较高频，避免跨层到 Num）；`'` 为单引号唯一入口
   - 主行 `|` + 修饰键 `SHIFT | CTRL | ALT | GUI`：管道符放 home row 食指内侧，高频易触；修饰键与 Nav 层左手 OSM 呈完美镜像
-  - 下行 `\ _ : " ?`：`\` 与上方 `|` 垂直配对（斜杠家族），其余为高频行尾/分隔标点
+  - 下行 `\ ~ : " ?`：`\` 与上方 `|` 垂直配对（斜杠家族）；`~` 低频降级自左手主行
 
 
 ### Layer 4: Function（左拇指 ESC 长按激活）
@@ -143,7 +149,7 @@ Home Row Mods 引入 Tapping Term 延迟，快速打字时极易误触。OSM 的
 ┌─────┬─────┬─────┬─────┬─────┬─────┐               ┌─────┬─────┬─────┬─────┬─────┬─────┐
 │     │     │     │     │     │     │               │     │     │     │     │     │     │
 ├─────┼─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┼─────┤
-│     │     │     │     │     │     │               │     │ F7  │ F8  │ F9  │ F12 │     │
+│     │CANCL│toLeg│     │     │     │               │     │ F7  │ F8  │ F9  │ F12 │     │
 ├─────┼─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┼─────┤
 │     │ GUI │ ALT │CTRL │SHIFT│     │               │     │ F4  │ F5  │ F6  │ F11 │     │
 ├─────┼─────┼─────┼─────┼─────┼─────┼─────┐   ┌─────┼─────┼─────┼─────┼─────┼─────┼─────┤
@@ -153,8 +159,9 @@ Home Row Mods 引入 Tapping Term 延迟，快速打字时极易误触。OSM 的
                   └─────┴─────┴─────┴─────┘   └─────┴─────┴─────┴─────┘
 ```
 
-- 左手 = OSM 修饰键（与 Nav/Num 层一致）+ 系统操作：
-  - 中行 `GUI | ALT | CTRL | SHIFT`
+- 左手 = 系统工具 + OSM 修饰键 + 蓝牙操作：
+  - 上行 `K_CANCEL | toLeg`：K_CANCEL 一键清除误按的 Sticky 状态；toLeg 切换到 Legacy 兜底层
+  - 中行 `GUI | ALT | CTRL | SHIFT`（与 Nav/Num 层一致）
   - 下行 `BOOT | BT0 | BT1 | BT2 | BTCLR`（低频系统操作，放在不易误触的下行）
 - 右手 = F 键九宫格（与 Num 层数字严格对齐）：
   - F7/F8/F9 = 7/8/9 位，F4/F5/F6 = 4/5/6 位，F1/F2/F3 = 1/2/3 位
@@ -170,19 +177,19 @@ Home Row Mods 引入 Tapping Term 延迟，快速打字时极易误触。OSM 的
 ├─────┼─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┼─────┤
 │     │CAPS │ ML  │ MD  │ MU  │ MR  │               │     │SHIFT│CTRL │ ALT │ GUI │     │
 ├─────┼─────┼─────┼─────┼─────┼─────┼─────┐   ┌─────┼─────┼─────┼─────┼─────┼─────┼─────┤
-│     │ INS │WH_L │WH_D │WH_U │WH_R │(none)│   │(none)│     │     │     │     │     │     │
+│     │ INS │WH_L │WH_D │WH_U │WH_R │(none)│   │(none)│     │LCLK │MCLK │RCLK │     │     │
 └─────┴─────┴─────┼─────┼─────┼─────┼─────┤   ├─────┼─────┼─────┼─────┴─────┴─────┴─────┘
-                  │LCLK │RCLK │MCLK │(none)│   │(none)│     │▓▓▓▓▓│     │
+                  │     │     │     │(none)│   │(none)│     │▓▓▓▓▓│     │
                   └─────┴─────┴─────┴─────┘   └─────┴─────┴─────┴─────┘
 ```
 
-- 左手 = 鼠标操作 + 剪贴板（右拇指激活，左手为功能区）：
+- 左手 = 鼠标移动 + 滚轮 + 剪贴板（右拇指激活，左手为功能区）：
   - 上行 `C(Z) | C(X) | C(C) | C(V) | C(S)`（剪贴板快捷键，与 Nav 层顺序一致）
   - 中行 `CAPS | ML | MD | MU | MR`（Caps Lock + 鼠标移动）
   - 下行 `INS | WH_L | WH_D | WH_U | WH_R`（Insert + 四方向滚轮）
-  - 拇指 `LCLK | RCLK | MCLK`（鼠标点击移到拇指区，模拟真实鼠标握姿）
-- 右手 = OSM 修饰键（与 Sym 层一致）：
-  - 中行 `SHIFT | CTRL | ALT | GUI`
+- 右手 = OSM 修饰键 + 鼠标点击（对侧解耦）：
+  - 中行 `SHIFT | CTRL | ALT | GUI`（OSM 修饰键）
+  - 下行 `LCLK | MCLK | RCLK`（M/,/. 位，食指中指无名指自然下垂点击，避开主行控制区）
 
 ### Layer 6: Media（右拇指 DEL 长按激活）
 
@@ -206,23 +213,89 @@ Home Row Mods 引入 Tapping Term 延迟，快速打字时极易误触。OSM 的
 - 右手 = OSM 修饰键（与 Sym 层一致）：
   - 中行 `SHIFT | CTRL | ALT | GUI`
 
+### Layer 7: Legacy（Fun 层热键 `&to` 切换）
+
+> 完整传统键盘兜底层，紧急时一键回退。右 SHIFT 位放 `&to BASE` 切回。
+
+```text
+┌─────┬─────┬─────┬─────┬─────┬─────┐               ┌─────┬─────┬─────┬─────┬─────┬─────┐
+│  `  │  1  │  2  │  3  │  4  │  5  │               │  6  │  7  │  8  │  9  │  0  │  ~  │
+├─────┼─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┼─────┤
+│ TAB │  Q  │  W  │  E  │  R  │  T  │               │  Y  │  U  │  I  │  O  │  P  │  -  │
+├─────┼─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┼─────┤
+│SHIFT│  A  │  S  │  D  │  F  │  G  │               │  H  │  J  │  K  │  L  │  ;  │  '  │
+├─────┼─────┼─────┼─────┼─────┼─────┼─────┐   ┌─────┼─────┼─────┼─────┼─────┼─────┼─────┤
+│CTRL │  Z  │  X  │  C  │  V  │  B  │(none)│   │(none)│  N  │  M  │  ,  │  .  │  /  │toBas│
+└─────┴─────┴─────┼─────┼─────┼─────┼─────┤   ├─────┼─────┼─────┼─────┴─────┴─────┴─────┘
+                  │ ESC │ TAB │SPACE│(none)│   │(none)│ENTER│BSPC │ DEL │
+                  └─────┴─────┴─────┴─────┘   └─────┴─────┴─────┴─────┘
+```
+
+- 完整复刻原始 Base 层（包含数字行、物理 Shift/Ctrl），所有 QWERTY 键位可用
+- `&to BASE` 放在**右 SHIFT 位**（右下角），位置明显且不影响打字（左 SHIFT 仍可用）
+- 拇指键使用普通 `&kp`（非 layer-tap），纯传统键盘体验
+- 右上角 `~`：填入标准键盘中 `` ` `` 键的 Shift 值，与左上角 `` ` `` 呼应，提供完整的反引号/波浪号组合
+
 ## ZMK 实现要点
 
-### 核心：快速释放型 OSM (skq)
+### `&trans` 透传机制
+
+非 Base 层的空白位置使用 `&trans`（transparent），表示该键**穿透到下一层**。与 `&none`（完全屏蔽，按了无任何反应）不同，`&trans` 会让按键事件继续向下查找，最终落到 Base 层。这意味着在任何层中，未定义功能的键位仍可正常使用 Base 层的字母/符号。
+
+### OSM 行为：skq（仅 Shift）+ sk（Ctrl/Alt/GUI）
+
+> `skq`（quick-release）仅保留给 Shift，防止快速输入时大写字母连带。
+> `sk`（无 quick-release）给 Ctrl/Alt/GUI，支持 `Ctrl+Alt+Delete` 等链式组合键。
 
 ```dts
 behaviors {
+    // 快速释放型 OSM（仅用于 Shift）
     skq: sticky_key_quick_release {
         compatible = "zmk,behavior-sticky-key";
         label = "STICKY_KEY_QUICK_RELEASE";
         #binding-cells = <1>;
         bindings = <&kp>;
-        release-after-ms = <1000>;  // 1秒内无操作自动取消
-        quick-release;              // 按下任意下一个键后立刻释放修饰键
-        ignore-modifiers;           // 允许连续敲击多个 OSM
+        release-after-ms = <1000>;
+        quick-release;              // Shift 专用：按下一个键后立刻释放
+        ignore-modifiers;
+    };
+
+    // 普通 OSM（用于 Ctrl/Alt/GUI，支持链式组合）
+    sk: sticky_key_normal {
+        compatible = "zmk,behavior-sticky-key";
+        label = "STICKY_KEY_NORMAL";
+        #binding-cells = <1>;
+        bindings = <&kp>;
+        release-after-ms = <1000>;
+        // 不带 quick-release，允许从容按出链式组合键
+        ignore-modifiers;
     };
 };
 ```
+
+### 拇指 Layer-Tap 防误触 (tlt)
+
+> 替代默认 `&lt`，为拇指键添加 `require-prior-idle-ms`。
+> 快速连续打字时拇指键永远判定为 Tap（输出字符），只有停顿后按住才切层。
+
+```dts
+behaviors {
+    tlt: thumb_layer_tap {
+        compatible = "zmk,behavior-hold-tap";
+        label = "THUMB_LAYER_TAP";
+        #binding-cells = <2>;
+        flavor = "tap-preferred";
+        tapping-term-ms = <200>;
+        quick-tap-ms = <150>;              // 短时间内再次按下自动走 Tap
+        require-prior-idle-ms = <125>;     // 快速打字中强制 Tap
+        bindings = <&mo>, <&kp>;
+    };
+};
+```
+
+### K_CANCEL 后悔药
+
+在 Function 层 Q 位（`&kp K_CANCEL`），一键清除误按的 Sticky Key 状态。当不小心触发了 OSM 修饰键但不想使用时，按住 ESC 切 Fun 层 → 点 Q 位即可取消。
 
 ### J + K = Escape (Combo)
 
@@ -239,6 +312,9 @@ behaviors {
 ### D + F = Ctrl+Shift（切换输入法 Combo）
 
 同时按下 `D` 和 `F` 触发 `Ctrl+Shift`，用于切换输入法。key-positions `<27 28>`（Lily58 矩阵）。
+
+- `timeout-ms = <70>`：比 JK Combo 的 50ms 稍宽松，给食指中指同时下按留足余量
+- `require-prior-idle-ms = <150>`：在正常打字节奏中（如输入 `default`、`define`）自动禁用 combo，彻底根除误触
 
 **为什么用 Combo 而不用 OSM**：`Ctrl+Shift` 切输入法需要"修饰键按下再释放"即可触发，不需要第三个目标键。但 OSM 的设计是"激活后等待下一个键才释放"，两者机制冲突。Combo 一次性发送 `Ctrl+Shift` 按下和释放事件，完美解决。
 
@@ -257,12 +333,6 @@ behaviors {
 ### 阶段三：化蛹成蝶（第 2 个月后）
 - 连续几天没碰过外围一圈（数字/Shift/Ctrl/Esc）时，已具备驾驭 36 键 Corne 的全部肌肉记忆
 - 随时可换 Corne
-
-## 参考来源
-
-- Callum Oakley 原版 keymap
-- r/ErgoMechKeyboards 社区最佳实践
-- ZMK 官方 Sticky Key 文档
 
 ## 附录：设计历史
 
