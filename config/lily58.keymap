@@ -65,7 +65,7 @@
             compatible = "zmk,behavior-hold-tap";
             label = "THUMB_LAYER_TAP";
             #binding-cells = <2>;
-            flavor = "tap-preferred";
+            flavor = "balanced";
             tapping-term-ms = <200>;
             quick-tap-ms = <150>;
             require-prior-idle-ms = <125>;
@@ -81,6 +81,7 @@
             key-positions = <31 32>;  // J 和 K 在 Lily58 矩阵中的位置
             bindings = <&kp ESC>;
             layers = <BASE>;
+            require-prior-idle-ms = <150>;
         };
 
         // F + J = Caps Word（双食指归位键，输入蛇形命名超方便）
@@ -89,13 +90,14 @@
             key-positions = <28 31>;  // F 和 J
             bindings = <&caps_word>;
             layers = <BASE>;
+            require-prior-idle-ms = <150>;
         };
 
-        // D + F = Ctrl+Shift（切换输入法）
+        // D + F = Ctrl+Space（切换输入法）
         combo_input_switch {
             timeout-ms = <70>;
             key-positions = <27 28>;  // D 和 F
-            bindings = <&kp LC(LSHFT)>;
+            bindings = <&kp LC(SPACE)>;
             layers = <BASE>;
             require-prior-idle-ms = <150>;
         };
@@ -169,7 +171,7 @@
 // ├─────┼─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┼─────┤
 // │     │     │     │     │     │     │               │     │  7  │  8  │  9  │  -  │     │
 // ├─────┼─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┼─────┤
-// │     │ GUI │ ALT │CTRL │SHIFT│     │               │     │  4  │  5  │  6  │  +  │     │
+// │     │ GUI │ ALT │CTRL │SHIFT│BSPC │               │     │  4  │  5  │  6  │  +  │     │
 // ├─────┼─────┼─────┼─────┼─────┼─────┼─────┐   ┌─────┼─────┼─────┼─────┼─────┼─────┼─────┤
 // │     │  .  │  /  │  *  │  =  │     │none │   │none │     │  1  │  2  │  3  │     │     │
 // └─────┴─────┴─────┼─────┼─────┼─────┼─────┤   ├─────┼─────┼─────┼─────┴─────┴─────┴─────┘
@@ -178,7 +180,7 @@
             bindings = <
 &trans &trans   &trans    &trans       &trans    &trans                   &trans &trans &trans &trans &trans    &trans
 &trans &trans   &trans    &trans       &trans    &trans                   &trans &kp N7 &kp N8 &kp N9 &kp MINUS &trans
-&trans &skn LGUI  &skn LALT  &skn LCTRL   &skq LSHFT &trans                &trans &kp N4 &kp N5 &kp N6 &kp PLUS  &trans
+&trans &skn LGUI  &skn LALT  &skn LCTRL   &skq LSHFT &kp BSPC              &trans &kp N4 &kp N5 &kp N6 &kp PLUS  &trans
 &trans &kp DOT  &kp FSLH  &kp ASTRK   &kp EQUAL &trans &none    &none   &trans &kp N1 &kp N2 &kp N3 &trans    &trans
                           &trans       &trans    &trans &none    &none   &trans &kp N0 &trans
             >;
@@ -243,16 +245,16 @@
 // ├─────┼─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┼─────┤
 // │     │CAPS │ ML  │ MD  │ MU  │ MR  │               │     │SHIFT│CTRL │ ALT │ GUI │     │
 // ├─────┼─────┼─────┼─────┼─────┼─────┼─────┐   ┌─────┼─────┼─────┼─────┼─────┼─────┼─────┤
-// │     │ INS │WH_L │WH_D │WH_U │WH_R │none │   │none │     │LCLK │MCLK │RCLK │     │     │
+// │     │ INS │WH_L │WH_D │WH_U │WH_R │none │   │none │     │     │     │     │     │     │
 // └─────┴─────┴─────┼─────┼─────┼─────┼─────┤   ├─────┼─────┼─────┼─────┴─────┴─────┴─────┘
-//                   │     │     │     │none │   │none │     │▓▓▓▓▓│     │
+//                   │RCLK │MCLK │LCLK │none │   │none │     │▓▓▓▓▓│     │
 //                   └─────┴─────┴─────┴─────┘   └─────┴─────┴─────┴─────┘
             bindings = <
 &trans &trans     &trans            &trans            &trans            &trans                         &trans &trans     &trans     &trans    &trans    &trans
 &trans &kp LC(Z)  &kp LC(X)         &kp LC(C)         &kp LC(V)         &kp LC(S)                      &trans &trans     &trans     &trans    &trans    &trans
 &trans &kp CAPS   &mmv MOVE_LEFT    &mmv MOVE_DOWN    &mmv MOVE_UP      &mmv MOVE_RIGHT                &trans &skq RSHFT &skn RCTRL  &skn RALT  &skn RGUI  &trans
-&trans &kp INS    &msc SCRL_LEFT    &msc SCRL_DOWN    &msc SCRL_UP      &msc SCRL_RIGHT &none   &none  &trans &mkp LCLK  &mkp MCLK  &mkp RCLK &trans    &trans
-                                    &trans            &trans             &trans           &none   &none  &trans &trans     &trans
+&trans &kp INS    &msc SCRL_LEFT    &msc SCRL_DOWN    &msc SCRL_UP      &msc SCRL_RIGHT &none   &none  &trans &trans     &trans     &trans    &trans    &trans
+                                    &mkp MCLK         &mkp RCLK         &mkp LCLK       &none   &none  &trans &trans     &trans
             >;
 
             sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;
