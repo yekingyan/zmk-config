@@ -38,6 +38,12 @@ Lily58 上实现"双核驱动"过渡方案，最终目标迁移到 Corne 36 键�
 
 ## 已完成
 
+### 高级功能与局部强化（2026-03-04）
+
+- [x] **Z键长按修饰**：将 Base 层的 Z 键更换为 `&mt LCTRL Z`，补充了 Uro's Timeless 理念中的局部按压特性。
+- [x] **Nav 层 Alt-Tab Swapper**：在 Nav 层 Q 位添加了名为 `&swapper` 的宏，实现基于 ZMK 原生宏（macro）的快速窗口切换体验。
+- [x] **鼠标层疾/缓模式**：结合 input processors scaler 的特性在文件顶端新增 `zip_snipe` 和 `zip_turbo` 调节器。构建并引用 `M_SNIPE` 和 `M_TURBO` 双层图层，布置在右手侧底层 `N` 与 `M` 位置，允许微操“防手抖”慢移与大跨度瞬移。
+
 ### 右外侧拇指键精简与切层优化（2026-03-04）
 
 - [x] **恢复核心区 OSM Shift**：测试确认 `&skq LSHFT` 实际上单点时会向 Windows 完美发送孤立的 Shift 按键，因此撤回之前错误的全局替换操作，恢复左右手中行的 `&skq LSHFT`（OSM），维持 Callum-style 设计的完整性。

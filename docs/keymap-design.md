@@ -61,13 +61,14 @@
 ├─────┼─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┼─────┤
 │none │  A  │  S  │  D  │  F  │  G  │               │  H  │  J  │  K  │  L  │  ;  │none │
 ├─────┼─────┼─────┼─────┼─────┼─────┼─────┐   ┌─────┼─────┼─────┼─────┼─────┼─────┼─────┤
-│none │  Z  │  X  │  C  │  V  │  B  │(none)│   │(none)│  N  │  M  │  ,  │  .  │  /  │none │
+│none │ C_Z │  X  │  C  │  V  │  B  │(none)│   │(none)│  N  │  M  │  ,  │  .  │  /  │none │
 └─────┴─────┴─────┼─────┼─────┼─────┼─────┤   ├─────┼─────┼─────┼─────┴─────┴─────┴─────┘
                   │ ESC │ TAB │SPACE│(none)│  │(none)│ENTER│BSPC│LSHFT|
                   └─────┴─────┴─────┴─────┘   └─────┴─────┴─────┴─────┘
 ```
 
 - **外围全部置空 (`&none`)**：数字行 + 左右外侧列全部屏蔽，完全模拟 Corne 36 键物理约束
+- **局部长按修饰 (Uro's Timeless 理念补充)**：`Z` 键位 (`C_Z`) 被修改为了 `&mt LCTRL Z`，单点输入 `Z`，长按变为 `LCTRL`。
 - 被屏蔽的物理键均有层内替代：TAB→左拇指 Tap、Shift/Ctrl→OSM、`-`→Num 层、`'`→Sym 层 P 位
 - 需要完整键盘功能时，通过 Fun 层热键 `&to LEGACY` 切换到 Layer 7 兜底层
 
@@ -77,7 +78,7 @@
 ┌─────┬─────┬─────┬─────┬─────┬─────┐               ┌─────┬─────┬─────┬─────┬─────┬─────┐
 │     │     │     │     │     │     │               │     │     │     │     │     │     │
 ├─────┼─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┼─────┤
-│     │ ESC │S-TAB│ RET │L-SHIFT│BSPC │             │C(←) │ C-D │ C-U │C(→) │ DEL │     │
+│     │SWAPP│S-TAB│ RET │L-SHIFT│BSPC │             │C(←) │ C-D │ C-U │C(→) │ DEL │     │
 ├─────┼─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┼─────┤
 │     │ GUI │ ALT │CTRL │LSHFT│CAPW │               │  ←  │  ↓  │  ↑  │  →  │ C(DEL)│     │
 ├─────┼─────┼─────┼─────┼─────┼─────┼─────┐   ┌─────┼─────┼─────┼─────┼─────┼─────┼─────┤
@@ -87,7 +88,8 @@
                   └─────┴─────┴─────┴─────┘   └─────┴─────┴─────┴─────┘
 ```
 
-- **左手上行**（编辑快捷区）：`ESC | S-TAB | RET | L-SHIFT | BSPC`
+- **左手上行**（编辑快捷区）：`SWAPP | S-TAB | RET | L-SHIFT | BSPC`
+  - `SWAPP`（`&swapper` 宏）：位于原 `Q` 键位，轻点切换应用（同 Alt-Tab），按住不放可保留 Alt 状态并通过连续轻点快速遍历窗口。
   - `L-SHIFT`（`&kp LSHFT`）：**普通 hold 型 Shift**，按住不放配合右手方向键，实现 Shift+方向键连续选中文本
   - 与中行的 `&skq LSHFT`（OSM 点击型）**用途不同**：上行适合连续选中，中行适合单次大写或单次 Shift 组合
 - **左手中行**（OSM 修饰键 + Caps Word）：`GUI | ALT | CTRL | SHIFT | CAPW`
@@ -177,7 +179,7 @@
 ├─────┼─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┼─────┤
 │     │     │ ML  │ MU  │ MD  │ MR  │               │     │LSHFT│CTRL │ ALT │ GUI │     │
 ├─────┼─────┼─────┼─────┼─────┼─────┼─────┐   ┌─────┼─────┼─────┼─────┼─────┼─────┼─────┤
-│     │     │WH_L │WH_U │WH_D │WH_R │(none)│   │(none)│     │     │     │     │     │     │
+│     │     │WH_L │WH_U │WH_D │WH_R │(none)│   │(none)│SNIPE│TURBO│     │     │     │     │
 └─────┴─────┴─────┼─────┼─────┼─────┼─────┤   ├─────┼─────┼─────┼─────┴─────┴─────┴─────┘
                   │MCLK │RCLK │LCLK │(none)│   │(none)│     │▓▓▓▓▓│     │
                   └─────┴─────┴─────┴─────┘   └─────┴─────┴─────┴─────┘
@@ -188,8 +190,9 @@
   - 中行 `ML | MU | MD | MR`（纯鼠标移动）
   - 下行 `WH_L | WH_U | WH_D | WH_R`（四方向滚轮）
   - 拇指键 `MCLK | RCLK | LCLK`（舒适度优先：Space自然位为左键，向外依次为右键、中键）
-- 右手 = OSM 修饰键（对侧解耦）：
+- 右手 = OSM 修饰键（对侧解耦）与疾缓图层离合：
   - 中行 `LSHFT | CTRL | ALT | GUI`（OSM 修饰键）
+  - 下行 `SNIPE | TURBO`：分别为1/4减速模式（微调狙击）与双倍加速模式（疾风穿梭）。采用离合键（`&mo`）激活影子层实现。
 
 ### Layer 6: Media（右拇指 DEL 长按激活）
 
@@ -339,6 +342,36 @@ behaviors {
     time-to-max-speed-ms = <500>;     // 达到最大速度的时间
     delay-ms = <0>;
 };
+```
+
+### 瞬时速度降维/升维：Snipe & Turbo
+
+为满足细致微操（如 IDE 内代码断点或者设计软件里的像素推拉）的需求，不借用三方模块而利用内置 `zmk,input-processor-scaler` 完成。右手手指按住离合键触发“影子图层”（Shadow layers），让指针以 1/4 慢速（Snipe）或 2倍 高速（Turbo）位移。
+
+```dts
+/ {
+    // 狙击模式：速度除以 4 (Multiplier 1, Divisor 4)
+    zip_snipe: zip_snipe {
+        compatible = "zmk,input-processor-scaler";
+        #input-processor-cells = <2>;
+        type = <INPUT_EV_REL>;
+        codes = <INPUT_REL_X INPUT_REL_Y>;
+        track-remainders;
+        multiplier = <1>;
+        divisor = <4>;
+    };
+
+    // 疾风模式：速度翻倍 (Multiplier 2, Divisor 1)
+    zip_turbo: zip_turbo {
+        compatible = "zmk,input-processor-scaler";
+        #input-processor-cells = <2>;
+        type = <INPUT_EV_REL>;
+        codes = <INPUT_REL_X INPUT_REL_Y>;
+        multiplier = <2>;
+        divisor = <1>;
+    };
+    /* ... 紧接着在底端构建两个全 '&trans' 结构的键层并插入 processors 调度 */
+}
 ```
 
 ## 进化路线图
