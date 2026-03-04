@@ -135,7 +135,7 @@
 // ├─────┼─────┼─────┼─────┼─────┼─────┼─────┐   ┌─────┼─────┼─────┼─────┼─────┼─────┼─────┤
 // │none │  Z  │  X  │  C  │  V  │  B  │none │   │none │  N  │  M  │  ,  │  .  │  /  │none │
 // └─────┴─────┴─────┼─────┼─────┼─────┼─────┤   ├─────┼─────┼─────┼─────┴─────┴─────┴─────┘
-//                   │ ESC │ TAB │SPACE│none │   │none │ENTER│BSPC │SHIFT│
+//                   │ ESC │ TAB │SPACE│none │   │none │ENTER│BSPC │LSHFT│
 //                   │(FUN)│(NAV)│(NUM)│     │   │     │(SYM)│(MOU)│(OSM)│
 //                   └─────┴─────┴─────┴─────┘   └─────┴─────┴─────┴─────┘
             bindings = <
@@ -143,7 +143,7 @@
 &none      &kp Q  &kp W  &kp E         &kp R         &kp T                              &kp Y         &kp U             &kp I             &kp O   &kp P    &none
 &none      &kp A  &kp S  &kp D         &kp F         &kp G                              &kp H         &kp J             &kp K             &kp L   &kp SEMI &none
 &none      &kp Z  &kp X  &kp C         &kp V         &kp B  &none          &none         &kp N         &kp M             &kp COMMA         &kp DOT &kp FSLH &none
-                          &tlt FUN ESC  &tlt NAV TAB  &tlt NUM SPACE &none  &none         &tlt SYM RET  &tlt MOUSE BSPC   &skq RSHFT
+                          &tlt FUN ESC  &tlt NAV TAB  &tlt NUM SPACE &none  &none         &tlt SYM RET  &tlt MOUSE BSPC   &skq LSHFT
             >;
 
             sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;
@@ -156,7 +156,7 @@
 // ├─────┼─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┼─────┤
 // │     │ ESC │S-TAB│ RET │LSHFT│BSPC │               │C(←) │ C-D │ C-U │C(→) │ DEL │     │
 // ├─────┼─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┼─────┤
-// │     │ GUI │ ALT │CTRL │SHIFT│CAPW │               │  ←  │  ↓  │  ↑  │  →  │C(DEL)│    │
+// │     │ GUI │ ALT │CTRL │LSHFT│CAPW │               │  ←  │  ↓  │  ↑  │  →  │C(DEL)│    │
 // ├─────┼─────┼─────┼─────┼─────┼─────┼─────┐   ┌─────┼─────┼─────┼─────┼─────┼─────┼─────┤
 // │     │C(Z) │C(X) │C(C) │C(V) │     │none │   │none │HOME │PgDn │PgUp │ END │C(BS)│     │
 // └─────┴─────┴─────┼─────┼─────┼─────┼─────┤   ├─────┼─────┼─────┼─────┴─────┴─────┴─────┘
@@ -180,7 +180,7 @@
 // ├─────┼─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┼─────┤
 // │     │     │     │     │     │     │               │     │  7  │  8  │  9  │  -  │     │
 // ├─────┼─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┼─────┤
-// │     │ GUI │ ALT │CTRL │SHIFT│BSPC │               │     │  4  │  5  │  6  │  +  │     │
+// │     │ GUI │ ALT │CTRL │LSHFT│BSPC │               │     │  4  │  5  │  6  │  +  │     │
 // ├─────┼─────┼─────┼─────┼─────┼─────┼─────┐   ┌─────┼─────┼─────┼─────┼─────┼─────┼─────┤
 // │     │  .  │  /  │  *  │  =  │     │none │   │none │     │  1  │  2  │  3  │     │     │
 // └─────┴─────┴─────┼─────┼─────┼─────┼─────┤   ├─────┼─────┼─────┼─────┴─────┴─────┴─────┘
@@ -204,7 +204,7 @@
 // ├─────┼─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┼─────┤
 // │     │  !  │  @  │  #  │  $  │  %  │               │  ^  │  &  │  *  │  =  │  '  │     │
 // ├─────┼─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┼─────┤
-// │     │  (  │  {  │  [  │  <  │  _  │               │  |  │SHIFT│CTRL │ ALT │ GUI │     │
+// │     │  (  │  {  │  [  │  <  │  _  │               │  |  │LSHFT│CTRL │ ALT │ GUI │     │
 // ├─────┼─────┼─────┼─────┼─────┼─────┼─────┐   ┌─────┼─────┼─────┼─────┼─────┼─────┼─────┤
 // │     │  )  │  }  │  ]  │  >  │  `  │none │   │none │  \  │  ~  │  :  │  "  │  ?  │     │
 // └─────┴─────┴─────┼─────┼─────┼─────┼─────┤   ├─────┼─────┼─────┼─────┴─────┴─────┴─────┘
@@ -213,7 +213,7 @@
             bindings = <
 &trans &trans    &trans   &trans   &trans &trans                    &trans    &trans      &trans     &trans      &trans   &trans
 &trans &kp EXCL  &kp AT   &kp HASH &kp DLLR &kp PRCNT             &kp CARET &kp AMPS    &kp ASTRK  &kp EQUAL   &kp SQT  &trans
-&trans &kp LPAR  &kp LBRC &kp LBKT &kp LT   &kp UNDER             &kp PIPE  &skq RSHFT  &skn RCTRL  &skn RALT    &skn RGUI  &trans
+&trans &kp LPAR  &kp LBRC &kp LBKT &kp LT   &kp UNDER             &kp PIPE  &skq LSHFT  &skn RCTRL  &skn RALT    &skn RGUI  &trans
 &trans &kp RPAR  &kp RBRC &kp RBKT &kp GT   &kp GRAVE &none &none &kp BSLH  &kp TILDE   &kp COLON  &kp DQT     &kp QMARK &trans
                           &trans   &trans   &trans    &none &none &trans &trans      &trans
             >;
@@ -228,7 +228,7 @@
 // ├─────┼─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┼─────┤
 // │     │CANCL│toLeg│     │     │     │               │     │ F7  │ F8  │ F9  │ F12 │     │
 // ├─────┼─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┼─────┤
-// │     │ GUI │ ALT │CTRL │SHIFT│     │               │     │ F4  │ F5  │ F6  │ F11 │     │
+// │     │ GUI │ ALT │CTRL │LSHFT│     │               │     │ F4  │ F5  │ F6  │ F11 │     │
 // ├─────┼─────┼─────┼─────┼─────┼─────┼─────┐   ┌─────┼─────┼─────┼─────┼─────┼─────┼─────┤
 // │     │ BT0 │ BT1 │ BT2 │ BT3 │BTCLR│none │   │none │     │ F1  │ F2  │ F3  │ F10 │     │
 // └─────┴─────┴─────┼─────┼─────┼─────┼─────┤   ├─────┼─────┼─────┼─────┴─────┴─────┴─────┘
@@ -252,7 +252,7 @@
 // ├─────┼─────┼─────┼─────┼─────┼─────┤              // ├─────┼─────┼─────┼─────┼─────┼─────┤
 // │     │UNDO │REDO │VD_L │VD_R │     │               │     │     │     │     │     │     │
 // ├─────┼─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┼─────┤
-// │     │     │ ML  │ MU  │ MD  │ MR  │               │     │SHIFT│CTRL │ ALT │ GUI │     │
+// │     │     │ ML  │ MU  │ MD  │ MR  │               │     │LSHFT│CTRL │ ALT │ GUI │     │
 // ├─────┼─────┼─────┼─────┼─────┼─────┼─────┐   ┌─────┼─────┼─────┼─────┼─────┼─────┼─────┤
 // │     │     │WH_L │WH_U │WH_D │WH_R │none │   │none │     │     │     │     │     │     │
 // └─────┴─────┴─────┼─────┼─────┼─────┼─────┤   ├─────┼─────┼─────┼─────┴─────┴─────┴─────┘
@@ -261,7 +261,7 @@
             bindings = <
 &trans &trans     &trans     &trans           &trans            &trans                         &trans &trans     &trans     &trans    &trans    &trans
 &trans &kp LC(Z)  &kp LC(Y)  &kp LC(LG(LEFT)) &kp LC(LG(RIGHT)) &trans                         &trans &trans     &trans     &trans    &trans    &trans
-&trans &trans  &mmv MOVE_LEFT &mmv MOVE_UP  &mmv MOVE_DOWN  &mmv MOVE_RIGHT                &trans &skq RSHFT &skn RCTRL  &skn RALT  &skn RGUI  &trans
+&trans &trans  &mmv MOVE_LEFT &mmv MOVE_UP  &mmv MOVE_DOWN  &mmv MOVE_RIGHT                &trans &skq LSHFT &skn RCTRL  &skn RALT  &skn RGUI  &trans
 &trans &trans  &msc SCRL_LEFT &msc SCRL_UP  &msc SCRL_DOWN  &msc SCRL_RIGHT &none   &none  &trans &trans     &trans     &trans    &trans    &trans
                                     &mkp MCLK         &mkp RCLK         &mkp LCLK       &none   &none  &trans &trans     &trans
             >;
@@ -276,7 +276,7 @@
 // ├─────┼─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┼─────┤
 // │     │     │     │     │     │     │               │     │     │     │     │     │     │
 // ├─────┼─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┼─────┤
-// │     │     │PREV │VOL_D│VOL_U│NEXT │               │     │SHIFT│CTRL │ ALT │ GUI │     │
+// │     │     │PREV │VOL_D│VOL_U│NEXT │               │     │LSHFT│CTRL │ ALT │ GUI │     │
 // ├─────┼─────┼─────┼─────┼─────┼─────┼─────┐   ┌─────┼─────┼─────┼─────┼─────┼─────┼─────┤
 // │     │     │MUTE │BRI_D│BRI_U│PLAY │none │   │none │     │     │     │     │     │     │
 // └─────┴─────┴─────┼─────┼─────┼─────┼─────┤   ├─────┼─────┼─────┼─────┴─────┴─────┴─────┘
@@ -285,7 +285,7 @@
             bindings = <
 &trans &trans &trans      &trans      &trans      &trans                    &trans &trans     &trans     &trans    &trans    &trans
 &trans &trans &trans      &trans      &trans      &trans                    &trans &trans     &trans     &trans    &trans    &trans
-&trans &trans &kp C_PREV  &kp C_VOL_DN &kp C_VOL_UP &kp C_NEXT            &trans &skq RSHFT &skn RCTRL  &skn RALT  &skn RGUI  &trans
+&trans &trans &kp C_PREV  &kp C_VOL_DN &kp C_VOL_UP &kp C_NEXT            &trans &skq LSHFT &skn RCTRL  &skn RALT  &skn RGUI  &trans
 &trans &trans &kp C_MUTE  &kp C_BRI_DN &kp C_BRI_UP &kp C_PP &none &none  &trans &trans     &trans     &trans    &trans    &trans
                           &trans      &trans      &trans    &none   &none  &trans &trans     &trans
             >;
@@ -300,18 +300,18 @@
 // ├─────┼─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┼─────┤
 // │ TAB │  Q  │  W  │  E  │  R  │  T  │               │  Y  │  U  │  I  │  O  │  P  │  -  │
 // ├─────┼─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┼─────┤
-// │SHIFT│  A  │  S  │  D  │  F  │  G  │               │  H  │  J  │  K  │  L  │  ;  │  '  │
+// │LSHFT│  A  │  S  │  D  │  F  │  G  │               │  H  │  J  │  K  │  L  │  ;  │  '  │
 // ├─────┼─────┼─────┼─────┼─────┼─────┼─────┐   ┌─────┼─────┼─────┼─────┼─────┼─────┼─────┤
 // │CTRL │  Z  │  X  │  C  │  V  │  B  │none │   │none │  N  │  M  │  ,  │  .  │  /  │toBas│
 // └─────┴─────┴─────┼─────┼─────┼─────┼─────┤   ├─────┼─────┼─────┼─────┴─────┴─────┴─────┘
-//                   │ ESC │ TAB │SPACE│none │   │none │ENTER│BSPC │SHIFT│
+//                   │ ESC │ TAB │SPACE│none │   │none │ENTER│BSPC │LSHFT│
 //                   └─────┴─────┴─────┴─────┘   └─────┴─────┴─────┴─────┘
             bindings = <
 &kp GRAVE  &kp N1 &kp N2 &kp N3  &kp N4  &kp N5                     &kp N6  &kp N7   &kp N8    &kp N9  &kp N0   &kp TILDE
 &kp TAB    &kp Q  &kp W  &kp E   &kp R   &kp T                      &kp Y   &kp U    &kp I     &kp O   &kp P    &kp MINUS
 &kp LSHFT  &kp A  &kp S  &kp D   &kp F   &kp G                      &kp H   &kp J    &kp K     &kp L   &kp SEMI &kp SQT
 &kp LCTRL  &kp Z  &kp X  &kp C   &kp V   &kp B  &none      &none    &kp N   &kp M    &kp COMMA &kp DOT &kp FSLH &to BASE
-                          &kp ESC &kp TAB &kp SPACE &none   &none    &kp RET &kp BSPC &kp RSHFT
+                          &kp ESC &kp TAB &kp SPACE &none   &none    &kp RET &kp BSPC &kp LSHFT
             >;
 
             sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;
