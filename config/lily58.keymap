@@ -110,14 +110,6 @@
             require-prior-idle-ms = <200>;
         };
 
-        // D + F = Shift（切换中英文）
-        combo_input_switch {
-            timeout-ms = <70>;
-            key-positions = <27 28>;  // D 和 F
-            bindings = <&kp LSHFT>;
-            layers = <BASE>;
-            require-prior-idle-ms = <200>;
-        };
 
         // S + D = Win+Tab（任务视图）
         combo_task_view {
@@ -143,15 +135,15 @@
 // ├─────┼─────┼─────┼─────┼─────┼─────┼─────┐   ┌─────┼─────┼─────┼─────┼─────┼─────┼─────┤
 // │none │  Z  │  X  │  C  │  V  │  B  │none │   │none │  N  │  M  │  ,  │  .  │  /  │none │
 // └─────┴─────┴─────┼─────┼─────┼─────┼─────┤   ├─────┼─────┼─────┼─────┴─────┴─────┴─────┘
-//                   │ ESC │ TAB │SPACE│none │   │none │ENTER│BSPC │ DEL │
-//                   │(FUN)│(NAV)│(NUM)│     │   │     │(SYM)│(MOU)│(MED)│
+//                   │ ESC │ TAB │SPACE│none │   │none │ENTER│BSPC │SHIFT│
+//                   │(FUN)│(NAV)│(NUM)│     │   │     │(SYM)│(MOU)│(OSM)│
 //                   └─────┴─────┴─────┴─────┘   └─────┴─────┴─────┴─────┘
             bindings = <
 &none      &none  &none  &none         &none         &none                              &none         &none             &none             &none   &none    &none
 &none      &kp Q  &kp W  &kp E         &kp R         &kp T                              &kp Y         &kp U             &kp I             &kp O   &kp P    &none
 &none      &kp A  &kp S  &kp D         &kp F         &kp G                              &kp H         &kp J             &kp K             &kp L   &kp SEMI &none
 &none      &kp Z  &kp X  &kp C         &kp V         &kp B  &none          &none         &kp N         &kp M             &kp COMMA         &kp DOT &kp FSLH &none
-                          &tlt FUN ESC  &tlt NAV TAB  &tlt NUM SPACE &none  &none         &tlt SYM RET  &tlt MOUSE BSPC   &tlt MEDIA DEL
+                          &tlt FUN ESC  &tlt NAV TAB  &tlt NUM SPACE &none  &none         &tlt SYM RET  &tlt MOUSE BSPC   &skq RSHFT
             >;
 
             sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;
@@ -257,20 +249,20 @@
             display-name = "Mouse";
 // ┌─────┬─────┬─────┬─────┬─────┬─────┐               ┌─────┬─────┬─────┬─────┬─────┬─────┐
 // │     │     │     │     │     │     │               │     │     │     │     │     │     │
+// ├─────┼─────┼─────┼─────┼─────┼─────┤              // ├─────┼─────┼─────┼─────┼─────┼─────┤
+// │     │UNDO │REDO │VD_L │VD_R │     │               │     │     │     │     │     │     │
 // ├─────┼─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┼─────┤
-// │     │C(Z) │C(X) │C(C) │C(V) │C(S) │               │     │     │     │     │     │     │
-// ├─────┼─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┼─────┤
-// │     │CAPS │ ML  │ MU  │ MD  │ MR  │               │     │SHIFT│CTRL │ ALT │ GUI │     │
+// │     │     │ ML  │ MU  │ MD  │ MR  │               │     │SHIFT│CTRL │ ALT │ GUI │     │
 // ├─────┼─────┼─────┼─────┼─────┼─────┼─────┐   ┌─────┼─────┼─────┼─────┼─────┼─────┼─────┤
-// │     │ INS │WH_L │WH_U │WH_D │WH_R │none │   │none │     │     │     │     │     │     │
+// │     │     │WH_L │WH_U │WH_D │WH_R │none │   │none │     │     │     │     │     │     │
 // └─────┴─────┴─────┼─────┼─────┼─────┼─────┤   ├─────┼─────┼─────┼─────┴─────┴─────┴─────┘
 //                   │RCLK │MCLK │LCLK │none │   │none │     │▓▓▓▓▓│     │
 //                   └─────┴─────┴─────┴─────┘   └─────┴─────┴─────┴─────┘
             bindings = <
-&trans &trans     &trans            &trans            &trans            &trans                         &trans &trans     &trans     &trans    &trans    &trans
-&trans &kp LC(Z)  &kp LC(X)         &kp LC(C)         &kp LC(V)         &kp LC(S)                      &trans &trans     &trans     &trans    &trans    &trans
-&trans &kp CAPS   &mmv MOVE_LEFT    &mmv MOVE_UP    &mmv MOVE_DOWN      &mmv MOVE_RIGHT                &trans &skq RSHFT &skn RCTRL  &skn RALT  &skn RGUI  &trans
-&trans &kp INS    &msc SCRL_LEFT    &msc SCRL_UP    &msc SCRL_DOWN      &msc SCRL_RIGHT &none   &none  &trans &trans     &trans     &trans    &trans    &trans
+&trans &trans     &trans     &trans           &trans            &trans                         &trans &trans     &trans     &trans    &trans    &trans
+&trans &kp LC(Z)  &kp LC(Y)  &kp LC(LG(LEFT)) &kp LC(LG(RIGHT)) &trans                         &trans &trans     &trans     &trans    &trans    &trans
+&trans &trans  &mmv MOVE_LEFT &mmv MOVE_UP  &mmv MOVE_DOWN  &mmv MOVE_RIGHT                &trans &skq RSHFT &skn RCTRL  &skn RALT  &skn RGUI  &trans
+&trans &trans  &msc SCRL_LEFT &msc SCRL_UP  &msc SCRL_DOWN  &msc SCRL_RIGHT &none   &none  &trans &trans     &trans     &trans    &trans    &trans
                                     &mkp MCLK         &mkp RCLK         &mkp LCLK       &none   &none  &trans &trans     &trans
             >;
 
@@ -312,14 +304,14 @@
 // ├─────┼─────┼─────┼─────┼─────┼─────┼─────┐   ┌─────┼─────┼─────┼─────┼─────┼─────┼─────┤
 // │CTRL │  Z  │  X  │  C  │  V  │  B  │none │   │none │  N  │  M  │  ,  │  .  │  /  │toBas│
 // └─────┴─────┴─────┼─────┼─────┼─────┼─────┤   ├─────┼─────┼─────┼─────┴─────┴─────┴─────┘
-//                   │ ESC │ TAB │SPACE│none │   │none │ENTER│BSPC │ DEL │
+//                   │ ESC │ TAB │SPACE│none │   │none │ENTER│BSPC │SHIFT│
 //                   └─────┴─────┴─────┴─────┘   └─────┴─────┴─────┴─────┘
             bindings = <
 &kp GRAVE  &kp N1 &kp N2 &kp N3  &kp N4  &kp N5                     &kp N6  &kp N7   &kp N8    &kp N9  &kp N0   &kp TILDE
 &kp TAB    &kp Q  &kp W  &kp E   &kp R   &kp T                      &kp Y   &kp U    &kp I     &kp O   &kp P    &kp MINUS
 &kp LSHFT  &kp A  &kp S  &kp D   &kp F   &kp G                      &kp H   &kp J    &kp K     &kp L   &kp SEMI &kp SQT
 &kp LCTRL  &kp Z  &kp X  &kp C   &kp V   &kp B  &none      &none    &kp N   &kp M    &kp COMMA &kp DOT &kp FSLH &to BASE
-                          &kp ESC &kp TAB &kp SPACE &none   &none    &kp RET &kp BSPC &kp DEL
+                          &kp ESC &kp TAB &kp SPACE &none   &none    &kp RET &kp BSPC &kp RSHFT
             >;
 
             sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;
