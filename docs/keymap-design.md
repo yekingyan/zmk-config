@@ -1,7 +1,15 @@
 # 36 键键位设计（ZMK / Lily58 过渡实现）
 
-> 2026-03-02 整理。基于 Callum-style OSM 流派，专为 Vim 程序员 + QWERTY 基础层设计。
-> 当前实现于 Lily58 上，采用"双核驱动"过渡方案。
+> 当前应用在 Silakka54 上，适用 Lily58，采用"双核驱动"过渡方案。
+
+## 社区最佳实践溯源
+
+> 本方案集成了近几年 r/ErgoMechKeyboards 和 ZMK 社区几大流派的精髓。
+
+- **Callum-style OSM 流派**（Callum Oakley）：摒弃 Home Row Mods（HRM，主行长按触发修饰键）。HRM 在快速打字（特别是 Roll 连击）时极易误触（Tapping Term 冲突）。Callum 引入独立层 + Sticky Keys（OSM），实现基础层 0 延迟、0 误触，完美契合 Vim 的"顺序输入"哲学
+- **Miryoku 对侧控制 + 3x5+3 黄金法则**（Manna Harbour）：36 键配列的绝对真理——按住左手拇指切层，右手执行功能；反之亦然。本配置的 Numpad、Nav 等层完全继承此理念
+- **"双核驱动"渐进式降级**（分体键盘社区常见建议）：保留物理冗余作为安全网，核心区通过代码强制塑形（如置空 4 个拇指键），是克服大脑抗拒的最高效手段
+- **ZMK Caps Word**（ZMK 官方 Behaviors，借鉴自 QMK）：彻底淘汰 Caps Lock，通过 Combo 触发，遇到空格自动解除，专为 `SNAKE_CASE` 设计。`continue-list = <UNDERSCORE MINUS>` 确保连字符也不会中断大写
 
 ## 设计哲学："双核驱动"过渡方案
 
@@ -26,14 +34,6 @@
     - 右手中行变成控制区：SHIFT(J), CTRL(K), ALT(L), GUI(;)
     - 左手变成功能区
 
-### 社区最佳实践溯源
-
-> 本方案集成了近几年 r/ErgoMechKeyboards 和 ZMK 社区几大流派的精髓。
-
-- **Callum-style OSM 流派**（Callum Oakley）：摒弃 Home Row Mods（HRM，主行长按触发修饰键）。HRM 在快速打字（特别是 Roll 连击）时极易误触（Tapping Term 冲突）。Callum 引入独立层 + Sticky Keys（OSM），实现基础层 0 延迟、0 误触，完美契合 Vim 的"顺序输入"哲学
-- **Miryoku 对侧控制 + 3x5+3 黄金法则**（Manna Harbour）：36 键配列的绝对真理——按住左手拇指切层，右手执行功能；反之亦然。本配置的 Numpad、Nav 等层完全继承此理念
-- **"双核驱动"渐进式降级**（分体键盘社区常见建议）：保留物理冗余作为安全网，核心区通过代码强制塑形（如置空 4 个拇指键），是克服大脑抗拒的最高效手段
-- **ZMK Caps Word**（ZMK 官方 Behaviors，借鉴自 QMK）：彻底淘汰 Caps Lock，通过 Combo 触发，遇到空格自动解除，专为 `SNAKE_CASE` 设计。`continue-list = <UNDERSCORE MINUS>` 确保连字符也不会中断大写
 
 
 ## 层总览
@@ -346,29 +346,10 @@ behaviors {
 
 ### 瞬时速度降维/升维：Snipe & Turbo
 
-为满足细致微操（如 IDE 内代码断点或者设计软件里的像素推拉）的需求，不借用三方模块而利用内置 `zmk,input-processor-scaler` 完成。右手手指按住离合键触发“影子图层”（Shadow layers），让指针以 1/4 慢速（Snipe）或 2倍 高速（Turbo）位移。
+为满足细致微操（如 IDE 内代码断点或者设计软件里的像素推拉）的需求，右手手指按住离合键触发"影子图层"（Shadow layers），让指针以 1/4 慢速（Snipe）或 2倍 高速（Turbo）位移。
 
-```dts
-/ {
-    // 狙击模式：速度除以 4 (Multiplier 1, Divisor 4)
-    zip_snipe: zip_snipe {
-        compatible = "zmk,input-processor-scaler";
-        #input-processor-cells = <2>;
-        type = <INPUT_EV_REL>;
-        codes = <INPUT_REL_X INPUT_REL_Y>;
-        track-remainders;
-    };
+> **实现原理**：`input-processor-scaler` 仅适用于物理指针设备（trackball/trackpad）的 Input Listener，对鼠标模拟 (`&mmv`) 无效。因此改用**自定义速度宏**：利用 ZMK `pointing.h` 中的 `MOVE_X()`/`MOVE_Y()` 宏定义不同速度值，在影子层中直接绑定到 `&mmv`，覆写 Mouse 层的移动键位。`&mmv` 的加速曲线（`acceleration-exponent`、`time-to-max-speed-ms`）依然对所有速度档位生效，区别仅在于速度天花板不同。
 
-    // 疾风模式：速度翻倍 (Multiplier 2, Divisor 1)
-    zip_turbo: zip_turbo {
-        compatible = "zmk,input-processor-scaler";
-        #input-processor-cells = <2>;
-        type = <INPUT_EV_REL>;
-        codes = <INPUT_REL_X INPUT_REL_Y>;
-    };
-    /* ... 紧接着在底端构建两个全 '&trans' 结构的键层并插入 processors 调度 */
-}
-```
 
 ## 进化路线图
 

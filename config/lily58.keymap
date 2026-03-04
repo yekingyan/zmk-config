@@ -27,6 +27,20 @@
 #define ZMK_POINTING_DEFAULT_SCRL_VAL 20    // 提高滚轮速度 (默认 10)
 #include <dt-bindings/zmk/pointing.h>
 
+// Snipe 模式：1/4 速度（精准微操）
+#define SNIPE_MOVE_VAL (ZMK_POINTING_DEFAULT_MOVE_VAL / 4)
+#define SNIPE_U MOVE_Y(-SNIPE_MOVE_VAL)
+#define SNIPE_D MOVE_Y(SNIPE_MOVE_VAL)
+#define SNIPE_L MOVE_X(-SNIPE_MOVE_VAL)
+#define SNIPE_R MOVE_X(SNIPE_MOVE_VAL)
+
+// Turbo 模式：2x 速度（快速穿梭）
+#define TURBO_MOVE_VAL (ZMK_POINTING_DEFAULT_MOVE_VAL * 2)
+#define TURBO_U MOVE_Y(-TURBO_MOVE_VAL)
+#define TURBO_D MOVE_Y(TURBO_MOVE_VAL)
+#define TURBO_L MOVE_X(-TURBO_MOVE_VAL)
+#define TURBO_R MOVE_X(TURBO_MOVE_VAL)
+
 #define BASE  0
 #define NAV   1
 #define NUM   2
@@ -57,23 +71,6 @@
 };
 
 / {
-    // 狙击模式：速度除以 4 (Multiplier 1, Divisor 4)
-    zip_snipe: zip_snipe {
-        compatible = "zmk,input-processor-scaler";
-        #input-processor-cells = <2>;
-        type = <INPUT_EV_REL>;
-        codes = <INPUT_REL_X INPUT_REL_Y>;
-        track-remainders;
-    };
-
-    // 疾风模式：速度翻倍 (Multiplier 2, Divisor 1)
-    zip_turbo: zip_turbo {
-        compatible = "zmk,input-processor-scaler";
-        #input-processor-cells = <2>;
-        type = <INPUT_EV_REL>;
-        codes = <INPUT_REL_X INPUT_REL_Y>;
-    };
-
     behaviors {
         // Callum-style 快速释放 OSM（解决连续打字修饰键粘连）
         skq: sticky_key_quick_release {
@@ -352,25 +349,25 @@
 
         m_snipe_layer {
             display-name = "Snipe";
-            input-processors = <&zip_snipe 1 4>;
+// 影子层：覆写 Mouse 层的移动键为 1/4 速度，其余键透传
             bindings = <
-&trans &trans &trans &trans &trans &trans                        &trans &trans &trans &trans &trans &trans
-&trans &trans &trans &trans &trans &trans                        &trans &trans &trans &trans &trans &trans
-&trans &trans &trans &trans &trans &trans                        &trans &trans &trans &trans &trans &trans
-&trans &trans &trans &trans &trans &trans &trans &trans          &trans &trans &trans &trans &trans &trans
-                     &trans &trans &trans &trans &trans          &trans &trans &trans
+&trans &trans &trans          &trans         &trans         &trans                            &trans &trans &trans &trans &trans &trans
+&trans &trans &trans          &trans         &trans         &trans                            &trans &trans &trans &trans &trans &trans
+&trans &trans &mmv SNIPE_L    &mmv SNIPE_U   &mmv SNIPE_D   &mmv SNIPE_R                      &trans &trans &trans &trans &trans &trans
+&trans &trans &trans          &trans         &trans         &trans &trans &trans               &trans &trans &trans &trans &trans &trans
+                              &trans         &trans         &trans &trans &trans               &trans &trans &trans
             >;
         };
 
         m_turbo_layer {
             display-name = "Turbo";
-            input-processors = <&zip_turbo 2 1>;
+// 影子层：覆写 Mouse 层的移动键为 2x 速度，其余键透传
             bindings = <
-&trans &trans &trans &trans &trans &trans                        &trans &trans &trans &trans &trans &trans
-&trans &trans &trans &trans &trans &trans                        &trans &trans &trans &trans &trans &trans
-&trans &trans &trans &trans &trans &trans                        &trans &trans &trans &trans &trans &trans
-&trans &trans &trans &trans &trans &trans &trans &trans          &trans &trans &trans &trans &trans &trans
-                     &trans &trans &trans &trans &trans          &trans &trans &trans
+&trans &trans &trans          &trans         &trans         &trans                            &trans &trans &trans &trans &trans &trans
+&trans &trans &trans          &trans         &trans         &trans                            &trans &trans &trans &trans &trans &trans
+&trans &trans &mmv TURBO_L    &mmv TURBO_U   &mmv TURBO_D   &mmv TURBO_R                      &trans &trans &trans &trans &trans &trans
+&trans &trans &trans          &trans         &trans         &trans &trans &trans               &trans &trans &trans &trans &trans &trans
+                              &trans         &trans         &trans &trans &trans               &trans &trans &trans
             >;
         };
     };
