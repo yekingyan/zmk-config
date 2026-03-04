@@ -140,15 +140,6 @@
             require-prior-idle-ms = <200>;
         };
 
-
-        // S + D = Win+Tab（任务视图）
-        combo_task_view {
-            timeout-ms = <70>;
-            key-positions = <26 27>;  // S 和 D
-            bindings = <&kp LG(TAB)>;
-            layers = <BASE>;
-            require-prior-idle-ms = <200>;
-        };
     };
 
     keymap {
