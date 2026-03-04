@@ -81,7 +81,7 @@
             key-positions = <31 32>;  // J 和 K 在 Lily58 矩阵中的位置
             bindings = <&kp ESC>;
             layers = <BASE>;
-            require-prior-idle-ms = <150>;
+            require-prior-idle-ms = <200>;
         };
 
         // F + J = Caps Word（双食指归位键，输入蛇形命名超方便）
@@ -90,7 +90,7 @@
             key-positions = <28 31>;  // F 和 J
             bindings = <&caps_word>;
             layers = <BASE>;
-            require-prior-idle-ms = <150>;
+            require-prior-idle-ms = <200>;
         };
 
         // D + F = Ctrl+Space（切换输入法）
@@ -99,7 +99,7 @@
             key-positions = <27 28>;  // D 和 F
             bindings = <&kp LC(SPACE)>;
             layers = <BASE>;
-            require-prior-idle-ms = <150>;
+            require-prior-idle-ms = <200>;
         };
 
         // S + D = Win+Tab（任务视图）
@@ -108,7 +108,7 @@
             key-positions = <26 27>;  // S 和 D
             bindings = <&kp LG(TAB)>;
             layers = <BASE>;
-            require-prior-idle-ms = <150>;
+            require-prior-idle-ms = <200>;
         };
     };
 
