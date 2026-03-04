@@ -357,8 +357,6 @@ behaviors {
         type = <INPUT_EV_REL>;
         codes = <INPUT_REL_X INPUT_REL_Y>;
         track-remainders;
-        multiplier = <1>;
-        divisor = <4>;
     };
 
     // 疾风模式：速度翻倍 (Multiplier 2, Divisor 1)
@@ -367,8 +365,6 @@ behaviors {
         #input-processor-cells = <2>;
         type = <INPUT_EV_REL>;
         codes = <INPUT_REL_X INPUT_REL_Y>;
-        multiplier = <2>;
-        divisor = <1>;
     };
     /* ... 紧接着在底端构建两个全 '&trans' 结构的键层并插入 processors 调度 */
 }
