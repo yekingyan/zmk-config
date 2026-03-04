@@ -93,11 +93,11 @@
             require-prior-idle-ms = <200>;
         };
 
-        // D + F = Ctrl+Space（切换输入法）
+        // D + F = Shift（切换中英文）
         combo_input_switch {
             timeout-ms = <70>;
             key-positions = <27 28>;  // D 和 F
-            bindings = <&kp LC(SPACE)>;
+            bindings = <&kp LSHFT>;
             layers = <BASE>;
             require-prior-idle-ms = <200>;
         };
@@ -243,17 +243,17 @@
 // ├─────┼─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┼─────┤
 // │     │C(Z) │C(X) │C(C) │C(V) │C(S) │               │     │     │     │     │     │     │
 // ├─────┼─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┼─────┤
-// │     │CAPS │ ML  │ MD  │ MU  │ MR  │               │     │SHIFT│CTRL │ ALT │ GUI │     │
+// │     │CAPS │ ML  │ MU  │ MD  │ MR  │               │     │SHIFT│CTRL │ ALT │ GUI │     │
 // ├─────┼─────┼─────┼─────┼─────┼─────┼─────┐   ┌─────┼─────┼─────┼─────┼─────┼─────┼─────┤
-// │     │ INS │WH_L │WH_D │WH_U │WH_R │none │   │none │     │     │     │     │     │     │
+// │     │ INS │WH_L │WH_U │WH_D │WH_R │none │   │none │     │     │     │     │     │     │
 // └─────┴─────┴─────┼─────┼─────┼─────┼─────┤   ├─────┼─────┼─────┼─────┴─────┴─────┴─────┘
 //                   │RCLK │MCLK │LCLK │none │   │none │     │▓▓▓▓▓│     │
 //                   └─────┴─────┴─────┴─────┘   └─────┴─────┴─────┴─────┘
             bindings = <
 &trans &trans     &trans            &trans            &trans            &trans                         &trans &trans     &trans     &trans    &trans    &trans
 &trans &kp LC(Z)  &kp LC(X)         &kp LC(C)         &kp LC(V)         &kp LC(S)                      &trans &trans     &trans     &trans    &trans    &trans
-&trans &kp CAPS   &mmv MOVE_LEFT    &mmv MOVE_DOWN    &mmv MOVE_UP      &mmv MOVE_RIGHT                &trans &skq RSHFT &skn RCTRL  &skn RALT  &skn RGUI  &trans
-&trans &kp INS    &msc SCRL_LEFT    &msc SCRL_DOWN    &msc SCRL_UP      &msc SCRL_RIGHT &none   &none  &trans &trans     &trans     &trans    &trans    &trans
+&trans &kp CAPS   &mmv MOVE_LEFT    &mmv MOVE_UP    &mmv MOVE_DOWN      &mmv MOVE_RIGHT                &trans &skq RSHFT &skn RCTRL  &skn RALT  &skn RGUI  &trans
+&trans &kp INS    &msc SCRL_LEFT    &msc SCRL_UP    &msc SCRL_DOWN      &msc SCRL_RIGHT &none   &none  &trans &trans     &trans     &trans    &trans    &trans
                                     &mkp MCLK         &mkp RCLK         &mkp LCLK       &none   &none  &trans &trans     &trans
             >;
 
