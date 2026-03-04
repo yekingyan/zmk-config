@@ -15,7 +15,7 @@
 
 - Tap（短按）输出核心控制字符，Hold（长按）作为切层离合
   - 左手拇指：Esc(长按 function 层), TAB(长按 nav 层), Space(长按 num 层)
-  - 右手拇指：Enter(长按 sym 层), Backspace(长按 mouse 层), L-SHIFT(单次修饰键，OSM)
+  - 右手拇指：Enter(长按 sym 层), Backspace(长按 mouse 层), L-SHIFT(长按 Media 层，单发切输入法)
 
 - 核心逻辑：对侧控制（主要原则）。
   - 按住左手拇指
@@ -46,7 +46,7 @@
 | 3 | Symbols | 右拇指 ENTER 长按 | 左手 | 右手 |
 | 4 | Function | 左拇指 ESC 长按 | 右手 | 左手 |
 | 5 | Mouse | 右拇指 BSPC 长按 | 左手 | 右手 |
-| 6 | Media | (当前解绑) | - | - |
+| 6 | Media | 右拇指 LSHFT 长按 | 左手 | 右手 |
 | 7 | Legacy | Fun 层热键 &to | 双手 | — |
 
 ## 键位布局总览
@@ -276,11 +276,11 @@ behaviors {
 };
 ```
 
-### 拇指 Layer-Tap 防误触 (tlt)
+### 拇指 Layer-Tap (tlt)
 
-> 替代默认 `&lt`，使用 `balanced` 风味 + `require-prior-idle-ms` 双重保护。
+> 替代默认 `&lt`，使用 `balanced` 风味。
 > `balanced`：按住拇指后对侧手有任何按键动作即判定为 Hold（切层），比 `tap-preferred` 响应更快、更符合跨手切层意图。
-> `require-prior-idle-ms`：快速连续打字中强制判定为 Tap（输出字符），杜绝误触。
+> **⚠️ 必须移除 `require-prior-idle-ms`**：由于我们在右外侧拇指使用了 `&tlt MEDIA LSHFT`（长按切满键/单击Shift切输入法），若加上 idle 保护延迟，在快速敲击字母后立刻按下拇指准备切层时，ZMK 会将长按状态“没收”并强制输出点击，导致意外输出 Shift 把输入法切断！
 
 ```dts
 behaviors {
@@ -291,7 +291,6 @@ behaviors {
         flavor = "balanced";
         tapping-term-ms = <200>;
         quick-tap-ms = <150>;              // 短时间内再次按下自动走 Tap
-        require-prior-idle-ms = <125>;     // 快速打字中强制 Tap
         bindings = <&mo>, <&kp>;
     };
 };
