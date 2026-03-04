@@ -21,6 +21,10 @@
 #include <behaviors.dtsi>
 #include <dt-bindings/zmk/keys.h>
 #include <dt-bindings/zmk/bt.h>
+
+// 必须在引入 pointing.h 之前定义，以此覆写系统默认的属性
+#define ZMK_POINTING_DEFAULT_MOVE_VAL 1500  // 提高基础移动速度 (默认 600)
+#define ZMK_POINTING_DEFAULT_SCRL_VAL 20    // 提高滚轮速度 (默认 10)
 #include <dt-bindings/zmk/pointing.h>
 
 #define BASE  0
@@ -31,6 +35,19 @@
 #define MOUSE 5
 #define MEDIA 6
 #define LEGACY 7
+
+// 覆写 mmv 和 msc 的默认属性
+&mmv {
+    acceleration-exponent = <1>;      // 1为线性，2为二次加速
+    time-to-max-speed-ms = <500>;     // 达到最大速度的时间
+    delay-ms = <0>;
+};
+
+&msc {
+    acceleration-exponent = <1>;      // 1为线性，2为二次加速
+    time-to-max-speed-ms = <500>;     // 达到最大速度的时间
+    delay-ms = <0>;
+};
 
 // Caps Word：允许连字符不中断大写（支持 MY-CONST 风格命名）
 &caps_word {
@@ -221,7 +238,7 @@
 // ├─────┼─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┼─────┤
 // │     │ GUI │ ALT │CTRL │SHIFT│     │               │     │ F4  │ F5  │ F6  │ F11 │     │
 // ├─────┼─────┼─────┼─────┼─────┼─────┼─────┐   ┌─────┼─────┼─────┼─────┼─────┼─────┼─────┤
-// │     │BOOT │ BT0 │ BT1 │ BT2 │BTCLR│none │   │none │     │ F1  │ F2  │ F3  │ F10 │     │
+// │     │ BT0 │ BT1 │ BT2 │ BT3 │BTCLR│none │   │none │     │ F1  │ F2  │ F3  │ F10 │     │
 // └─────┴─────┴─────┼─────┼─────┼─────┼─────┤   ├─────┼─────┼─────┼─────┴─────┴─────┴─────┘
 //                   │▓▓▓▓▓│     │     │none │   │none │     │     │     │
 //                   └─────┴─────┴─────┴─────┘   └─────┴─────┴─────┴─────┘
@@ -229,7 +246,7 @@
 &trans &trans       &trans       &trans       &trans       &trans                       &trans &trans &trans &trans &trans  &trans
 &trans &kp K_CANCEL &to LEGACY   &trans       &trans       &trans                       &trans &kp F7 &kp F8 &kp F9 &kp F12 &trans
 &trans &skn LGUI     &skn LALT     &skn LCTRL    &skq LSHFT   &trans                      &trans &kp F4 &kp F5 &kp F6 &kp F11 &trans
-&trans &bootloader  &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_CLR &none    &none  &trans &kp F1 &kp F2 &kp F3 &kp F10 &trans
+&trans &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_CLR &none    &none  &trans &kp F1 &kp F2 &kp F3 &kp F10 &trans
                                  &trans       &trans       &trans     &none    &none   &trans &trans &trans
             >;
 

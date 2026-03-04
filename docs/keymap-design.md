@@ -153,7 +153,7 @@
 ├─────┼─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┼─────┤
 │     │ GUI │ ALT │CTRL │SHIFT│     │               │     │ F4  │ F5  │ F6  │ F11 │     │
 ├─────┼─────┼─────┼─────┼─────┼─────┼─────┐   ┌─────┼─────┼─────┼─────┼─────┼─────┼─────┤
-│     │BOOT │ BT0 │ BT1 │ BT2 │BTCLR│(none)│   │(none)│     │ F1  │ F2  │ F3  │ F10 │     │
+│     │ BT0 │ BT1 │ BT2 │ BT3 │BTCLR│(none)│   │(none)│     │ F1  │ F2  │ F3  │ F10 │     │
 └─────┴─────┴─────┼─────┼─────┼─────┼─────┤   ├─────┼─────┼─────┼─────┴─────┴─────┴─────┘
                   │▓▓▓▓▓│     │     │(none)│   │(none)│     │     │     │
                   └─────┴─────┴─────┴─────┘   └─────┴─────┴─────┴─────┘
@@ -162,7 +162,7 @@
 - 左手 = 系统工具 + OSM 修饰键 + 蓝牙操作：
   - 上行 `K_CANCEL | toLeg`：K_CANCEL 一键清除误按的 Sticky 状态；toLeg 切换到 Legacy 兜底层
   - 中行 `GUI | ALT | CTRL | SHIFT`（与 Nav/Num 层一致）
-  - 下行 `BOOT | BT0 | BT1 | BT2 | BTCLR`（低频系统操作，放在不易误触的下行）
+  - 下行 `BT0 | BT1 | BT2 | BT3 | BTCLR`（低频系统操作，放在不易误触的下行）
 - 右手 = F 键九宫格（与 Num 层数字严格对齐）：
   - F7/F8/F9 = 7/8/9 位，F4/F5/F6 = 4/5/6 位，F1/F2/F3 = 1/2/3 位
   - F10/F11/F12 补在右列（与 Num 层的 `-` `+` 同位置）
@@ -318,6 +318,33 @@ behaviors {
 - `require-prior-idle-ms = <150>`：在正常打字节奏中（如输入 `default`、`define`）自动禁用 combo，彻底根除误触
 
 **为什么用 Combo 而不用 OSM**：`Ctrl+Space` 切输入法需要"修饰键按下再释放"即可触发，不需要第三个目标键。但 OSM 的设计是"激活后等待下一个键才释放"，两者机制冲突。Combo 一次性发送 `Ctrl+Space` 按下和释放事件，完美解决。
+
+### ZMK 鼠标层的指针速度优化（&mmv）
+
+- **现状**：Mouse 层使用了 `&mmv MOVE_UP` 等。
+- **痛点分析**：ZMK 默认的鼠标移动速度是线性的，如果不配置自定义配置项，鼠标移动会慢得让人想砸键盘，根本无法替代实体鼠标。
+- **优化方案**：在 `lily58.keymap` 顶部（注意：**必须**定义在 `#include <dt-bindings/zmk/pointing.h>` 之前）重新定义鼠标移动（`&mmv`）和滚轮（`&msc`）的基础速度与加速曲线。
+
+由于开启了新的 `CONFIG_ZMK_POINTING=y` 特性，应使用 `ZMK_POINTING` 的宏定义而非旧的 `ZMK_MOUSE`。
+
+```dts
+#define ZMK_POINTING_DEFAULT_MOVE_VAL 1500  // 提高基础移动速度
+#define ZMK_POINTING_DEFAULT_SCRL_VAL 20    // 提高滚轮速度
+#include <dt-bindings/zmk/pointing.h>
+
+// 覆写 mmv 和 msc 的默认属性
+&mmv {
+    acceleration-exponent = <1>;      // 1为线性，2为二次加速
+    time-to-max-speed-ms = <500>;     // 达到最大速度的时间
+    delay-ms = <0>;
+};
+
+&msc {
+    acceleration-exponent = <1>;      // 1为线性，2为二次加速
+    time-to-max-speed-ms = <500>;     // 达到最大速度的时间
+    delay-ms = <0>;
+};
+```
 
 ## 进化路线图
 
