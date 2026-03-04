@@ -40,7 +40,8 @@ Lily58 上实现"双核驱动"过渡方案，最终目标迁移到 Corne 36 键�
 
 ### 右外侧拇指键精简（2026-03-04）
 
-- [x] **替换 DEL 为 SHIFT**：在 `lily58.keymap` 和文档中将右外侧的拇指键 `DEL` 移出功能区，取消长按切 Media 层功能，改为单次独立的 OSM Shift (`skq LSHFT`)。
+- [x] **撤销 OSM Shift**：为避免与 Windows 输入法的中英文切换逻辑冲突（单按 `&skq LSHFT` 会被 ZMK 延迟挂起而不发送给系统），在 `lily58.keymap` 中将全局所有的 `&skq LSHFT` 恢复为原生的 `&kp LSHFT`。
+- [x] **替换 DEL 为 SHIFT**：在 `lily58.keymap` 和文档中将右外侧的拇指键 `DEL` 移出功能区，取消长按切 Media 层功能，改为由右手拇指控制的长按修饰键/单按切换输入法 (`kp LSHFT`)。
 - [x] **移除废弃组合键**：废弃 `D+F` 切换输入法组合键设计，采用独立的拇指 Shift 替代。
 
 ### 鼠标层指针速度优化（2026-03-04）
