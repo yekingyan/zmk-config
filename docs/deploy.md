@@ -4,8 +4,8 @@
 
 1. 推送代码到 GitHub（`test/callum-osm` 或 `main` 分支）
 2. GitHub Actions 自动编译，产出两个 uf2 文件：
-   - `silakka54_left-nice_nano_v2-zmk.uf2`
-   - `silakka54_right-nice_nano_v2-zmk.uf2`
+   - `lily58_left-nice_nano_v2-zmk.uf2`
+   - `lily58_right-nice_nano_v2-zmk.uf2`
 3. 从 Actions 的 Artifacts 下载 zip，解压得到 uf2 文件
 
 ## 刷入
@@ -17,7 +17,7 @@
 3. 电脑弹出 `NICENANO` U 盘
 4. 用 `copy` 命令将对应的 uf2 文件复制到 U 盘：
    ```cmd
-   copy "D:\path\to\silakka54_left-nice_nano_v2-zmk.uf2" E:\
+   copy "D:\path\to\lily58_left-nice_nano_v2-zmk.uf2" E:\
    ```
    （E 盘替换为实际 NICENANO 盘符）
 5. 复制完成后 nice!nano 自动重启，U 盘消失，刷入成功
