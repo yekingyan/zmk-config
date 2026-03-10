@@ -1,6 +1,23 @@
 # 36 键键位设计（ZMK / Lily58 过渡实现）
 
-> 当前应用在 Silakka54 上，适用 Lily58，采用"双核驱动"过渡方案。
+> 本方案分 `silakka54` 和 `lily58` 两个分支维护，采用"双核驱动"过渡方案。
+
+### Lily58 vs Silakka54：拇指键差异
+
+两个分支的 3×5 核心区（字母、符号、功能层）完全相同，**唯一区别在于拇指键布局**：
+
+- **Silakka54**（每侧 3 个拇指键）：最外侧无物理键，`&none` 放在内侧
+  ```
+  左拇指：ESC(FUN) │ SPACE(NAV) │ TAB(NUM) │ none
+  右拇指：none     │ ENTER(SYM) │ BSPC(MOU) │ LSHFT(MED)
+  ```
+- **Lily58**（每侧 4 个拇指键）：3 个功能键整体**右移一位**，`&none` 移到最外侧
+  ```
+  左拇指：none │ ESC(FUN) │ SPACE(NAV) │ TAB(NUM)
+  右拇指：ENTER(SYM) │ BSPC(MOU) │ LSHFT(MED) │ none
+  ```
+
+> 非 Base 层中拇指键上的功能绑定（如 Num 层的 `N0`、Mouse 层的鼠标按键）也遵循同样的右移规则。
 
 ## 社区最佳实践溯源
 
