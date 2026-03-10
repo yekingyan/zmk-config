@@ -35,6 +35,13 @@ Lily58 上实现"双核驱动"过渡方案，最终目标迁移到 Corne 36 键�
 - [ ] 合并 `test/callum-osm` -> `main`
 - [ ] Sym 层标点符号肌肉记忆训练
 
+## 已完成
+
+### 双方案共存配置（2026-03-10）
+
+- [x] 在 `build.yaml` 中增加通过 `cmake-args: -DZMK_CONFIG` 对新配置目录的支持
+- [x] 将 `silakka54` 分支原有的键映射文件平移到本分支 `config_silakka54` 文件夹，实现共存构建
+
 ## 待办
 
 - [ ] Corne 36 键 keymap 移植
