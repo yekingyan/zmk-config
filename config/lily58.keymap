@@ -75,7 +75,6 @@
         // Callum-style 快速释放 OSM（解决连续打字修饰键粘连）
         skq: sticky_key_quick_release {
             compatible = "zmk,behavior-sticky-key";
-            label = "STICKY_KEY_QUICK_RELEASE";
             #binding-cells = <1>;
             bindings = <&kp>;
             release-after-ms = <1000>;
@@ -86,7 +85,6 @@
         // 普通 OSM（用于 Ctrl/Alt/GUI，支持链式组合）
         skn: sticky_key_normal {
             compatible = "zmk,behavior-sticky-key";
-            label = "STICKY_KEY_NORMAL";
             #binding-cells = <1>;
             bindings = <&kp>;
             release-after-ms = <1000>;
@@ -96,7 +94,6 @@
         // 拇指专用 Layer-Tap（快速打字防误触）
         tlt: thumb_layer_tap {
             compatible = "zmk,behavior-hold-tap";
-            label = "THUMB_LAYER_TAP";
             #binding-cells = <2>;
             flavor = "balanced";
             tapping-term-ms = <200>;

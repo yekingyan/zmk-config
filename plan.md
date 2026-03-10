@@ -34,6 +34,7 @@ Lily58 上实现"双核驱动"过渡方案，最终目标迁移到 Corne 36 键�
 
 - [ ] 合并 `test/callum-osm` -> `main`
 - [ ] Sym 层标点符号肌肉记忆训练
+- [x] ZMK 固件从 v0.3 → main 分支迁移（Zephyr 4.1 + HWMv2）
 
 ## 待办
 
