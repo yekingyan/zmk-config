@@ -1,3 +1,8 @@
 ---
-board: [ "nice_nano//zmk" ]
-shield: [ "lily58_left", "lily58_right" ]
+include:
+  - board: nice_nano//zmk
+    shield: lily58_left
+  - board: nice_nano//zmk
+    shield: lily58_right
+  - board: nice_nano//zmk
+    shield: settings_reset
