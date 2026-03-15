@@ -6,9 +6,11 @@ include:
   - board: nice_nano//zmk
     shield: lily58_right
     artifact-name: lily58_right
+  # reset
   - board: nice_nano//zmk
     shield: settings_reset
     artifact-name: settings_reset
+  # silakka54
   - board: nice_nano//zmk
     shield: lily58_left
     cmake-args: -DZMK_CONFIG="${GITHUB_WORKSPACE}/config_silakka54"

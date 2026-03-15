@@ -3,9 +3,9 @@
  * 进化路线：Lily58 (58键) → Corne (36键)
  *
  * 核心特色：
- * 1. 外围保留全套标准键位（防忘、方便单手操作、打游戏）
+ * 1. 外围保留全套标准键位（物理 Shift/Ctrl/数字行）
  * 2. 核心区保留 Callum-style OSM 与 Vim 导航（追求极致编码效率）
- * 3. 严格遵循 3 拇指原则，全键盘仅 4 个键置空
+ * 3. 严格遵循 3 拇指原则
  *
  * Layer 0: Base     - QWERTY + 外围冗余（物理 Shift/Ctrl/数字行）
  * Layer 1: Nav      - 左手 OSM 修饰键 + 右手 Vim HJKL + 跳跃 + 翻页
@@ -48,9 +48,8 @@
 #define FUN   4
 #define MOUSE 5
 #define MEDIA 6
-#define LEGACY 7
-#define M_SNIPE 8
-#define M_TURBO 9
+#define M_SNIPE 7
+#define M_TURBO 8
 
 // 覆写 mmv 和 msc 的默认属性
 &mmv {
@@ -145,22 +144,22 @@
         default_layer {
             display-name = "Base";
 // ┌─────┬─────┬─────┬─────┬─────┬─────┐               ┌─────┬─────┬─────┬─────┬─────┬─────┐
-// │none │none │none │none │none │none │               │none │none │none │none │none │none │
+// │  `  │  1  │  2  │  3  │  4  │  5  │               │  6  │  7  │  8  │  9  │  0  │  ~  │
 // ├─────┼─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┼─────┤
-// │none │  Q  │  W  │  E  │  R  │  T  │               │  Y  │  U  │  I  │  O  │  P  │none │
+// │ TAB │  Q  │  W  │  E  │  R  │  T  │               │  Y  │  U  │  I  │  O  │  P  │  -  │
 // ├─────┼─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┼─────┤
-// │none │  A  │  S  │  D  │  F  │  G  │               │  H  │  J  │  K  │  L  │  ;  │none │
+// │LSHFT│  A  │  S  │  D  │  F  │  G  │               │  H  │  J  │  K  │  L  │  ;  │  '  │
 // ├─────┼─────┼─────┼─────┼─────┼─────┼─────┐   ┌─────┼─────┼─────┼─────┼─────┼─────┼─────┤
-// │none │ C_Z │  X  │  C  │  V  │  B  │none │   │none │  N  │  M  │  ,  │  .  │  /  │none │
+// │CTRL │ C_Z │  X  │  C  │  V  │  B  │  -  │   │  =  │  N  │  M  │  ,  │  .  │  /  │RSHFT│
 // └─────┴─────┴─────┼─────┼─────┼─────┼─────┤   ├─────┼─────┼─────┼─────┴─────┴─────┴─────┘
-//                   │none │ ESC │SPACE│ TAB │   │ENTER│BSPC │LSHFT│none │
+//                   │CTRL │ ESC │SPACE│ TAB │   │ENTER│BSPC │LSHFT│CTRL │
 //                   └─────┴─────┴─────┴─────┘   └─────┴─────┴─────┴─────┘
             bindings = <
-&none      &none  &none  &none         &none           &none                              &none         &none             &none             &none   &none    &none
-&none      &kp Q  &kp W  &kp E         &kp R           &kp T                              &kp Y         &kp U             &kp I             &kp O   &kp P    &none
-&none      &kp A  &kp S  &kp D         &kp F           &kp G                              &kp H         &kp J             &kp K             &kp L   &kp SEMI &none
-&none      &mt LCTRL Z  &kp X  &kp C  &kp V           &kp B  &none          &none         &kp N         &kp M             &kp COMMA         &kp DOT &kp FSLH &none
-                          &none         &tlt FUN ESC  &tlt NAV SPACE  &tlt NUM TAB   &tlt SYM RET  &tlt MOUSE BSPC   &tlt MEDIA LSHFT &none
+&kp GRAVE  &kp N1 &kp N2 &kp N3        &kp N4          &kp N5                             &kp N6        &kp N7            &kp N8            &kp N9  &kp N0   &kp TILDE
+&kp TAB    &kp Q  &kp W  &kp E         &kp R           &kp T                              &kp Y         &kp U             &kp I             &kp O   &kp P    &kp MINUS
+&kp LSHFT  &kp A  &kp S  &kp D         &kp F           &kp G                              &kp H         &kp J             &kp K             &kp L   &kp SEMI &kp SQT
+&kp LCTRL  &mt LCTRL Z  &kp X  &kp C  &kp V           &kp B  &kp MINUS     &kp EQUAL     &kp N         &kp M             &kp COMMA         &kp DOT &kp FSLH &kp RSHFT
+                          &kp LCTRL     &tlt FUN ESC  &tlt NAV SPACE  &tlt NUM TAB   &tlt SYM RET  &tlt MOUSE BSPC   &tlt MEDIA LSHFT &kp RCTRL
             >;
 
             sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;
@@ -243,7 +242,7 @@
 // ┌─────┬─────┬─────┬─────┬─────┬─────┐               ┌─────┬─────┬─────┬─────┬─────┬─────┐
 // │none │none │none │none │none │none │               │none │none │none │none │none │none │
 // ├─────┼─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┼─────┤
-// │none │CANCL│toLeg│     │     │     │               │     │ F7  │ F8  │ F9  │ F12 │none │
+// │none │CANCL│     │     │     │     │               │     │ F7  │ F8  │ F9  │ F12 │none │
 // ├─────┼─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┼─────┤
 // │none │ GUI │ ALT │CTRL │LSHFT│     │               │     │ F4  │ F5  │ F6  │ F11 │none │
 // ├─────┼─────┼─────┼─────┼─────┼─────┼─────┐   ┌─────┼─────┼─────┼─────┼─────┼─────┼─────┤
@@ -253,7 +252,7 @@
 //                   └─────┴─────┴─────┴─────┘   └─────┴─────┴─────┴─────┘
             bindings = <
 &none  &none        &none        &none        &none        &none                          &none  &none  &none  &none  &none   &none
-&none  &kp K_CANCEL &to LEGACY   &trans       &trans       &trans                       &trans &kp F7 &kp F8 &kp F9 &kp F12 &none
+&none  &kp K_CANCEL &trans       &trans       &trans       &trans                       &trans &kp F7 &kp F8 &kp F9 &kp F12 &none
 &none  &skn LGUI     &skn LALT     &skn LCTRL    &skq LSHFT   &trans                      &trans &kp F4 &kp F5 &kp F6 &kp F11 &none
 &none  &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_CLR &none    &none    &trans &kp F1 &kp F2 &kp F3 &kp F10 &none
                                  &none        &trans       &trans     &trans   &trans   &trans &trans &none
@@ -310,29 +309,6 @@
             sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;
         };
 
-        legacy_layer {
-            display-name = "Legacy";
-// ┌─────┬─────┬─────┬─────┬─────┬─────┐               ┌─────┬─────┬─────┬─────┬─────┬─────┐
-// │  `  │  1  │  2  │  3  │  4  │  5  │               │  6  │  7  │  8  │  9  │  0  │  ~  │
-// ├─────┼─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┼─────┤
-// │ TAB │  Q  │  W  │  E  │  R  │  T  │               │  Y  │  U  │  I  │  O  │  P  │  -  │
-// ├─────┼─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┼─────┤
-// │LSHFT│  A  │  S  │  D  │  F  │  G  │               │  H  │  J  │  K  │  L  │  ;  │  '  │
-// ├─────┼─────┼─────┼─────┼─────┼─────┼─────┐   ┌─────┼─────┼─────┼─────┼─────┼─────┼─────┤
-// │CTRL │  Z  │  X  │  C  │  V  │  B  │MINUS │   │EQUAL │  N  │  M  │  ,  │  .  │  /  │toBas│
-// └─────┴─────┴─────┼─────┼─────┼─────┼─────┤   ├─────┼─────┼─────┼─────┴─────┴─────┴─────┘
-//                   │CTRL │ ESC │SPACE│ TAB │   │ENTER│BSPC │LSHFT│CTRL │
-//                   └─────┴─────┴─────┴─────┘   └─────┴─────┴─────┴─────┘
-            bindings = <
-&kp GRAVE  &kp N1 &kp N2 &kp N3  &kp N4  &kp N5                     &kp N6  &kp N7   &kp N8    &kp N9  &kp N0   &kp TILDE
-&kp TAB    &kp Q  &kp W  &kp E   &kp R   &kp T                      &kp Y   &kp U    &kp I     &kp O   &kp P    &kp MINUS
-&kp LSHFT  &kp A  &kp S  &kp D   &kp F   &kp G                      &kp H   &kp J    &kp K     &kp L   &kp SEMI &kp SQT
-&kp LCTRL  &kp Z  &kp X  &kp C   &kp V   &kp B  &kp MINUS  &kp EQUAL    &kp N   &kp M    &kp COMMA &kp DOT &kp FSLH &to BASE
-                          &kp LCTRL &kp ESC &kp SPACE &kp TAB &kp RET &kp BSPC &kp LSHFT &kp RCTRL
-            >;
-
-            sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;
-        };
 
         m_snipe_layer {
             display-name = "Snipe";
