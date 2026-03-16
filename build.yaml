@@ -2,9 +2,11 @@
 include:
   - board: nice_nano//zmk
     shield: lily58_left
+    snippet: zmk-usb-logging
     artifact-name: lily58_left
   - board: nice_nano//zmk
     shield: lily58_right
+    snippet: zmk-usb-logging
     artifact-name: lily58_right
   # reset
   - board: nice_nano//zmk
@@ -13,9 +15,11 @@ include:
   # silakka54
   - board: nice_nano//zmk
     shield: lily58_left
+    snippet: zmk-usb-logging
     cmake-args: -DZMK_CONFIG="${GITHUB_WORKSPACE}/config_silakka54"
     artifact-name: silakka54_left
   - board: nice_nano//zmk
     shield: lily58_right
+    snippet: zmk-usb-logging
     cmake-args: -DZMK_CONFIG="${GITHUB_WORKSPACE}/config_silakka54"
     artifact-name: silakka54_right
