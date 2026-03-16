@@ -9,7 +9,7 @@ Lily58 上实现"双核驱动"过渡方案，最终目标迁移到 Corne 36 键�
 ## 设计原则
 
 - Callum-style OSM（一次性修饰键），不用 Home Row Mods / Hold-Tap
-- 3 拇指核心键：拇指区域保留 Layer-Tap 功能键，外围拇指键放置 CTRL / MINUS / EQUAL 等辅助键
+- 3 拇指核心键（Lily58）→ 目标 2 拇指核心键（Sweep 适配）
 - 外围保留冗余常规键（Shift/Ctrl/数字行），作为过渡期安全网
 - 对侧控制（Contralateral Control）：左手拇指切层时右手执行功能，反之亦然
 
@@ -33,6 +33,55 @@ Lily58 上实现"双核驱动"过渡方案，最终目标迁移到 Corne 36 键�
 
 - [ ] 合并 `test/callum-osm` -> `main`
 - [ ] Sym 层标点符号肌肉记忆训练
+- [ ] Combo 体系重新规划（Sweep 2×2 拇指适配）
+
+## Combo 规划
+
+### 目标
+
+为 Sweep 风格布局（每侧仅 2 拇指键）做准备，将当前依赖第 3 拇指键的功能迁移到 Combo 触发，同时系统化梳理所有 Combo 需求。
+
+### 约束
+
+- 五笔输入法用户，Combo 键位必须避开高频 bigram（数据见 `research/wubi-bigram-analysis.md`）
+- 需要 Combo 替代的功能：ESC、Shift（原第 3 拇指键承载）
+- 可能还需要 Combo 的功能：Caps Word、输入法切换、待定...
+
+### 现有 Combo
+
+| Combo | 键位 | 功能 | 层 | 状态 |
+|-------|------|------|----|------|
+| `J+K` | pos 31+32 | ESC | Base | ✅ 保留 |
+| `F+J` | pos 28+31 | Caps Word | Base | ✅ 保留 |
+| `S+D` | pos 26+27 | LSHFT(单次切换/长按) | Base | ✅ 新增（最优安全位） |
+
+### Sweep 拇指区变化
+
+```
+Lily58 (3 拇指核心):  [Nav/SPACE] [Num/TAB] [Shift/Media]  ← 右手示例
+Sweep  (2 拇指核心):  左侧 [SPACE/NAV] [TAB/NUM]   右侧 [ENTER/SYM] [BSPC/MOU] 
+```
+
+**被移除功能的安置方案：**
+**被移除功能的安置方案：**
+- **Fun 层**：左侧双拇指同按（SPACE + TAB）长按触发 Combo
+- **Media 层**：右侧双拇指同按（ENTER + BSPC）长按触发 Combo
+- **ESC 单按**：目前主区已有 `J+K` Combo 承载
+- **LSHFT(单次/中英切换)**：S+D（左手中指+无名指，基于数据证明的最强安全位）
+- **Caps Word**：保留 `F+J`
+
+### 选键数据基础
+
+五笔 Bigram 频率分析已完成（`research/`），top300 零命中的安全组合：
+- `sd`（评分 167）、`jk`（166）、`as`（134）、`sf`（132） — 最优候选
+- 全键盘共 103 个 top300 零命中组合可选
+
+### 待决事项
+
+- [x] 确定 Sweep 拇指区 2 键各自承载什么功能：左 `SPACE(NAV) | TAB(NUM)`；右 `ENTER(SYM) | BSPC(MOU)`
+- [x] 确定需要 Combo 化的完整功能清单：Fun 层、Media 层、ESC、单次 Shift (中英切换)、Caps Word
+- [x] 从安全组合池中为单次 Shift 选定最佳按键 `S+D`
+- [ ] 评估是否需要跨层 Combo
 
 ## 已完成
 

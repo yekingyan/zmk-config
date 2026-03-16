@@ -300,6 +300,10 @@ behaviors {
 
 同时按下 `J` 和 `K` 触发 `Escape`，退出 Insert 模式变成潜意识动作。key-positions `<31 32>`（Lily58 矩阵）。
 
+### S + D = LSHFT (Combo)
+
+同时按下 `S` 和 `D` 触发 `LSHFT`，此组合键利用五笔高频数据分析得出（Top300 零命中），占据着绝对的安全区。既可以用作快速切换中英文输入法的单点按键，也可通过长按来作为普通的 Shift 使用，彻底解放左手小指。key-positions `<26 27>`。
+
 ### Caps Word（F + J Combo / Nav 层 G 位）
 
 两种触发方式：
