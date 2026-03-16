@@ -304,6 +304,12 @@ behaviors {
 
 同时按下 `S` 和 `D` 触发 `LSHFT`，此组合键利用五笔高频数据分析得出（Top300 零命中），占据着绝对的安全区。既可以用作快速切换中英文输入法的单点按键，也可通过长按来作为普通的 Shift 使用，彻底解放左手小指。key-positions `<26 27>`。
 
+### 双拇指 Combo (Sweep 适配)
+
+为彻底适应 36 键只有 2 个拇指键的配列（Sweep风格），将最外侧的功能键（第 3个拇指键）收容到内侧两个拇指键的 Combo 触发中：
+- **左手（SPACE + TAB）同按**：仅触发 `Fun` 层切换（因 `ESC` 单按已由 `J+K` Combo 完美承载）
+- **右手（ENTER + BSPC）同按**：仅触发 `Media` 层切换（因 `LSHFT` 单按已由 `S+D` Combo 完美承载）
+
 ### Caps Word（F + J Combo / Nav 层 G 位）
 
 两种触发方式：

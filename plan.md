@@ -54,6 +54,8 @@ Lily58 上实现"双核驱动"过渡方案，最终目标迁移到 Corne 36 键�
 | `J+K` | pos 31+32 | ESC | Base | ✅ 保留 |
 | `F+J` | pos 28+31 | Caps Word | Base | ✅ 保留 |
 | `S+D` | pos 26+27 | LSHFT(单次切换/长按) | Base | ✅ 新增（最优安全位） |
+| 左双拇指 | 52+53(L)/51+52(S) | 切 FUN 层 | Base | ✅ 新增（Sweep适配）|
+| 右双拇指 | 54+55(L)/55+56(S) | 切 MEDIA 层 | Base | ✅ 新增（Sweep适配）|
 
 ### Sweep 拇指区变化
 
@@ -81,6 +83,7 @@ Sweep  (2 拇指核心):  左侧 [SPACE/NAV] [TAB/NUM]   右侧 [ENTER/SYM] [BSP
 - [x] 确定 Sweep 拇指区 2 键各自承载什么功能：左 `SPACE(NAV) | TAB(NUM)`；右 `ENTER(SYM) | BSPC(MOU)`
 - [x] 确定需要 Combo 化的完整功能清单：Fun 层、Media 层、ESC、单次 Shift (中英切换)、Caps Word
 - [x] 从安全组合池中为单次 Shift 选定最佳按键 `S+D`
+- [x] 增加 Sweep 拇指同按Combo (左拇指 `SPACE+TAB`, 右拇指 `ENTER+BSPC`)
 - [ ] 评估是否需要跨层 Combo
 
 ## 已完成
