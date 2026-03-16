@@ -114,6 +114,6 @@ CONFIG_SYSTEM_WORKQUEUE_STACK_SIZE=2048
 结合上述极度苛刻、易被打断的协议，确立了以下对 `.conf` 文件的调整与物理环境排查策略：
 
 1. **废绝冲突特性**：已证实 `CONFIG_ZMK_BLE_EXPERIMENTAL_FEATURES=y` 中的重连激进逻辑经常与 Win11 系统发生致命互锁导致超时，将其设为 `=n` 或删除。
-2. **放宽时间容限**：在配置文件中显式追加 `CONFIG_BT_PERIPHERAL_PREF_TIMEOUT=800`（将 4 秒宽限提升至 8 秒），并补充 `CONFIG_ZMK_MOUSE_TICK_DURATION=20` 降低鼠标采样防拥堵。
+2. **放宽时间容限**：在配置文件中显式追加 `CONFIG_BT_PERIPHERAL_PREF_TIMEOUT=800`（将 4 秒宽限提升至 8 秒），并配合 `CONFIG_ZMK_BEHAVIORS_QUEUE_SIZE=512` 提升系统处理并发 Combo 的缓冲能力。
 3. **解除 1M PHY 强制节流**：原有的 `CONFIG_BT_CTLR_PHY_2M=n` 虽然穿透力强，但数据发送留空时间增加了一倍，在复杂 Wi-Fi 环境下极易被打断。恢复为支持 2M PHY 的全速模式跑完通信，能降低遇阻概率。
 4. **排查物理短板 (终极拷问)**：若软件配置拉满后依然面临 `0x22`，则必定是物理信号被削弱。必须检查台式机**主板背后的 Wi-Fi/蓝牙共用天线**是否安装，未装天线会直接导致剧烈的信号物理衰减进而引发频繁超时。
