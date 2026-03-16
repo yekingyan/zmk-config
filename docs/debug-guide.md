@@ -111,7 +111,10 @@ CONFIG_SYSTEM_WORKQUEUE_STACK_SIZE=2048
 **终极修复策略 ("核心解法")**：
 不再单纯通过放宽超时限制来“治标”，而是直接针对克隆板进行底层时钟校准：
 
-1. **强制开启内部时钟**：在 `.conf` 文件中添加 `CONFIG_CLOCK_CONTROL_NRF_K32SRC_RC=y`。这将强制芯片使用内部 RC 振荡器模拟时钟，彻底解决由于缺少外部晶振导致的同步失败。
-2. **清理冗余配置**：开启 RC 时钟后，蓝牙稳定性将回归正常。此时建议删除或注释掉之前为了缓解症状而添加的 `CONFIG_BT_PERIPHERAL_PREF_TIMEOUT` 等参数，以恢复最佳的响应速度。
+1. **强制开启内部时钟**：在 `.conf` 文件中添加 `CONFIG_CLOCK_CONTROL_NRF_K32SRC_RC=y`。这将强制芯片使用内部 RC 振荡器模拟时钟，彻底解决由于缺少外部晶振导致的同步失败（0x22）。
+2. **协议降级与实验性修复（针对 Err 9）**：若遇到配对失败或 `Err 9 (Security failed)`：
+   *   **强制 1M PHY**：设置 `CONFIG_BT_CTLR_PHY_2M=n`。克隆板在 2M 下握手极易崩溃。
+   *   **安全增强**：设置 `CONFIG_ZMK_BLE_EXPERIMENTAL_SEC=y` 解决部分系统（尤其是 Win11）的拒绝配对逻辑。
+3. **清理冗余配置**：开启 RC 时钟后，蓝牙稳定性将回归正常。此时建议删除或注释掉之前为了缓解症状而添加的 `CONFIG_BT_PERIPHERAL_PREF_TIMEOUT` 等参数，以恢复最佳的响应速度。
 3. **保留物理排查**：天线增益（主机背后的蓝牙天线）依然是信号强度的物理保障，需确保已正确安装。
 

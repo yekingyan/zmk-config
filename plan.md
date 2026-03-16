@@ -35,6 +35,7 @@ Lily58 上实现"双核驱动"过渡方案，最终目标迁移到 Corne 36 键�
   - 详见：[ZMK 固件底层调试与断联排查指南](docs/debug-guide.md)
   - **真凶发现**：原因 0x22 (LMP Response Timeout) 是由于 SuperMini 等克隆板缺少外部晶振，刷入官方固件后导致时钟漂移。
   - **终极方案**：强制启用内部 RC 振荡器 (`CONFIG_CLOCK_CONTROL_NRF_K32SRC_RC=y`)，并撤销之前的临时超时补救措施。
+  - **二轮优化（针对克隆板握手崩溃）**：针对 `Err 9 (Security failed)` 拒绝连接问题，将 `CONFIG_BT_CTLR_PHY_2M` 设为 `n`（强制降级 1M PHY），并开启实验性安全配对选项 (`CONFIG_ZMK_BLE_EXPERIMENTAL_SEC=y`)。
 
 
 ## Combo 规划
