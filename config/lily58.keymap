@@ -220,19 +220,19 @@
 // ┌─────┬─────┬─────┬─────┬─────┬─────┐               ┌─────┬─────┬─────┬─────┬─────┬─────┐
 // │none │none │none │none │none │none │               │none │none │none │none │none │none │
 // ├─────┼─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┼─────┤
-// │none │     │     │     │     │     │               │     │  7  │  8  │  9  │  -  │none │
+// │none │     │     │     │     │     │               │  .  │  7  │  8  │  9  │  -  │none │
 // ├─────┼─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┼─────┤
 // │none │ GUI │ ALT │CTRL │LSHFT│BSPC │               │     │  4  │  5  │  6  │  +  │none │
 // ├─────┼─────┼─────┼─────┼─────┼─────┼─────┐   ┌─────┼─────┼─────┼─────┼─────┼─────┼─────┤
-// │none │  .  │  /  │  *  │  =  │     │none │   │none │   │  1  │  2  │  3  │     │none │
+// │none │     │  /  │  *  │  =  │     │none │   │none │   │  1  │  2  │  3  │     │none │
 // └─────┴─────┴─────┼─────┼─────┼─────┼─────┤   ├─────┼─────┼─────┼─────┴─────┴─────┴─────┘
 //                   │none │     │     │▓▓▓▓▓│   │     │  0  │     │none │
 //                   └─────┴─────┴─────┴─────┘   └─────┴─────┴─────┴─────┘
             bindings = <
 &none  &none    &none     &none        &none     &none                    &none  &none  &none  &none  &none     &none
-&none  &trans   &trans    &trans       &trans    &trans                   &trans &kp N7 &kp N8 &kp N9 &kp MINUS &none
+&none  &trans   &trans    &trans       &trans    &trans                   &kp DOT &kp N7 &kp N8 &kp N9 &kp MINUS &none
 &none  &skn LGUI  &skn LALT  &skn LCTRL   &skq LSHFT &kp BSPC              &trans &kp N4 &kp N5 &kp N6 &kp PLUS  &none
-&none  &kp DOT  &kp FSLH  &kp ASTRK   &kp EQUAL &trans &none    &none   &trans &kp N1 &kp N2 &kp N3 &trans    &none
+&none  &trans   &kp FSLH  &kp ASTRK   &kp EQUAL &trans &none    &none   &trans &kp N1 &kp N2 &kp N3 &trans    &none
                           &none        &trans    &trans &trans   &trans   &kp N0 &trans &none
             >;
 
