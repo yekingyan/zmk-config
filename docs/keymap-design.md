@@ -296,19 +296,19 @@ behaviors {
 
 在 Function 层 Q 位（`&kp K_CANCEL`），一键清除误按的 Sticky Key 状态。当不小心触发了 OSM 修饰键但不想使用时，按住 ESC 切 Fun 层 → 点 Q 位即可取消。
 
-### J + K = Escape (Combo)
+### S + D = Escape (Combo)
 
-同时按下 `J` 和 `K` 触发 `Escape`，退出 Insert 模式变成潜意识动作。key-positions `<31 32>`（Lily58 矩阵）。
+同时按下 `S` 和 `D` 触发 `Escape`，此组合键利用五笔高频数据分析得出（Top300 零命中），占据着绝对的安全区，退出 Insert 模式变成潜意识动作。key-positions `<26 27>`（Lily58 矩阵）。
 
-### S + D = LSHFT (Combo)
+### J + K = LSHFT (Combo)
 
-同时按下 `S` 和 `D` 触发 `LSHFT`，此组合键利用五笔高频数据分析得出（Top300 零命中），占据着绝对的安全区。既可以用作快速切换中英文输入法的单点按键，也可通过长按来作为普通的 Shift 使用，彻底解放左手小指。key-positions `<26 27>`。
+同时按下 `J` 和 `K` 触发 `LSHFT`，既可以用作快速切换中英文输入法的单点按键，也可通过长按来作为普通的 Shift 使用，彻底解放左手小指。key-positions `<31 32>`（Lily58 矩阵）。
 
 ### 双拇指 Combo (Sweep 适配)
 
 为彻底适应 36 键只有 2 个拇指键的配列（Sweep风格），将最外侧的功能键（第 3个拇指键）收容到内侧两个拇指键的 Combo 触发中：
-- **左手（SPACE + TAB）同按**：仅触发 `Fun` 层切换（因 `ESC` 单按已由 `J+K` Combo 完美承载）
-- **右手（ENTER + BSPC）同按**：仅触发 `Media` 层切换（因 `LSHFT` 单按已由 `S+D` Combo 完美承载）
+- **左手（SPACE + TAB）同按**：仅触发 `Fun` 层切换（因 `ESC` 单按已由 `S+D` Combo 完美承载）
+- **右手（ENTER + BSPC）同按**：仅触发 `Media` 层切换（因 `LSHFT` 单按已由 `J+K` Combo 完美承载）
 
 ### Caps Word（F + J Combo / Nav 层 G 位）
 

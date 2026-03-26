@@ -119,10 +119,10 @@
 
     combos {
         compatible = "zmk,combos";
-        // Vim 神器：J + K = Escape（退出 Insert 模式）
+        // S + D = Escape（退出 Insert 模式）
         combo_esc {
             timeout-ms = <50>;
-            key-positions = <31 32>;  // J 和 K 在 Lily58 矩阵中的位置
+            key-positions = <26 27>;  // S 和 D 在 Lily58 矩阵中的位置
             bindings = <&kp ESC>;
             layers = <BASE>;
             require-prior-idle-ms = <200>;
@@ -137,16 +137,16 @@
             require-prior-idle-ms = <200>;
         };
 
-        // S + D = LSHFT (单次中英切换 / 长按 Shift)
+        // J + K = LSHFT (单次中英切换 / 长按 Shift)
         combo_lshft {
             timeout-ms = <50>;
-            key-positions = <26 27>;  // S 和 D
+            key-positions = <31 32>;  // J 和 K
             bindings = <&kp LSHFT>;
             layers = <BASE>;
             require-prior-idle-ms = <150>;
         };
 
-        // 左双拇指 Combo：内侧双拇指(SPACE+TAB)同按 -> 进入 FUN 层 (ESC 已由 J+K 承载)
+        // 左双拇指 Combo：内侧双拇指(SPACE+TAB)同按 -> 进入 FUN 层 (ESC 已由 S+D 承载)
         combo_fun_layer {
             timeout-ms = <50>;
             key-positions = <51 52>;
@@ -154,7 +154,7 @@
             layers = <BASE>;
         };
 
-        // 右双拇指 Combo：内侧双拇指(ENTER+BSPC)同按 -> 进入 MEDIA 层 (LSHFT 已由 S+D 承载)
+        // 右双拇指 Combo：内侧双拇指(ENTER+BSPC)同按 -> 进入 MEDIA 层 (LSHFT 已由 J+K 承载)
         combo_media_layer {
             timeout-ms = <50>;
             key-positions = <55 56>;
