@@ -91,6 +91,12 @@ Sweep  (2 拇指核心):  左侧 [SPACE/NAV] [TAB/NUM]   右侧 [ENTER/SYM] [BSP
 
 ## 已完成
 
+### bgkeeb 仓库配置合并（2026-04-01）
+
+- [x] 将 zmk-bgkeeb 仓库中的键盘配置（`.conf`，`.keymap`）迁移至本仓库的 `config/` 目录
+- [x] 将对应的主板和 shield 定义移动至本仓库的 `boards/shields/` 目录
+- [x] 更新 `build.yaml` 构建矩阵，新增 `bgkeeb_left` / `bgkeeb_right`
+
 ### 双方案共存配置（2026-03-10）
 
 - [x] 在 `build.yaml` 中增加通过 `cmake-args: -DZMK_CONFIG` 对新配置目录的支持

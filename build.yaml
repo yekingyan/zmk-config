@@ -19,14 +19,21 @@ include:
   - board: nice_nano//zmk
     shield: cradio_right
     artifact-name: sweep_right
-  # silakka54
+  # # silakka54
+  # - board: nice_nano//zmk
+  #   shield: lily58_left
+  #   snippet: zmk-usb-logging
+  #   cmake-args: -DZMK_CONFIG="${GITHUB_WORKSPACE}/config_silakka54"
+  #   artifact-name: silakka54_left
+  # - board: nice_nano//zmk
+  #   shield: lily58_right
+  #   snippet: zmk-usb-logging
+  #   cmake-args: -DZMK_CONFIG="${GITHUB_WORKSPACE}/config_silakka54"
+  #   artifact-name: silakka54_right
+  # bgkeeb
   - board: nice_nano//zmk
-    shield: lily58_left
-    snippet: zmk-usb-logging
-    cmake-args: -DZMK_CONFIG="${GITHUB_WORKSPACE}/config_silakka54"
-    artifact-name: silakka54_left
+    shield: bgkeeb_left
+    artifact-name: bgkeeb_left
   - board: nice_nano//zmk
-    shield: lily58_right
-    snippet: zmk-usb-logging
-    cmake-args: -DZMK_CONFIG="${GITHUB_WORKSPACE}/config_silakka54"
-    artifact-name: silakka54_right
+    shield: bgkeeb_right
+    artifact-name: bgkeeb_right

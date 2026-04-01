@@ -1,0 +1,335 @@
+/*
+ * BGKeeB 键位配置 (移植自 Lily58 "双核驱动" Callum OSM 方案)
+ *
+ * 38 键 (3x5+4 拇指) + 旋钮，无外围冗余行/列
+ * 核心 3x5 区域与 Lily58 完全一致，拇指区 4 键对齐
+ *
+ * Layer 0: Base     - QWERTY
+ * Layer 1: Nav      - 左手 OSM 修饰键 + 右手 Vim HJKL + 跳跃 + 翻页
+ * Layer 2: Numpad   - 左手算术运算 + 右手纯数字九宫格
+ * Layer 3: Symbols  - 左手符号区 + 右手 OSM 修饰键
+ * Layer 4: Function - 左手 OSM/BT + 右手 F 键九宫格
+ * Layer 5: Mouse    - 左手鼠标移动/滚轮/点击 + 右手 OSM
+ * Layer 6: Media    - 左手媒体/音量/亮度 + 右手 OSM
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/bt.h>
+#include <dt-bindings/zmk/outputs.h>
+
+// 必须在引入 pointing.h 之前定义
+#define ZMK_POINTING_DEFAULT_MOVE_VAL 1500
+#define ZMK_POINTING_DEFAULT_SCRL_VAL 20
+#include <dt-bindings/zmk/pointing.h>
+
+// Snipe 模式：1/4 速度
+#define SNIPE_MOVE_VAL (ZMK_POINTING_DEFAULT_MOVE_VAL / 4)
+#define SNIPE_U MOVE_Y(-SNIPE_MOVE_VAL)
+#define SNIPE_D MOVE_Y(SNIPE_MOVE_VAL)
+#define SNIPE_L MOVE_X(-SNIPE_MOVE_VAL)
+#define SNIPE_R MOVE_X(SNIPE_MOVE_VAL)
+
+// Turbo 模式：2x 速度
+#define TURBO_MOVE_VAL (ZMK_POINTING_DEFAULT_MOVE_VAL * 2)
+#define TURBO_U MOVE_Y(-TURBO_MOVE_VAL)
+#define TURBO_D MOVE_Y(TURBO_MOVE_VAL)
+#define TURBO_L MOVE_X(-TURBO_MOVE_VAL)
+#define TURBO_R MOVE_X(TURBO_MOVE_VAL)
+
+#define BASE    0
+#define NAV     1
+#define NUM     2
+#define SYM     3
+#define FUN     4
+#define MOUSE   5
+#define MEDIA   6
+#define M_SNIPE 7
+#define M_TURBO 8
+
+&mmv {
+    acceleration-exponent = <1>;
+    time-to-max-speed-ms = <500>;
+    delay-ms = <0>;
+};
+
+&msc {
+    acceleration-exponent = <1>;
+    time-to-max-speed-ms = <500>;
+    delay-ms = <0>;
+};
+
+&caps_word {
+    continue-list = <UNDERSCORE MINUS>;
+};
+
+/ {
+    behaviors {
+        // Callum-style 快速释放 OSM（仅用于 Shift）
+        skq: sticky_key_quick_release {
+            compatible = "zmk,behavior-sticky-key";
+            #binding-cells = <1>;
+            bindings = <&kp>;
+            release-after-ms = <1000>;
+            quick-release;
+            ignore-modifiers;
+        };
+
+        // 普通 OSM（用于 Ctrl/Alt/GUI，支持链式组合）
+        skn: sticky_key_normal {
+            compatible = "zmk,behavior-sticky-key";
+            #binding-cells = <1>;
+            bindings = <&kp>;
+            release-after-ms = <1000>;
+            ignore-modifiers;
+        };
+
+        // 拇指专用 Layer-Tap
+        tlt: thumb_layer_tap {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "balanced";
+            tapping-term-ms = <200>;
+            quick-tap-ms = <150>;
+            bindings = <&mo>, <&kp>;
+        };
+    };
+
+    macros {
+        swapper: swapper {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <30>;
+            tap-ms = <30>;
+            bindings
+                = <&macro_press &kp LALT>
+                , <&macro_tap &kp TAB>
+                , <&macro_pause_for_release>
+                , <&macro_release &kp LALT>
+                ;
+        };
+    };
+
+    combos {
+        compatible = "zmk,combos";
+
+        // S + D = Escape
+        combo_esc {
+            timeout-ms = <50>;
+            key-positions = <11 12>;
+            bindings = <&kp ESC>;
+            layers = <BASE>;
+            require-prior-idle-ms = <200>;
+        };
+
+        // F + J = Caps Word
+        combo_caps_word {
+            timeout-ms = <50>;
+            key-positions = <13 16>;
+            bindings = <&caps_word>;
+            layers = <BASE>;
+            require-prior-idle-ms = <200>;
+        };
+
+        // J + K = LSHFT (中英切换 / 长按 Shift)
+        combo_lshft {
+            timeout-ms = <50>;
+            key-positions = <16 17>;
+            bindings = <&kp LSHFT>;
+            layers = <BASE>;
+            require-prior-idle-ms = <150>;
+        };
+
+        // 左双拇指 (SPACE+TAB) = FUN 层
+        combo_fun_layer {
+            timeout-ms = <50>;
+            key-positions = <32 33>;
+            bindings = <&mo FUN>;
+            layers = <BASE>;
+        };
+
+        // 右双拇指 (ENTER+BSPC) = MEDIA 层
+        combo_media_layer {
+            timeout-ms = <50>;
+            key-positions = <34 35>;
+            bindings = <&mo MEDIA>;
+            layers = <BASE>;
+        };
+    };
+
+    keymap {
+        compatible = "zmk,keymap";
+
+        default_layer {
+            display-name = "Base";
+// ┌─────┬─────┬─────┬─────┬─────┐               ┌─────┬─────┬─────┬─────┬─────┐
+// │  Q  │  W  │  E  │  R  │  T  │               │  Y  │  U  │  I  │  O  │  P  │
+// ├─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┤
+// │  A  │  S  │  D  │  F  │  G  │               │  H  │  J  │  K  │  L  │  ;  │
+// ├─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┤
+// │ C_Z │  X  │  C  │  V  │  B  │               │  N  │  M  │  ,  │  .  │  /  │
+// └─────┴─────┼─────┼─────┼─────┼─────┐   ┌─────┼─────┼─────┼─────┴─────┴─────┘
+//             │MUTE │ ESC │SPACE│ TAB │   │ENTER│BSPC │LSHFT│CTRL │
+//             │     │(FUN)│(NAV)│(NUM)│   │(SYM)│(MOU)│(MED)│     │
+//             └─────┴─────┴─────┴─────┘   └─────┴─────┴─────┴─────┘
+            bindings = <
+&kp Q       &kp W  &kp E  &kp R           &kp T                              &kp Y         &kp U             &kp I             &kp O   &kp P
+&kp A       &kp S  &kp D  &kp F           &kp G                              &kp H         &kp J             &kp K             &kp L   &kp SEMI
+&mt LCTRL Z &kp X  &kp C  &kp V           &kp B                              &kp N         &kp M             &kp COMMA         &kp DOT &kp FSLH
+            &kp K_MUTE    &tlt FUN ESC    &tlt NAV SPACE  &tlt NUM TAB       &tlt SYM RET  &tlt MOUSE BSPC   &tlt MEDIA LSHFT  &kp RCTRL
+            >;
+
+            sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;
+        };
+
+        nav_layer {
+            display-name = "Nav";
+// ┌─────┬─────┬─────┬─────┬─────┐               ┌─────┬─────┬─────┬─────┬─────┐
+// │ SWP │S-TAB│ RET │LSHFT│BSPC │               │C(←) │ C-D │ C-U │C(→) │ DEL │
+// ├─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┤
+// │ GUI │ ALT │CTRL │LSHFT│CAPW │               │  ←  │  ↓  │  ↑  │  →  │C(DEL)│
+// ├─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┤
+// │C(Z) │C(X) │C(C) │C(V) │     │               │HOME │PgDn │PgUp │ END │C(BS)│
+// └─────┴─────┼─────┼─────┼─────┼─────┐   ┌─────┼─────┼─────┼─────┴─────┴─────┘
+//             │     │     │▓▓▓▓▓│     │   │     │     │     │     │
+//             └─────┴─────┴─────┴─────┘   └─────┴─────┴─────┴─────┘
+            bindings = <
+&swapper   &kp LS(TAB) &kp RET    &kp LSHFT  &kp BSPC                  &kp LC(LEFT) &kp LC(D)  &kp LC(U)  &kp LC(RIGHT) &kp DEL
+&skn LGUI  &skn LALT   &skn LCTRL &skq LSHFT &caps_word                &kp LEFT     &kp DOWN   &kp UP     &kp RIGHT     &kp LC(DEL)
+&kp LC(Z)  &kp LC(X)   &kp LC(C)  &kp LC(V)  &trans                    &kp HOME     &kp PG_DN  &kp PG_UP  &kp END       &kp LC(BSPC)
+            &trans      &none      &trans     &trans                    &trans       &trans     &none      &trans
+            >;
+
+            sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;
+        };
+
+        num_layer {
+            display-name = "Num";
+// ┌─────┬─────┬─────┬─────┬─────┐               ┌─────┬─────┬─────┬─────┬─────┐
+// │     │     │     │     │     │               │  .  │  7  │  8  │  9  │  -  │
+// ├─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┤
+// │ GUI │ ALT │CTRL │LSHFT│BSPC │               │     │  4  │  5  │  6  │  +  │
+// ├─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┤
+// │     │  /  │  *  │  =  │     │               │     │  1  │  2  │  3  │     │
+// └─────┴─────┼─────┼─────┼─────┼─────┐   ┌─────┼─────┼─────┼─────┴─────┴─────┘
+//             │     │     │     │▓▓▓▓▓│   │     │  0  │     │     │
+//             └─────┴─────┴─────┴─────┘   └─────┴─────┴─────┴─────┘
+            bindings = <
+&trans     &trans    &trans     &trans     &trans                     &kp DOT &kp N7 &kp N8 &kp N9 &kp MINUS
+&skn LGUI  &skn LALT &skn LCTRL &skq LSHFT &kp BSPC                  &trans &kp N4 &kp N5 &kp N6 &kp PLUS
+&trans     &kp FSLH  &kp ASTRK  &kp EQUAL  &trans                    &trans &kp N1 &kp N2 &kp N3 &trans
+            &trans    &none      &trans     &trans                    &trans &kp N0 &none  &trans
+            >;
+
+            sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;
+        };
+
+        sym_layer {
+            display-name = "Sym";
+// ┌─────┬─────┬─────┬─────┬─────┐               ┌─────┬─────┬─────┬─────┬─────┐
+// │  !  │  @  │  #  │  $  │  %  │               │  ^  │  &  │  *  │  =  │  '  │
+// ├─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┤
+// │  (  │  {  │  [  │  <  │  _  │               │  |  │LSHFT│CTRL │ ALT │ GUI │
+// ├─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┤
+// │  )  │  }  │  ]  │  >  │  `  │               │  \  │  ~  │  :  │  "  │  ?  │
+// └─────┴─────┼─────┼─────┼─────┼─────┐   ┌─────┼─────┼─────┼─────┴─────┴─────┘
+//             │     │     │     │     │   │▓▓▓▓▓│     │     │     │
+//             └─────┴─────┴─────┴─────┘   └─────┴─────┴─────┴─────┘
+            bindings = <
+&kp EXCL  &kp AT   &kp HASH &kp DLLR &kp PRCNT                   &kp CARET &kp AMPS   &kp ASTRK  &kp EQUAL  &kp SQT
+&kp LPAR  &kp LBRC &kp LBKT &kp LT   &kp UNDER                  &kp PIPE  &skq LSHFT &skn RCTRL &skn RALT  &skn RGUI
+&kp RPAR  &kp RBRC &kp RBKT &kp GT   &kp GRAVE                  &kp BSLH  &kp TILDE  &kp COLON  &kp DQT    &kp QMARK
+           &trans   &none    &trans   &trans                      &trans    &trans     &none      &trans
+            >;
+
+            sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;
+        };
+
+        fun_layer {
+            display-name = "Fun";
+// ┌─────┬─────┬─────┬─────┬─────┐               ┌─────┬─────┬─────┬─────┬─────┐
+// │CANCL│ BLE │ USB │     │BTCLR│               │     │ F7  │ F8  │ F9  │ F12 │
+// ├─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┤
+// │ GUI │ ALT │CTRL │LSHFT│     │               │     │ F4  │ F5  │ F6  │ F11 │
+// ├─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┤
+// │ BT0 │ BT1 │ BT2 │ BT3 │     │               │     │ F1  │ F2  │ F3  │ F10 │
+// └─────┴─────┼─────┼─────┼─────┼─────┐   ┌─────┼─────┼─────┼─────┴─────┴─────┘
+//             │     │▓▓▓▓▓│     │     │   │     │     │     │     │
+//             └─────┴─────┴─────┴─────┘   └─────┴─────┴─────┴─────┘
+            bindings = <
+&kp K_CANCEL &out OUT_BLE  &out OUT_USB  &trans       &bt BT_CLR                &trans &kp F7 &kp F8 &kp F9 &kp F12
+&skn LGUI    &skn LALT     &skn LCTRL    &skq LSHFT   &trans                    &trans &kp F4 &kp F5 &kp F6 &kp F11
+&bt BT_SEL 0 &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3 &trans                   &trans &kp F1 &kp F2 &kp F3 &kp F10
+              &trans        &trans        &trans       &trans                    &trans &trans &none  &trans
+            >;
+
+            sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;
+        };
+
+        mouse_layer {
+            display-name = "Mouse";
+// ┌─────┬─────┬─────┬─────┬─────┐               ┌─────┬─────┬─────┬─────┬─────┐
+// │UNDO │REDO │VD_L │VD_R │     │               │     │     │     │     │     │
+// ├─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┤
+// │     │ ML  │ MU  │ MD  │ MR  │               │     │LSHFT│CTRL │ ALT │ GUI │
+// ├─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┤
+// │     │WH_L │WH_U │WH_D │WH_R │               │SNIPE│TURBO│     │     │     │
+// └─────┴─────┼─────┼─────┼─────┼─────┐   ┌─────┼─────┼─────┼─────┴─────┴─────┘
+//             │     │MCLK │RCLK │LCLK │   │     │▓▓▓▓▓│     │     │
+//             └─────┴─────┴─────┴─────┘   └─────┴─────┴─────┴─────┘
+            bindings = <
+&kp LC(Z) &kp LC(Y)      &kp LC(LG(LEFT)) &kp LC(LG(RIGHT)) &trans                          &trans      &trans     &trans     &trans    &trans
+&trans    &mmv MOVE_LEFT &mmv MOVE_UP     &mmv MOVE_DOWN     &mmv MOVE_RIGHT                 &trans      &skq LSHFT &skn RCTRL &skn RALT &skn RGUI
+&trans    &msc SCRL_LEFT &msc SCRL_UP     &msc SCRL_DOWN     &msc SCRL_RIGHT                 &mo M_SNIPE &mo M_TURBO &trans    &trans    &trans
+           &trans         &mkp MCLK        &mkp RCLK          &mkp LCLK                      &trans      &trans     &none      &trans
+            >;
+
+            sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;
+        };
+
+        media_layer {
+            display-name = "Media";
+// ┌─────┬─────┬─────┬─────┬─────┐               ┌─────┬─────┬─────┬─────┬─────┐
+// │     │     │     │     │     │               │     │     │     │     │     │
+// ├─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┤
+// │     │PREV │VOL_D│VOL_U│NEXT │               │     │LSHFT│CTRL │ ALT │ GUI │
+// ├─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┤
+// │     │MUTE │BRI_D│BRI_U│PLAY │               │     │     │     │     │     │
+// └─────┴─────┼─────┼─────┼─────┼─────┐   ┌─────┼─────┼─────┼─────┴─────┴─────┘
+//             │     │     │     │     │   │     │     │▓▓▓▓▓│     │
+//             └─────┴─────┴─────┴─────┘   └─────┴─────┴─────┴─────┘
+            bindings = <
+&trans &trans     &trans       &trans       &trans                       &trans &trans     &trans     &trans    &trans
+&trans &kp C_PREV &kp C_VOL_DN &kp C_VOL_UP &kp C_NEXT                  &trans &skq LSHFT &skn RCTRL &skn RALT &skn RGUI
+&trans &kp C_MUTE &kp C_BRI_DN &kp C_BRI_UP &kp C_PP                    &trans &trans     &trans     &trans    &trans
+        &trans    &none        &trans       &trans                       &trans &trans     &trans     &trans
+            >;
+
+            sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;
+        };
+
+        m_snipe_layer {
+            display-name = "Snipe";
+// 影子层：覆写 Mouse 层的移动键为 1/4 速度
+            bindings = <
+&trans &trans         &trans       &trans       &trans                       &trans &trans &trans &trans &trans
+&trans &mmv SNIPE_L   &mmv SNIPE_U &mmv SNIPE_D &mmv SNIPE_R                &trans &trans &trans &trans &trans
+&trans &trans         &trans       &trans       &trans                       &trans &trans &trans &trans &trans
+        &trans        &trans       &trans       &trans                       &trans &trans &trans &trans
+            >;
+        };
+
+        m_turbo_layer {
+            display-name = "Turbo";
+// 影子层：覆写 Mouse 层的移动键为 2x 速度
+            bindings = <
+&trans &trans         &trans       &trans       &trans                       &trans &trans &trans &trans &trans
+&trans &mmv TURBO_L   &mmv TURBO_U &mmv TURBO_D &mmv TURBO_R                &trans &trans &trans &trans &trans
+&trans &trans         &trans       &trans       &trans                       &trans &trans &trans &trans &trans
+        &trans        &trans       &trans       &trans                       &trans &trans &trans &trans
+            >;
+        };
+    };
+};
