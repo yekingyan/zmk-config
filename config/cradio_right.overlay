@@ -1,0 +1,37 @@
+/*
+ * cradio_right.overlay
+ *
+ * 与 cradio_left.overlay 完全一致。
+ * Sweep 分体键盘左右使用同一 PCB（正反翻转），ZMK 的 matrix_transform
+ * 会自动处理逻辑镜像，所以引脚排列与左手相同。
+ */
+
+&kscan0 {
+    compatible = "zmk,kscan-gpio-direct";
+    input-gpios
+        // 第一排 (Top Row)
+        = <&pro_micro  6 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+        , <&pro_micro 18 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+        , <&pro_micro 19 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+        , <&pro_micro 20 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+        , <&pro_micro 21 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+
+        // 第二排 (Middle Row)
+        , <&pro_micro 15 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+        , <&pro_micro 14 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+        , <&pro_micro 16 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+        , <&pro_micro 10 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+        , <&pro_micro  1 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+
+        // 第三排 (Bottom Row)
+        , <&pro_micro  2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+        , <&pro_micro  3 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+        , <&pro_micro  4 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+        , <&pro_micro  5 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+        , <&pro_micro  7 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+
+        // 拇指键簇 (Thumb Cluster)
+        , <&pro_micro  8 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+        , <&pro_micro  9 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+        ;
+};
