@@ -1,0 +1,10 @@
+/*
+ * Dolphin1 右手 overlay
+ * SPDX-License-Identifier: MIT
+ */
+
+#include "dolphin1.dtsi"
+
+&default_transform {
+    col-offset = <17>;
+};

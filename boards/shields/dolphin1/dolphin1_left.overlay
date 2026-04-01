@@ -1,0 +1,6 @@
+/*
+ * Dolphin1 左手 overlay
+ * SPDX-License-Identifier: MIT
+ */
+
+#include "dolphin1.dtsi"

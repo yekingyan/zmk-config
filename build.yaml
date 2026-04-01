@@ -12,13 +12,20 @@ include:
   - board: nice_nano//zmk
     shield: settings_reset
     artifact-name: settings_reset
-  # sweep (cradio)
+  # # sweep (cradio) - 已替换为 dolphin1
+  # - board: nice_nano//zmk
+  #   shield: cradio_left
+  #   artifact-name: sweep_left
+  # - board: nice_nano//zmk
+  #   shield: cradio_right
+  #   artifact-name: sweep_right
+  # dolphin1 (自制 Sweep PCB)
   - board: nice_nano//zmk
-    shield: cradio_left
-    artifact-name: sweep_left
+    shield: dolphin1_left
+    artifact-name: dolphin1_left
   - board: nice_nano//zmk
-    shield: cradio_right
-    artifact-name: sweep_right
+    shield: dolphin1_right
+    artifact-name: dolphin1_right
   # # silakka54
   # - board: nice_nano//zmk
   #   shield: lily58_left

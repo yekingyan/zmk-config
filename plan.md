@@ -91,6 +91,12 @@ Sweep  (2 拇指核心):  左侧 [SPACE/NAV] [TAB/NUM]   右侧 [ENTER/SYM] [BSP
 
 ## 已完成
 
+### Dolphin1 Shield 对比审查与修复（2026-04-01）
+
+- [x] 对比 `cradio` 与 `dolphin1` 的定义差异
+- [x] 修复 `dolphin1.dtsi` 中漏掉的 `zmk,matrix-transform = &default_transform;` 的致命错误
+- [x] 确认其它 overlay，Kconfig 及 build.yaml 均正确对应
+
 ### bgkeeb 仓库配置合并（2026-04-01）
 
 - [x] 将 zmk-bgkeeb 仓库中的键盘配置（`.conf`，`.keymap`）迁移至本仓库的 `config/` 目录
@@ -102,11 +108,19 @@ Sweep  (2 拇指核心):  左侧 [SPACE/NAV] [TAB/NUM]   右侧 [ENTER/SYM] [BSP
 - [x] 在 `build.yaml` 中增加通过 `cmake-args: -DZMK_CONFIG` 对新配置目录的支持
 - [x] 将 `silakka54` 分支原有的键映射文件平移到本分支 `config_silakka54` 文件夹，实现共存构建
 
+## 已完成
+
+### Corne 36 键 keymap 移植（2026-04-01）
+
+- [x] 在 `config` 中创建 `corne.keymap`
+- [x] 摘取了 `lily58` 中高度精华的 Callum-OSM 和键位布局
+- [x] 利用 ZMK 的 `&none` 屏蔽 Corne 42键最外围的 6 个列位，完美实现 36 键纯净约束
+- [x] 基于 Corne 42 键矩阵坐标系对所有的 Combo (`key-positions`) 进行了精确重算
+- [x] 更新 `build.yaml` 矩阵架构，新增 `corne_left` 与 `corne_right` 编译项
+
 ## 待办
 
-- [ ] Corne 36 键 keymap 移植
-
-## 已完成
+- (暂无)
 
 ### 上板实测与阶段一毕业（2026-03-05）
 
