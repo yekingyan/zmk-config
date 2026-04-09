@@ -45,25 +45,36 @@ split_central_disconnected: Disconnected: [MAC] (public) (reason 34)
   - 主机上忘记所有键盘配对
   - 重新刷入正常固件并配对
 
-### 左手"殉情"重启（Kernel Panic / HardFault）
+### 左手"殉情"假死（Split 状态机死锁 — 已确认根因）
 
-当右手断连同时导致**左手也与电脑断开**，说明左手 nRF52840 发生了内核崩溃或看门狗强制重启。
+当右手断连同时导致**左手也与电脑断开/假死 12 秒**，根因是 ZMK split 主控状态机的已知缺陷。
 
-**嫌疑人清单**：
+**源码级根因链**（`app/src/split/bluetooth/central.c`）：
 
-| 嫌疑人 | 配置项 | 崩溃机制 |
-|--------|--------|----------|
-| USB Logging 死锁 | `CONFIG_ZMK_USB_LOGGING=y` | 非 USB 供电时日志队列填满 → 线程死锁 |
-| 实验性蓝牙 + RC 时钟 | `CONFIG_ZMK_BLE_EXPERIMENTAL_FEATURES=y` | RC 500ppm 漂移 + 激进连接间隔 → 时序断言失败 |
-| Pointing 队列溢出 | `CONFIG_ZMK_POINTING=y` | 高频鼠标报告 + 丢包重传 → 击穿队列 / OOM |
-| 发射功率不足 | `TX_PWR_PLUS_8` 被注释 | 自制 PCB 天线差 → 持续丢包 → 协议栈异常 |
+```
+右手 0x22 超时断开
+  → 左手调用槽位清理函数
+    → 返回 -22 (EINVAL)，槽位状态异常，清理失败
+      → 左手误判"右手还在线"，打印 "All devices are connected, scanning is unnecessary"
+        → 拒绝扫描重连，假死 12 秒
+          → 直到右手触发 Level 4 安全重连请求才恢复
+```
+
+**触发条件（叠加因素）**：
+
+| 因素 | 机制 |
+|------|------|
+| **脏配对数据** | 刷固件不擦除 Flash 中的配对记忆，错乱数据导致 -22 |
+| **USB Logging** | 未接 USB 时日志队列填满 → 线程死锁 → 错过蓝牙回应窗口 |
+| **Pointing** | 高频坐标上报加剧线程拥堵 → 加速触发 0x22 |
+| **EXPERIMENTAL_FEATURES** | 与 RC 时钟冲突，激进时序导致断言失败 |
 
 ## 排查决策树
 
 > **先判断断连时机：**
 > - **放着没用**时断开 → 正常休眠，无需处理
 > - **右手断，左手不断** → 晶振/供电/信号问题
-> - **右手断，左手也断（殉情）** → 左手内核崩溃，按嫌疑人清单排查
+> - **右手断，左手假死 12 秒** → Split 状态机 -22 死锁（见上方根因链）
 
 ## 主机端修复（Windows）
 
@@ -101,6 +112,10 @@ CONFIG_CLOCK_CONTROL_NRF_K32SRC_RC=y         # 强制内部 RC 振荡器（Super
 # --- Windows 11 ---
 CONFIG_BT_GATT_ENFORCE_SUBSCRIPTION=n        # 绕过 GATT 电量断联 Bug
 
+# --- 线程负载优化 ---
+CONFIG_ZMK_USB_LOGGING=n                     # 关闭（线程死锁触发源）
+# CONFIG_ZMK_POINTING=y                      # 临时关闭（高频上报加剧拥堵）
+
 # --- 连接参数 ---
 CONFIG_BT_PERIPHERAL_PREF_TIMEOUT=800        # 超时 8 秒，容忍 RC 漂移
 
@@ -129,47 +144,48 @@ CONFIG_ZMK_BEHAVIORS_QUEUE_SIZE=512
 | `PREF_MIN/MAX_INT` | `12/24` | 删除 |
 | `BATTERY_REPORT_INTERVAL` | `60` | 删除 |
 
-**结果**：❌ 失败
-
-- 右手断连同时导致左手也与电脑断开（"殉情"现象）
-- 电池满电排除了电压不稳假设
-- 日志确认 `reason 0x22` Split 链路层超时
-
-**根因分析**：左手发生了 Kernel Panic / HardFault，触发看门狗重启。嫌疑人：
-- USB Logging 在非 USB 供电时导致死锁
-- `EXPERIMENTAL_FEATURES=y` 与 RC 时钟精度冲突导致时序断言失败
-- 发射功率不足加剧了丢包和协议栈异常
+**结果**：❌ 失败 — 右手断连导致左手殉情假死
 
 ### 实验二（2026-04-10）：控制变量排除崩溃源
 
-**假设**：`EXPERIMENTAL_FEATURES=y` 与 RC 时钟冲突 + 发射功率不足是崩溃主因。保留 USB logging 作为观测手段。
+**假设**：`EXPERIMENTAL_FEATURES` 与 RC 时钟冲突 + 发射功率不足是主因。
+
+**变更**：`EXPERIMENTAL_FEATURES=n`，`TX_PWR_PLUS_8=y`，保留 USB logging
+
+**结果**：❌ 失败
+
+- 日志捕获到关键报错：`Failed to release peripheral slot (-22)` + `All devices are connected, scanning is unnecessary`
+- 确认了根因：ZMK split 状态机 -22 槽位死锁（非 Kernel Panic）
+- USB logging（线程资源争抢）和脏配对数据（Flash 未清除）是触发条件
+
+### 实验三（2026-04-10）：清除触发条件 + Settings Reset
+
+**假设**：关闭线程负载源（USB logging + Pointing）+ 彻底清洗 Flash 配对数据，可以避免触发 -22 死锁。
 
 **变更摘要**：
 
 | 参数 | 变更前 | 变更后 | 理由 |
 |------|--------|--------|------|
-| `EXPERIMENTAL_FEATURES` | `y` | `n` | 排除时序冲突（主要嫌疑人） |
-| `TX_PWR_PLUS_8` | 注释 | `y` | 恢复信号强度 |
-| `USB_LOGGING` | `y` | `y`（保留） | 作为观测手段，如果仍崩则反证为其元凶 |
+| `USB_LOGGING` | `y` | `n` | 日志队列是线程死锁触发源 |
+| `POINTING` | `y` | 注释掉 | 高频上报加剧线程拥堵 |
+| `build.yaml` snippet | `zmk-usb-logging` | 移除 | 配合关闭 logging |
 
-**影响范围**：Dolphin1 / Lily58 / bgkeeb 三个键盘同步变更
+**⚠️ 刷固件后必须操作（终极双边重置）**：
 
-**⚠️ 刷固件后必须操作**：
-
-- 给左右手都刷 `settings_reset.uf2`（清除旧配对缓存）
-- 在电脑端删除旧的蓝牙设备
-- 重新刷正常固件，让左右手纯净配对
+- 给左右手都刷 `settings_reset.uf2`（格式化内部 Flash，清除脏配对数据）
+- 在电脑端删除旧的 Dolphin1 蓝牙设备
+- 重新刷入新固件，先开左手再开右手，纯净配对
 
 **判定逻辑**：
 
-- ✅ 稳定 → 元凶确认为 `EXPERIMENTAL_FEATURES` 或 `TX_PWR`，USB logging 无罪
-- ❌ 仍崩 → USB logging 就是死锁元凶（日志里应能看到崩溃前的最后输出）
+- ✅ 稳定（打字不断连）→ 根因确认，进入 Step 1 恢复 Pointing
+- ❌ 仍崩 → 问题在更深的固件层或硬件层
 
-**如果基线稳定，后续逐一恢复**：
+**稳定后逐步恢复**：
 
-- [ ] Step 1: 恢复 `EXPERIMENTAL_CONN=y` + `EXPERIMENTAL_SEC=y`（单独子开关）
-- [ ] Step 2: 恢复 `EXPERIMENTAL_FEATURES=y`（验证是否与 RC 冲突）
-- [ ] Step 3: 注释掉 `TX_PWR_PLUS_8`（验证是否是信号问题）
+- [ ] Step 1: 恢复 `CONFIG_ZMK_POINTING=y`（验证 Pointing 是否独立触发问题）
+- [ ] Step 2: 恢复 `EXPERIMENTAL_CONN=y` + `EXPERIMENTAL_SEC=y`
+- [ ] Step 3: 恢复 `EXPERIMENTAL_FEATURES=y`
 
 **结果**：待测试
 
@@ -179,4 +195,5 @@ CONFIG_ZMK_BEHAVIORS_QUEUE_SIZE=512
 
 - [ZMK 官方蓝牙故障排除](https://zmk.dev/docs/troubleshooting/connection-issues)
 - [ZMK 蓝牙配置文档](https://zmk.dev/docs/config/bluetooth)
+- [ZMK Issue #2461（split 配对/握手相关）](https://github.com/zmkfirmware/zmk/issues/2461)
 - r/ErgoMechKeyboards 社区讨论

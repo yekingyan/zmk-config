@@ -21,11 +21,9 @@ include:
   - board: nice_nano//zmk
     shield: dolphin1_left
     artifact-name: dolphin1_left
-    snippet: zmk-usb-logging
   - board: nice_nano//zmk
     shield: dolphin1_right
     artifact-name: dolphin1_right
-    snippet: zmk-usb-logging
   # # silakka54
   # - board: nice_nano//zmk
   #   shield: lily58_left
