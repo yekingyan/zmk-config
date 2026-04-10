@@ -153,64 +153,50 @@ kscan0: kscan {
 
 ## 已尝试的方案及结果
 
-### 实验一：蓝牙配置精简
+### 实验四（2026-04-10）：应用专家综合防断连方案
+
+**背景观察**：左手连 USB 时，右手**从不断连**；左手拔掉 USB 仅用蓝牙时，发生一系列断连和假死。这表明问题极大概率出在无线电抢占（Radio Scheduling）和休眠时钟漂移上。
 
 **操作**：
-- 合并 `EXPERIMENTAL_CONN` + `EXPERIMENTAL_SEC` 为 `EXPERIMENTAL_FEATURES=y`
-- 注释掉 `TX_PWR_PLUS_8`（降低发射功率）
-- 删除 `PREF_MIN_INT` / `PREF_MAX_INT`
-- 删除 `BATTERY_REPORT_INTERVAL=60`
+1. **时钟漂移修复**：`RC=y` + 声明 `500PPM` 精度（防漂移漏接兜底）
+2. **解决无线电抢占**：拉开 PC 通信间隔（`MIN_INT=12`, `MAX_INT=24`），避开 7.5ms 主副通信冲突
+3. **应对突发流量**：扩容底层蓝牙 `RX_STACK_SIZE=2048`
+4. **开启重试机制**：重新开启 `EXPERIMENTAL_FEATURES=y`
 
-**结果**：❌ 失败 — 断连加剧，出现左手殉情现象
+**结果**：❌ 失败 — 断连问题依然存在。
 
-### 实验二：控制变量排除
-
-**操作**：
-- `EXPERIMENTAL_FEATURES=n`（关闭实验性蓝牙）
-- `TX_PWR_PLUS_8=y`（恢复发射功率）
-- 保留 `USB_LOGGING=y` 观测
-
-**结果**：❌ 失败 — 捕获到 `-22` 槽位死锁日志，确认了状态机缺陷
-
-### 实验三：清除触发条件 + Settings Reset
+### 实验五（2026-04-10）：开启 2M PHY 与全面扩容（专家方案 E）
 
 **操作**：
-- `USB_LOGGING=n`（关闭日志）
-- `POINTING` 注释掉（关闭鼠标模拟）
-- 移除 `build.yaml` 中的 `zmk-usb-logging` snippet
-- **左右手均执行 `settings_reset.uf2`**（格式化内部 Flash）
-- 电脑端**删除旧的蓝牙设备**并重新配对
+1. **释放无线电资源**：开启 `CONFIG_BT_CTLR_PHY_2M=y`，大幅减少频段占用时间，解决无线电调度冲突。
+2. **状态机深层扩容**：将 `SYSTEM_WORKQUEUE`、`MAIN`、`RX` 线程堆栈全部扩容至 `4096`，并增加 `BLE_THREAD_STACK_SIZE=1024`，防止 OOM 引发槽位清理失败（-22 错误）。
 
-**结果**：❌ 失败 — 断连仍然发生
+**结果**：待测试（等结果）。
 
-### 主机端已做的修复
+---
 
-- ✅ 关闭蓝牙适配器电源管理
-- ✅ 关闭 USB 选择性暂停
-- ✅ 使用 USB 2.0 口
-- ✅ 使用品牌蓝牙适配器
-
-### 配置项变更汇总
+### 已测试的所有配置组合汇总
 
 以下是在排查过程中测试过的所有配置组合：
 
-| 配置项 | 方案 A | 方案 B | 方案 C（当前） |
-|--------|--------|--------|---------------|
-| `BT_CTLR_PHY_2M` | `n` | `n` | `n` |
-| `BT_CTLR_TX_PWR_PLUS_8` | 注释 | `y` | `y` |
-| `BLE_EXPERIMENTAL_FEATURES` | `y` | `n` | `n` |
-| `BLE_EXPERIMENTAL_CONN` | 删除 | — | — |
-| `BLE_EXPERIMENTAL_SEC` | 删除 | — | — |
-| `BLE_PASSKEY_ENTRY` | `y` | `y` | `y` |
-| `CLOCK_CONTROL_NRF_K32SRC_RC` | `y` | `y` | `y` |
-| `BT_GATT_ENFORCE_SUBSCRIPTION` | `n` | `n` | `n` |
-| `ZMK_USB_LOGGING` | `y` | `y` | `n` |
-| `ZMK_POINTING` | `y` | `y` | 注释 |
-| `BT_PERIPHERAL_PREF_TIMEOUT` | `800` | `800` | `800` |
-| `BT_PERIPHERAL_PREF_MIN_INT` | 删除 | — | — |
-| `BT_PERIPHERAL_PREF_MAX_INT` | 删除 | — | — |
-| `settings_reset` | 否 | 否 | **是** |
-| 结果 | ❌ | ❌ | ❌ |
+| 配置项 | 方案 A | 方案 B | 方案 C | 方案 D | 方案 E（当前） |
+|--------|--------|--------|--------|--------|----------------|
+| `BT_CTLR_PHY_2M` | `n` | `n` | `n` | `n` | `y` |
+| `BT_CTLR_TX_PWR_PLUS_8` | 注释 | `y` | `y` | `y` | `y` |
+| `BLE_EXPERIMENTAL_FEATURES` | `y` | `n` | `n` | `y` | `y` |
+| `BLE_PASSKEY_ENTRY` | `y` | `y` | `y` | `y` | `y` |
+| `CLOCK_CONTROL_NRF_K32SRC_RC` | `y` | `y` | `y` | `y` | `y` |
+| `CLOCK_CONTROL_NRF_K32SRC_500PPM` | — | — | — | `y` | `y` |
+| `BT_GATT_ENFORCE_SUBSCRIPTION` | `n` | `n` | `n` | `n` | `n` |
+| `ZMK_USB_LOGGING` | `y` | `y` | `n` | `n` | `n` |
+| `ZMK_POINTING` | `y` | `y` | 注释 | 注释 | 注释 |
+| `BT_PERIPHERAL_PREF_MIN_INT` | 删除 | — | — | `12` | `12` |
+| `BT_PERIPHERAL_PREF_MAX_INT` | 删除 | — | — | `24` | `24` |
+| `BT_RX_STACK_SIZE` | — | — | — | `2048` | `4096` |
+| `WORKQUEUE/MAIN_STACK_SIZE` | `2048` | `2048` | `2048` | `2048` | `4096` |
+| `BLE_THREAD_STACK_SIZE` | — | — | — | — | `1024` |
+| `settings_reset` | 否 | 否 | **是** | **是** | **是** |
+| 结果 | ❌ | ❌ | ❌ | ❌ | 待测试 |
 
 ## 排除了的可能原因
 
