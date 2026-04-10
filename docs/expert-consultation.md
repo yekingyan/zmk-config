@@ -171,7 +171,16 @@ kscan0: kscan {
 1. **释放无线电资源**：开启 `CONFIG_BT_CTLR_PHY_2M=y`，大幅减少频段占用时间，解决无线电调度冲突。
 2. **状态机深层扩容**：将 `SYSTEM_WORKQUEUE`、`MAIN`、`RX` 线程堆栈全部扩容至 `4096`，并增加 `BLE_THREAD_STACK_SIZE=1024`，防止 OOM 引发槽位清理失败（-22 错误）。
 
-**结果**：待测试（等结果）。
+**结果**：❌ 失败 — 开启 2M PHY 后信号雪崩，连配对连上建立都变得极其困难。这就证明了硬件层面的天线信号极差，根本无法支撑 2M 带宽对信噪比的要求。
+
+### 实验六（2026-04-10）：回退 1M PHY 并开启日志验证物理极限（退守方案 F）
+
+**操作**：
+1. **退守 1M PHY**：`CONFIG_BT_CTLR_PHY_2M=n`，放弃速度换取通信存活。
+2. **开启日志观测**：重新打开 `USB_LOGGING=y`，用以监视如果 1M 下断连发生，是否仍然是原先的死锁报错。
+3. **保留防御**：保留扩充的队列栈和防漂移配置。
+
+**结果**：待测试。
 
 ---
 
@@ -179,24 +188,18 @@ kscan0: kscan {
 
 以下是在排查过程中测试过的所有配置组合：
 
-| 配置项 | 方案 A | 方案 B | 方案 C | 方案 D | 方案 E（当前） |
-|--------|--------|--------|--------|--------|----------------|
-| `BT_CTLR_PHY_2M` | `n` | `n` | `n` | `n` | `y` |
-| `BT_CTLR_TX_PWR_PLUS_8` | 注释 | `y` | `y` | `y` | `y` |
-| `BLE_EXPERIMENTAL_FEATURES` | `y` | `n` | `n` | `y` | `y` |
-| `BLE_PASSKEY_ENTRY` | `y` | `y` | `y` | `y` | `y` |
-| `CLOCK_CONTROL_NRF_K32SRC_RC` | `y` | `y` | `y` | `y` | `y` |
-| `CLOCK_CONTROL_NRF_K32SRC_500PPM` | — | — | — | `y` | `y` |
-| `BT_GATT_ENFORCE_SUBSCRIPTION` | `n` | `n` | `n` | `n` | `n` |
-| `ZMK_USB_LOGGING` | `y` | `y` | `n` | `n` | `n` |
-| `ZMK_POINTING` | `y` | `y` | 注释 | 注释 | 注释 |
-| `BT_PERIPHERAL_PREF_MIN_INT` | 删除 | — | — | `12` | `12` |
-| `BT_PERIPHERAL_PREF_MAX_INT` | 删除 | — | — | `24` | `24` |
-| `BT_RX_STACK_SIZE` | — | — | — | `2048` | `4096` |
-| `WORKQUEUE/MAIN_STACK_SIZE` | `2048` | `2048` | `2048` | `2048` | `4096` |
-| `BLE_THREAD_STACK_SIZE` | — | — | — | — | `1024` |
-| `settings_reset` | 否 | 否 | **是** | **是** | **是** |
-| 结果 | ❌ | ❌ | ❌ | ❌ | 待测试 |
+| 配置项 | 方案 C | 方案 D | 方案 E | 方案 F（当前） |
+|--------|--------|--------|--------|----------------|
+| `BT_CTLR_PHY_2M` | `n` | `n` | `y` | `n`（退守） |
+| `BLE_EXPERIMENTAL_FEATURES` | `n` | `y` | `y` | `y` |
+| `CLOCK_CONTROL_NRF_K32SRC_500PPM` | — | `y` | `y` | `y` |
+| `ZMK_USB_LOGGING` | `n` | `n` | `n` | `y` |
+| `BT_PERIPHERAL_PREF_MIN_INT` | — | `12` | `12` | `12` |
+| `BT_PERIPHERAL_PREF_MAX_INT` | — | `24` | `24` | `24` |
+| `BT_RX_STACK_SIZE` | — | `2048` | `4096`| `4096` |
+| `WORKQUEUE/MAIN_STACK_SIZE` | `2048` | `2048` | `4096`| `4096` |
+| `BLE_THREAD_STACK_SIZE` | — | — | `1024`| `1024` |
+| 结果 | ❌ | ❌ | ❌ (连不上) | 待测试 |
 
 ## 排除了的可能原因
 
