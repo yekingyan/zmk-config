@@ -187,7 +187,32 @@ CONFIG_ZMK_BEHAVIORS_QUEUE_SIZE=512
 - [ ] Step 2: 恢复 `EXPERIMENTAL_CONN=y` + `EXPERIMENTAL_SEC=y`
 - [ ] Step 3: 恢复 `EXPERIMENTAL_FEATURES=y`
 
-**结果**：待测试
+**结果**：❌ 失败 — 关闭 USB logging + Pointing + settings reset 后，断连仍然发生
+
+### 实验四（2026-04-10）：应用专家综合防断连方案
+
+**背景观察**：左手连 USB 时，右手**从不断连**；左手拔掉 USB 仅用蓝牙时，发生一系列断连和假死。这表明问题极大概率出在无线电抢占（Radio Scheduling）和休眠时钟漂移上。
+
+**方案解析（四大优化支柱）**：
+
+1. **补全 RC 时钟精度声明**
+   - 之前只开启了 RC 振荡器（`RC=y`），但没有声明精度。Zephyr 默认以为时钟很准，分配了极窄的接收窗口，遇到 SuperMini 的廉价 RC，漂移一出直接漏接数据包。
+   - 对策：必须加上 `CONFIG_CLOCK_CONTROL_NRF_K32SRC_500PPM=y`（保命选项）。
+
+2. **解决无线电抢占（Radio Contention）**
+   - 左手连 PC 蓝牙时，PC 的连接间隔如果也是默认的 7.5ms，会与左右手之间的 7.5ms 抢占同一块射频资源（同一时间只能干一件事）。插着 USB 时不需要用蓝牙连 PC，所以不抢占。
+   - 对策：强制拉开与 PC 的通信间隔（`MIN_INT=12` / `MAX_INT=24`），让出时间片。
+
+3. **应对高频突发流量（防拥塞）**
+   - 当遇到网络波动时（特别是后续开启 Pointing 时），积压的包会瞬间撑爆默认仅为 3 的底层 TX 队列。
+   - 对策：深层扩容。加上 `BT_CTLR_TX_BUFFERS=10` 和 `BT_RX_STACK_SIZE=2048`。
+
+4. **利用新版 Zephyr 重试机制**
+   - 新版 ZMK 的实验性特性中包含了优化过的重试逻辑。
+   - 对策：重新开启 `EXPERIMENTAL_FEATURES=y`，配合 `500ppm` 时钟宽容度一起食用。
+
+**判定逻辑**：
+- ✅ 稳定运行（拔掉 USB 仅蓝牙模式下不再发生断连假死） → 问题彻底解决。
 
 ---
 
