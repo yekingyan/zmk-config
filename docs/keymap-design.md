@@ -352,6 +352,14 @@ behaviors {
 
 > **实现原理**：`input-processor-scaler` 仅适用于物理指针设备（trackball/trackpad）的 Input Listener，对鼠标模拟 (`&mmv`) 无效。因此改用**自定义速度宏**：利用 ZMK `pointing.h` 中的 `MOVE_X()`/`MOVE_Y()` 宏定义不同速度值，在影子层中直接绑定到 `&mmv`，覆写 Mouse 层的移动键位。`&mmv` 的加速曲线（`acceleration-exponent`、`time-to-max-speed-ms`）依然对所有速度档位生效，区别仅在于速度天花板不同。
 
+### ZMK Studio 与免配对码连接
+
+为了方便随时调整键位配置，本方案开启了 ZMK Studio 支持，并关闭了基于 PIN 码的安全验证与锁：
+
+- **开启 ZMK Studio**：通过 `CONFIG_ZMK_STUDIO=y`，允许直接在浏览器中（配合 ZMK Studio 网页端）实时调整键位，无需重新编译固件。
+- **免去蓝牙验证与 Studio 解锁 PIN 码**：
+  - ZMK Studio 默认出于安全考虑是锁定的（需要按特定快捷键解锁）。为提升调试体验，使用 `CONFIG_ZMK_STUDIO_LOCKING=n` 默认免解锁。
+  - 关闭蓝牙安全配对码功能（移除 `CONFIG_ZMK_BLE_PASSKEY_ENTRY=y`），从而在蓝牙配对时无需盲打 6 位数字 PIN 码。
 
 ## 进化路线图
 
