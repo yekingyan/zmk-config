@@ -1,31 +1,41 @@
-# 36 键键位设计（ZMK / Lily58 过渡实现）
+# 34 / 36 / 58 键位设计体系（ZMK 统一架构）
 
-> 本方案分 `silakka54` 和 `lily58` 两个分支维护，采用"双核驱动"过渡方案。
+> 本方案是跨硬件阵列的终极键位设计，当前主要维护 `lily58` (58键)、`silakka54/corne` (54/36键) 和 `dolphin1` / `sweep` (34键) 分支，通过"双核驱动"和"Combo 降维"实现完美兼容体验。
 
-### Lily58 vs Silakka54：拇指键差异
+### 34 vs 36 vs 58 键：硬件拇指键差异与降维映射
 
-两个分支的 3×5 核心区（字母、符号、功能层）完全相同，**唯一区别在于拇指键布局**：
+所有分支的 3×5 核心区（字母、符号、功能层）**完全相同**，各键盘之间的**唯一区别在于每侧拇指键的物理数量和布局降维策略**：
 
-- **Silakka54**（每侧 3 个拇指键）：最外侧无物理键，`&none` 放在内侧
+- **Dolphin1 / Sweep (34 键)**（每侧 **2 个**拇指键）：
+  最极致的妥协，砍掉所有外侧按键。最外侧第3个拇指键功能（左 Esc_FUN，右 LShift_MED）通过本配置底部的“双拇指同时按压 Combo”（或主键区 S+D / J+K）完美兼容。
+  ```text
+  左拇指：            SPACE(NAV) │ TAB(NUM)
+  右拇指：ENTER(SYM) │ BSPC(MOU)
   ```
+
+- **Silakka54 / Corne (36 键核心)**（每侧 **3 个**拇指键）：
+  黄金标准 `3x5+3` 布局，保留三个核心切层键。
+  ```text
   左拇指：ESC(FUN) │ SPACE(NAV) │ TAB(NUM) │ none
   右拇指：none     │ ENTER(SYM) │ BSPC(MOU) │ LSHFT(MED)
   ```
-- **Lily58**（每侧 4 个拇指键）：3 个功能键整体**右移一位**，`&none` 移到最外侧
-  ```
+
+- **Lily58 (58 键)**（每侧 **4 个**拇指键）：
+  在拥有 3 个核心切层键的基础上，利用物理冗余空间提供容错率，整体**右移一位**，外侧放假键 `&none` 以逼迫手指内收。
+  ```text
   左拇指：none │ ESC(FUN) │ SPACE(NAV) │ TAB(NUM)
   右拇指：ENTER(SYM) │ BSPC(MOU) │ LSHFT(MED) │ none
   ```
 
-> 非 Base 层中拇指键上的功能绑定（如 Num 层的 `N0`、Mouse 层的鼠标按键）也遵循同样的右移规则。
+> 非 Base 层中拇指键上的功能绑定（如 Num 层的 `N0`、Mouse 层的鼠标按键）也严格遵循同样的对齐/右移规则。使用这套方案，你可以随意在 34 键、36 键乃至传统的 58 键分体键盘之间无缝切换。
 
 ## 社区最佳实践溯源
 
 > 本方案集成了近几年 r/ErgoMechKeyboards 和 ZMK 社区几大流派的精髓。
 
 - **Callum-style OSM 流派**（Callum Oakley）：摒弃 Home Row Mods（HRM，主行长按触发修饰键）。HRM 在快速打字（特别是 Roll 连击）时极易误触（Tapping Term 冲突）。Callum 引入独立层 + Sticky Keys（OSM），实现基础层 0 延迟、0 误触，完美契合 Vim 的"顺序输入"哲学
-- **Miryoku 对侧控制 + 3x5+3 黄金法则**（Manna Harbour）：36 键配列的绝对真理——按住左手拇指切层，右手执行功能；反之亦然。本配置的 Numpad、Nav 等层完全继承此理念
-- **"双核驱动"渐进式降级**（分体键盘社区常见建议）：保留物理冗余作为安全网，核心区通过代码强制塑形（如置空 4 个拇指键），是克服大脑抗拒的最高效手段
+- **Miryoku 对侧控制 + 3x5+3 黄金法则**（Manna Harbour）：36/34 键配列的绝对真理——按住左手拇指切层，右手执行功能；反之亦然。本配置的 Numpad、Nav 等层完全继承此理念
+- **"双核驱动"渐进式降级**（分体键盘社区常见建议）：在 58 键上保留物理冗余作为安全网，核心区通过代码强制塑形（如置空 4 个拇指键），是克服大脑抗拒并最终过渡到 34 键 Dolphin 的最高效手段
 - **ZMK Caps Word**（ZMK 官方 Behaviors，借鉴自 QMK）：彻底淘汰 Caps Lock，通过 Combo 触发，遇到空格自动解除，专为 `SNAKE_CASE` 设计。`continue-list = <UNDERSCORE MINUS>` 确保连字符也不会中断大写
 
 ## 设计哲学："双核驱动"过渡方案
@@ -303,17 +313,17 @@ behaviors {
 
 同时按下 `J` 和 `K` 触发 `LSHFT`，既可以用作快速切换中英文输入法的单点按键，也可通过长按来作为普通的 Shift 使用，彻底解放左手小指。key-positions `<31 32>`（Lily58 矩阵）。
 
-### 双拇指 Combo (Sweep 适配)
+### 双拇指 Combo (Dolphin1 / Sweep 34键终极适配)
 
-为彻底适应 36 键只有 2 个拇指键的配列（Sweep风格），将最外侧的功能键（第 3个拇指键）收容到内侧两个拇指键的 Combo 触发中：
+为彻底适应 34 键只有 2 个拇指键的极简配列（如 Dolphin1 / Sweep），将原本在 36 键体系里位于“第三个拇指键”的外侧功能，完美收容到内侧两个拇指键的 Combo 触发中：
 - **左手（SPACE + TAB）同按**：仅触发 `Fun` 层切换（因 `ESC` 单按已由 `S+D` Combo 完美承载）
 - **右手（ENTER + BSPC）同按**：仅触发 `Media` 层切换（因 `LSHFT` 单按已由 `J+K` Combo 完美承载）
 
-### Caps Word（F + J Combo / Nav 层 G 位）
+### Caps Word（F + J Combo / Nav 层左手原 G 键位）
 
 两种触发方式：
-- **F + J 同时按**（Combo）：双手食指归位键，Base 层直接触发，最快捷
-- **Nav 层 G 位**：按住 Nav 后点击 G 位触发
+- **F + J 同时按**（Combo）：双手食指归位键（Home Row），Base 层直接触发，最快捷
+- **Nav 层食指内侧（左手原 G 键位处）**：按住左手拇指（系统 Nav 层）后，用左手食指点击内侧按键触发。
 
 激活后输入的字母自动大写，遇到非字母/数字/下划线时自动取消。非常适合输入 `CONST_VALUE`、`MY_VARIABLE` 等蛇形命名。已配置 `continue-list = <UNDERSCORE MINUS>`，连字符 `-` 也不会中断大写，支持 `MY-CONST` 风格命名。
 
