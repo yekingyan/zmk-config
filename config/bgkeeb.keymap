@@ -199,7 +199,7 @@
 &swapper   &kp LS(TAB) &kp RET    &kp LSHFT  &kp BSPC                  &kp LC(LEFT) &kp LC(D)  &kp LC(U)  &kp LC(RIGHT) &kp DEL
 &skn LGUI  &skn LALT   &skn LCTRL &skq LSHFT &caps_word                &kp LEFT     &kp DOWN   &kp UP     &kp RIGHT     &kp LC(DEL)
 &kp LC(Z)  &kp LC(X)   &kp LC(C)  &kp LC(V)  &trans                    &kp HOME     &kp PG_DN  &kp PG_UP  &kp END       &kp LC(BSPC)
-            &trans      &none      &trans     &trans                    &trans       &trans     &none      &trans
+            &trans      &none      &trans     &trans                    &kp RET      &kp BSPC   &none      &trans
             >;
 
             sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;
@@ -220,7 +220,7 @@
 &trans     &trans    &trans     &trans     &trans                     &kp DOT &kp N7 &kp N8 &kp N9 &kp MINUS
 &skn LGUI  &skn LALT &skn LCTRL &skq LSHFT &kp BSPC                  &trans &kp N4 &kp N5 &kp N6 &kp PLUS
 &trans     &kp FSLH  &kp ASTRK  &kp EQUAL  &trans                    &trans &kp N1 &kp N2 &kp N3 &trans
-            &trans    &none      &trans     &trans                    &trans &kp N0 &none  &trans
+            &trans    &none      &trans     &trans                    &kp RET &kp N0 &none  &trans
             >;
 
             sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;
@@ -241,7 +241,7 @@
 &kp EXCL  &kp AT   &kp HASH &kp DLLR &kp PRCNT                   &kp CARET &kp AMPS   &kp ASTRK  &kp EQUAL  &kp SQT
 &kp LPAR  &kp LBRC &kp LBKT &kp LT   &kp UNDER                  &kp PIPE  &skq LSHFT &skn RCTRL &skn RALT  &skn RGUI
 &kp RPAR  &kp RBRC &kp RBKT &kp GT   &kp GRAVE                  &kp BSLH  &kp TILDE  &kp COLON  &kp DQT    &kp QMARK
-           &trans   &none    &trans   &trans                      &trans    &trans     &none      &trans
+           &trans   &none    &kp SPACE &kp TAB                    &trans    &trans     &none      &trans
             >;
 
             sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;
@@ -262,7 +262,7 @@
 &kp K_CANCEL &out OUT_BLE  &out OUT_USB  &trans       &bt BT_CLR                &trans &kp F7 &kp F8 &kp F9 &kp F12
 &skn LGUI    &skn LALT     &skn LCTRL    &skq LSHFT   &trans                    &trans &kp F4 &kp F5 &kp F6 &kp F11
 &bt BT_SEL 0 &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3 &trans                   &trans &kp F1 &kp F2 &kp F3 &kp F10
-              &trans        &trans        &trans       &trans                    &trans &trans &none  &trans
+              &trans        &trans        &trans       &trans                    &kp RET &kp BSPC &none  &trans
             >;
 
             sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;
@@ -304,7 +304,7 @@
 &trans &trans     &trans       &trans       &trans                       &trans &trans     &trans     &trans    &trans
 &trans &kp C_PREV &kp C_VOL_DN &kp C_VOL_UP &kp C_NEXT                  &trans &skq LSHFT &skn RCTRL &skn RALT &skn RGUI
 &trans &kp C_MUTE &kp C_BRI_DN &kp C_BRI_UP &kp C_PP                    &trans &trans     &trans     &trans    &trans
-        &trans    &none        &trans       &trans                       &trans &trans     &trans     &trans
+        &trans    &none        &kp SPACE    &kp TAB                      &trans &trans     &trans     &trans
             >;
 
             sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;
