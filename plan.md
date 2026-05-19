@@ -1,95 +1,239 @@
 # ZMK Config 计划
 
-## 项目背景
+> `plan.md` 是项目的**驾驶舱**：当前任务 + 设计约束 + 配置导航。
+> 详细键位设计文档 → [docs/keymap-design.md](docs/keymap-design.md)
 
-Lily58 上实现"双核驱动"过渡方案，最终目标迁移到 Corne 36 键。
+## 🎯 当前聚焦：阶段三 - 极客常态期（2026-03-16 起）
 
-- 详细键位设计文档：[docs/keymap-design.md](docs/keymap-design.md)
+> 外围键已恢复，Legacy 层已移除，不再误触。
+> 训练目标：Ctrl+S 等组合键全部走 OSM 路径，小拇指彻底解放。
 
-## 设计原则
-
-- Callum-style OSM（一次性修饰键），不用 Home Row Mods / Hold-Tap
-- 3 拇指核心键（Lily58）→ 目标 2 拇指核心键（Sweep 适配）
-- 外围保留冗余常规键（Shift/Ctrl/数字行），作为过渡期安全网
-- 对侧控制（Contralateral Control）：左手拇指切层时右手执行功能，反之亦然
-
-## 七层架构
-
-- **Base (0)**：QWERTY + 外围冗余键（数字行/物理 Shift/Ctrl）
-- **Nav (1)**：左手 OSM 修饰 + 编辑快捷键，右手 Vim HJKL + 按词跳跃 + 翻页
-- **Num (2)**：左手算术运算符，右手纯数字九宫格
-- **Sym (3)**：左手高频符号（括号/特殊字符），右手 OSM 修饰 + 副标点
-- **Fun (4)**：左手 OSM/BT/Bootloader/K_CANCEL，右手 F 键九宫格（与 Num 对齐）
-- **Mouse (5)**：左手鼠标移动/滚轮/剪贴板，右手 OSM + 鼠标点击
-- **Media (6)**：左手媒体/音量/亮度，右手 OSM
-
-## 当前阶段：阶段三 - 极客常态期（2026-03-16 起）
-
-- 外围键已恢复，Legacy 层已移除，不再误触
 - **当前痛点**：标点符号层（Sym 层）键位记不住，需要反复练习
-- 训练目标：Ctrl+S 等组合键全部走 OSM 路径，小拇指彻底解放
 
-## 进行中
+### 进行中
 
-- [x] 蓝牙频繁断联问题排查及配置调优（现状：已破案，确认为克隆板时钟漂移）
-  - 详见：[ZMK 固件底层调试与断联排查指南](docs/debug-guide.md)
-  - **真凶发现**：原因 0x22 (LMP Response Timeout) 是由于 SuperMini 等克隆板缺少外部晶振，刷入官方固件后导致时钟漂移。
-  - **终极方案**：强制启用内部 RC 振荡器 (`CONFIG_CLOCK_CONTROL_NRF_K32SRC_RC=y`)，并撤销之前的临时超时补救措施。
-  - **二轮优化（针对克隆板握手崩溃）**：针对 `Err 9 (Security failed)` 拒绝连接问题，将 `CONFIG_BT_CTLR_PHY_2M` 设为 `n`（强制降级 1M PHY），并开启实验性安全配对选项 (`CONFIG_ZMK_BLE_EXPERIMENTAL_SEC=y`)。
+> 开发前在此写详细规划，完成后清除并归档。
 
+#### 蓝牙频繁断联问题排查及配置调优
 
-## Combo 规划
+- 详见：[ZMK 固件底层调试与断联排查指南](docs/debug-guide.md)
+- **真凶发现**：原因 0x22 (LMP Response Timeout) 是由于 SuperMini 等克隆板缺少外部晶振，刷入官方固件后导致时钟漂移
+- **终极方案**：强制启用内部 RC 振荡器 (`CONFIG_CLOCK_CONTROL_NRF_K32SRC_RC=y`)，并撤销之前的临时超时补救措施
+  - 已应用于 → [`config_silakka54/lily58.conf:10-11`](config_silakka54/lily58.conf)
+  - Lily58 主配置切换为外部晶振 → [`config/lily58.conf:24`](config/lily58.conf)
+- **二轮优化（针对克隆板握手崩溃）**：针对 `Err 9 (Security failed)` 拒绝连接问题
+  - `CONFIG_BT_CTLR_PHY_2M=n`（强制降级 1M PHY）→ [`config/lily58.conf:12`](config/lily58.conf)
+  - `CONFIG_ZMK_BLE_EXPERIMENTAL_SEC=y` → [`config/lily58.conf:32`](config/lily58.conf)
+- [x] 初始排查与临时补救
+- [x] 根因确认（时钟漂移）
+- [x] 终极方案实施（RC 振荡器 / 外部晶振切换）
+- [x] 二轮优化（1M PHY 降级 + 实验性安全配对）
+- [ ] 长期稳定性观察（持续监控中）
 
-### 目标
+### 规划
 
-为 Sweep 风格布局（每侧仅 2 拇指键）做准备，将当前依赖第 3 拇指键的功能迁移到 Combo 触发，同时系统化梳理所有 Combo 需求。
+#### Combo 系统演进
 
-### 约束
+> 为 Sweep 风格布局（每侧仅 2 拇指键）做准备，将当前依赖第 3 拇指键的功能迁移到 Combo 触发。
 
+**约束**：
 - 五笔输入法用户，Combo 键位必须避开高频 bigram（数据见 `research/wubi-bigram-analysis.md`）
 - 需要 Combo 替代的功能：ESC、Shift（原第 3 拇指键承载）
-- 可能还需要 Combo 的功能：Caps Word、输入法切换、待定...
 
-### 现有 Combo
+**现有 Combo 清单**（含 keymap 源码位置）：
 
-| Combo | 键位 | 功能 | 层 | 状态 |
-|-------|------|------|----|------|
-| `J+K` | pos 31+32 | ESC | Base | ✅ 保留 |
-| `F+J` | pos 28+31 | Caps Word | Base | ✅ 保留 |
-| `S+D` | pos 26+27 | LSHFT(单次切换/长按) | Base | ✅ 新增（最优安全位） |
-| 左双拇指 | 52+53(L)/51+52(S) | 切 FUN 层 | Base | ✅ 新增（Sweep适配）|
-| 右双拇指 | 54+55(L)/55+56(S) | 切 MEDIA 层 | Base | ✅ 新增（Sweep适配）|
+| Combo | 键位 | 功能 | 层 | 状态 | 源码位置 |
+|-------|------|------|----|------|---------|
+| `S+D` | pos 26+27 (L58) / 11+12 (34k) | ESC | Base | ✅ | [`config/lily58.keymap:123-129`](config/lily58.keymap) |
+| `F+J` | pos 28+31 (L58) / 13+16 (34k) | Caps Word | Base | ✅ | [`config/lily58.keymap:132-138`](config/lily58.keymap) |
+| `J+K` | pos 31+32 (L58) / 16+17 (34k) | LSHFT | Base | ✅ | [`config/lily58.keymap:141-147`](config/lily58.keymap) |
+| 左双拇指 | pos 52+53 (L58) / 30+31 (34k) | FUN 层 | Base | ✅ | [`config/lily58.keymap:150-155`](config/lily58.keymap) |
+| 右双拇指 | pos 54+55 (L58) / 32+33 (34k) | MEDIA 层 | Base | ✅ | [`config/lily58.keymap:158-163`](config/lily58.keymap) |
 
-### Sweep 拇指区变化
+**Sweep 拇指区降维变化**：
 
 ```
-Lily58 (3 拇指核心):  [Nav/SPACE] [Num/TAB] [Shift/Media]  ← 右手示例
-Sweep  (2 拇指核心):  左侧 [SPACE/NAV] [TAB/NUM]   右侧 [ENTER/SYM] [BSPC/MOU] 
+Lily58 (4 拇指，3 核心):  none │ ESC(FUN) │ SPACE(NAV) │ TAB(NUM)     ← 左手
+                          ENTER(SYM) │ BSPC(MOU) │ LSHFT(MED) │ none  ← 右手
+
+Sweep  (2 拇指):          SPACE(NAV) │ TAB(NUM)     ← 左手
+                          ENTER(SYM) │ BSPC(MOU)    ← 右手
+                          FUN = 左双拇指 combo, MEDIA = 右双拇指 combo
 ```
 
-**被移除功能的安置方案：**
-**被移除功能的安置方案：**
-- **Fun 层**：左侧双拇指同按（SPACE + TAB）长按触发 Combo
-- **Media 层**：右侧双拇指同按（ENTER + BSPC）长按触发 Combo
-- **ESC 单按**：目前主区已有 `J+K` Combo 承载
-- **LSHFT(单次/中英切换)**：S+D（左手中指+无名指，基于数据证明的最强安全位）
-- **Caps Word**：保留 `F+J`
+**待决事项**：
 
-### 选键数据基础
-
-五笔 Bigram 频率分析已完成（`research/`），top300 零命中的安全组合：
-- `sd`（评分 167）、`jk`（166）、`as`（134）、`sf`（132） — 最优候选
-- 全键盘共 103 个 top300 零命中组合可选
-
-### 待决事项
-
-- [x] 确定 Sweep 拇指区 2 键各自承载什么功能：左 `SPACE(NAV) | TAB(NUM)`；右 `ENTER(SYM) | BSPC(MOU)`
-- [x] 确定需要 Combo 化的完整功能清单：Fun 层、Media 层、ESC、单次 Shift (中英切换)、Caps Word
+- [x] 确定 Sweep 拇指区 2 键各自承载什么功能
+- [x] 确定需要 Combo 化的完整功能清单
 - [x] 从安全组合池中为单次 Shift 选定最佳按键 `S+D`
-- [x] 增加 Sweep 拇指同按Combo (左拇指 `SPACE+TAB`, 右拇指 `ENTER+BSPC`)
+- [x] 增加 Sweep 拇指同按 Combo
 - [ ] 评估是否需要跨层 Combo
 
-## 已完成
+**选键数据基础**：五笔 Bigram 频率分析已完成（`research/`），top300 零命中的安全组合：`sd`（167）、`jk`（166）、`as`（134）、`sf`（132）— 共 103 个候选。
+
+---
+
+## 📐 设计约束
+
+| 编号 | 规则 |
+|------|------|
+| KEY-01 | Callum-style OSM：不用 Home Row Mods / Hold-Tap，独立层 + Sticky Keys |
+| KEY-02 | 对侧控制：左手拇指切层 → 右手执行功能，反之亦然 |
+| KEY-03 | 3x5 核心区跨硬件完全一致，差异仅在拇指键数量和降维策略 |
+| KEY-04 | `skq`（quick-release）仅限 Shift；`skn`（无 quick-release）给 Ctrl/Alt/GUI |
+| KEY-05 | 所有涉及中英文切换的 Shift 均使用 `LSHFT`（Windows 输入法钩子限制） |
+| KEY-06 | `tlt` 必须移除 `require-prior-idle-ms`（防止长按被吃掉） |
+| BLE-01 | 克隆板必须启用 RC 振荡器或外部晶振校准，防止时钟漂移断连 |
+| BLE-02 | `CONFIG_BT_CTLR_PHY_2M=n`，强制 1M PHY 保证信号稳定 |
+
+> 完整键位设计哲学 → [docs/keymap-design.md § 设计哲学](docs/keymap-design.md#设计哲学双核驱动过渡方案)
+
+---
+
+## 🗺️ 配置文件导航
+
+### 项目结构
+
+```
+zmk-config/
+├── config/                    # 主配置目录（Lily58 / Sweep / Dolphin1 / BGKeeB）
+│   ├── lily58.keymap          # 58 键主力配置（9 层，含 Snipe/Turbo 影子层）
+│   ├── lily58.conf            # 58 键蓝牙/功能开关
+│   ├── cradio.keymap          # Sweep 34 键配置（7 层）
+│   ├── cradio.conf            # Sweep 蓝牙配置
+│   ├── dolphin1.keymap        # Dolphin1 自制 PCB 34 键（= cradio 布局）
+│   ├── dolphin1.conf          # Dolphin1 蓝牙配置
+│   ├── bgkeeb.keymap          # BGKeeB 38 键（3x5+4 拇指 + 旋钮，含 Snipe/Turbo）
+│   └── bgkeeb.conf            # BGKeeB 蓝牙配置
+├── config_silakka54/          # Silakka54 独立配置（通过 cmake-args 切换）
+│   ├── lily58.keymap          # Silakka54 版 58 键（拇指区 3+1 布局）
+│   └── lily58.conf            # Silakka54 蓝牙（RC 振荡器）
+├── boards/shields/            # 自定义 Shield 定义（dolphin1, bgkeeb）
+├── build.yaml                 # GitHub Actions 构建矩阵
+├── docs/                      # 文档
+│   ├── keymap-design.md       # 键位设计体系（真相源，ZMK + RMK 跨平台）
+│   ├── debug-guide.md         # 固件调试与断联排查
+│   ├── bluetooth-troubleshooting.md
+│   ├── deploy.md              # 部署说明
+│   └── ...
+└── research/                  # 数据分析（五笔 bigram 等）
+```
+
+### Keymap 配置对照
+
+> 所有分支的 3×5 核心区（字母、符号、功能层）**完全相同**，差异仅在拇指键。
+
+| 硬件 | 键数 | 拇指键/侧 | Keymap 文件 | Conf 文件 | 层数 | 特殊功能 |
+|------|------|-----------|-------------|-----------|------|---------|
+| Lily58 | 58 | 4（3 核心 + 1 冗余） | [`config/lily58.keymap`](config/lily58.keymap) | [`config/lily58.conf`](config/lily58.conf) | 9 | Snipe/Turbo 影子层、ZMK Studio |
+| Silakka54 | 58 | 4（3 核心 + 1 辅助） | [`config_silakka54/lily58.keymap`](config_silakka54/lily58.keymap) | [`config_silakka54/lily58.conf`](config_silakka54/lily58.conf) | 9 | RC 振荡器、平滑滚动 |
+| Sweep | 34 | 2 | [`config/cradio.keymap`](config/cradio.keymap) | [`config/cradio.conf`](config/cradio.conf) | 7 | 双拇指 Combo 切层 |
+| Dolphin1 | 34 | 2 | [`config/dolphin1.keymap`](config/dolphin1.keymap) | [`config/dolphin1.conf`](config/dolphin1.conf) | 7 | 自制 PCB，= Sweep 布局，[RMK 固件](https://github.com/haobogu/rmk) keymap: [`~/projects/rmk-dolphin/nrf52840_split/keyboard.toml`](../rmk-dolphin/nrf52840_split/keyboard.toml) |
+| BGKeeB | 38 | 4 | [`config/bgkeeb.keymap`](config/bgkeeb.keymap) | [`config/bgkeeb.conf`](config/bgkeeb.conf) | 9 | 旋钮、Snipe/Turbo |
+
+### 设计变更时需同步的文件清单
+
+> 3×5 核心区（字母、符号、功能层）跨所有硬件 + 固件平台保持一致。
+> 修改键位设计时，以下文件**全部需要同步更新**：
+
+| # | 文件 | 说明 |
+|---|------|------|
+| 1 | `docs/keymap-design.md` | 键位设计真相源（ZMK + RMK 跨平台） |
+| 2 | `config/lily58.keymap` | Lily58 (58键, 9层) |
+| 3 | `config_silakka54/lily58.keymap` | Silakka54 (58键, 9层) |
+| 4 | `config/cradio.keymap` | Sweep (34键, 7层) |
+| 5 | `config/dolphin1.keymap` | Dolphin1 ZMK (34键, 7层) |
+| 6 | `config/bgkeeb.keymap` | BGKeeB (38键, 9层) |
+| 7 | `~/projects/rmk-dolphin/nrf52840_split/keyboard.toml` | Dolphin1 RMK 固件 |
+
+### 核心 Behavior 定义（各 keymap 共享）
+
+| Behavior | 标签 | 用途 | 定义位置示例 |
+|----------|------|------|-------------|
+| `skq` | `sticky_key_quick_release` | Shift 专用 OSM（快速释放） | [`config/lily58.keymap:76-83`](config/lily58.keymap) |
+| `skn` | `sticky_key_normal` | Ctrl/Alt/GUI OSM（支持链式组合） | [`config/lily58.keymap:86-92`](config/lily58.keymap) |
+| `tlt` | `thumb_layer_tap` | 拇指 Layer-Tap（balanced，无 idle 保护） | [`config/lily58.keymap:95-102`](config/lily58.keymap) |
+| `swapper` | Alt-Tab 宏 | Nav 层窗口切换 | [`config/lily58.keymap:106-117`](config/lily58.keymap) |
+
+### 蓝牙配置对比
+
+| 配置项 | Lily58 | Silakka54 | 说明 |
+|--------|--------|-----------|------|
+| 时钟源 | 外部晶振 (`XTAL`) | 内部 RC (`RC`) | 克隆板用 RC 更稳定 |
+| 晶振精度 | `50PPM` | `500PPM` | RC 振荡器精度低需放宽 |
+| 2M PHY | `n` | `n` | 强制 1M 保信号 |
+| 发射功率 | `+8 dBm` | `+8 dBm` | 自制 PCB 天线补偿 |
+| ZMK Studio | `y` | — | Lily58 开启实时调键 |
+| Studio 锁 | `n` | — | 免 PIN 码解锁 |
+| 实验性 BLE | `y` | 已禁用 | Zephyr 4.1+ 部分已合入主线 |
+| 休眠超时 | 15 min | 15 min | `CONFIG_ZMK_IDLE_SLEEP_TIMEOUT=900000` |
+
+> 完整蓝牙配置 → [`config/lily58.conf`](config/lily58.conf) / [`config_silakka54/lily58.conf`](config_silakka54/lily58.conf)
+
+---
+
+## 七层架构总览
+
+| 层号 | 名称 | 激活方式 | 功能手 | 控制手 |
+|------|------|---------|-------|-------|
+| 0 | Base | 默认层 | 双手 | — |
+| 1 | Nav & Mods | 左拇指 SPACE 长按 | 右手 | 左手 |
+| 2 | Numpad | 左拇指 TAB 长按 | 右手 | 左手 |
+| 3 | Symbols | 右拇指 ENTER 长按 | 左手 | 右手 |
+| 4 | Function | 左拇指 ESC 长按 / 左双拇指 Combo | 右手 | 左手 |
+| 5 | Mouse | 右拇指 BSPC 长按 | 左手 | 右手 |
+| 6 | Media | 右拇指 LSHFT 长按 / 右双拇指 Combo | 左手 | 右手 |
+
+> Lily58 额外包含 Layer 7 (M_SNIPE) 和 Layer 8 (M_TURBO) 影子层
+> 完整键位布局图 → [docs/keymap-design.md § 键位布局总览](docs/keymap-design.md#键位布局总览)
+
+---
+
+## 🔧 快速命令
+
+```bash
+# GitHub Actions 自动构建（push 触发）
+git push origin main
+
+# 本地构建（需要 west + Zephyr SDK）
+west build -b nice_nano -- -DSHIELD=lily58_left
+
+# Silakka54 构建（指定独立配置目录）
+west build -b nice_nano -- -DSHIELD=lily58_left -DZMK_CONFIG="config_silakka54"
+
+# 烧录固件（双击 RESET 进入 UF2 模式后拖入）
+cp build/zephyr/zmk.uf2 /media/$USER/NICENANO/
+```
+
+> 构建矩阵定义 → [`build.yaml`](build.yaml)
+> 部署说明 → [docs/deploy.md](docs/deploy.md)
+
+---
+
+## 📚 文档导航
+
+- [键位设计体系](docs/keymap-design.md) — 34/36/58 键统一架构、层布局图、ZMK + RMK 跨平台实现要点（**真相源**）
+- [固件调试与断联排查](docs/debug-guide.md) — USB 日志、蓝牙断连 debug 流程
+- [蓝牙故障排除](docs/bluetooth-troubleshooting.md) — 断联排查专题
+- [硬件引脚映射](docs/hardware-pin-mapping.md) — MCU 引脚与矩阵位置对应
+- [MCU 参考](docs/mcu-reference.md) — nRF52840 / Nice!Nano 技术细节
+- [专家咨询记录](docs/expert-consultation.md) — 社区咨询与方案讨论
+- [部署说明](docs/deploy.md) — 固件烧录与 OTA 流程
+
+---
+
+## 进化路线图
+
+- **阶段一：安全感过渡期**（第 1-2 周）→ ✅ 已毕业
+- **阶段二：Callum 觉醒期**（第 3-4 周）→ ✅ 已毕业
+- **阶段三：极客常态期**（第 2 个月后）→ 🔄 当前阶段
+- **阶段四：Corne/Dolphin 迁移** → 📋 待定
+
+> 详细路线图 → [docs/keymap-design.md § 进化路线图](docs/keymap-design.md#进化路线图)
+
+---
+
+## 已完成归档
 
 ### Dolphin1 Shield 对比审查与修复（2026-04-01）
 
@@ -99,78 +243,52 @@ Sweep  (2 拇指核心):  左侧 [SPACE/NAV] [TAB/NUM]   右侧 [ENTER/SYM] [BSP
 
 ### bgkeeb 仓库配置合并（2026-04-01）
 
-- [x] 将 zmk-bgkeeb 仓库中的键盘配置（`.conf`，`.keymap`）迁移至本仓库的 `config/` 目录
-- [x] 将对应的主板和 shield 定义移动至本仓库的 `boards/shields/` 目录
-- [x] 更新 `build.yaml` 构建矩阵，新增 `bgkeeb_left` / `bgkeeb_right`
-
-### 双方案共存配置（2026-03-10）
-
-- [x] 在 `build.yaml` 中增加通过 `cmake-args: -DZMK_CONFIG` 对新配置目录的支持
-- [x] 将 `silakka54` 分支原有的键映射文件平移到本分支 `config_silakka54` 文件夹，实现共存构建
-
-## 已完成
+- [x] 将 zmk-bgkeeb 仓库中的配置迁移至 [`config/bgkeeb.keymap`](config/bgkeeb.keymap) + [`config/bgkeeb.conf`](config/bgkeeb.conf)
+- [x] 将 shield 定义移动至 `boards/shields/`
+- [x] 更新 [`build.yaml`](build.yaml) 构建矩阵
 
 ### Corne 36 键 keymap 移植（2026-04-01）
 
-- [x] 在 `config` 中创建 `corne.keymap`
-- [x] 摘取了 `lily58` 中高度精华的 Callum-OSM 和键位布局
-- [x] 利用 ZMK 的 `&none` 屏蔽 Corne 42键最外围的 6 个列位，完美实现 36 键纯净约束
-- [x] 基于 Corne 42 键矩阵坐标系对所有的 Combo (`key-positions`) 进行了精确重算
-- [x] 更新 `build.yaml` 矩阵架构，新增 `corne_left` 与 `corne_right` 编译项
+- [x] 在 `config` 中创建 `corne.keymap`，摘取 Lily58 的 Callum-OSM 精华
+- [x] 利用 `&none` 屏蔽 Corne 42 键最外围 6 列，实现 36 键纯净约束
+- [x] 基于 Corne 42 键矩阵坐标系重算所有 Combo `key-positions`
+- [x] 更新 [`build.yaml`](build.yaml) 矩阵
 
-## 待办
+### 双方案共存配置（2026-03-10）
 
-- (暂无)
+- [x] [`build.yaml`](build.yaml) 增加 `cmake-args: -DZMK_CONFIG` 支持
+- [x] `silakka54` 分支键映射平移到 [`config_silakka54/`](config_silakka54/) 文件夹
 
 ### 上板实测与阶段一毕业（2026-03-05）
 
-- [x] **上板实测**：固件已烧录，实际使用中
-- [x] **阶段一毕业**：物理冗余键已完全封印（仅游戏场景使用 Legacy 层），3 拇指分工已适应
-- [x] 优化 Mouse 层布局：移除冗余的剪贴板快捷键与 CAPS，贯彻极简首选项
-- [x] Mouse 层优化：移除底部无用的 INS 键，纯净操作区
-- [x] Mouse 层功能重构：新增撤销/重做与虚拟桌面切换，优化单手浏览流
+- [x] 固件烧录实际使用
+- [x] 物理冗余键已完全封印，3 拇指分工已适应
+- [x] Mouse 层优化：移除冗余剪贴板/CAPS/INS，新增撤销/重做与虚拟桌面切换
 
 ### 高级功能与局部强化（2026-03-04）
 
-- [x] ~~**Z键长按修饰**：将 Base 层的 Z 键更换为 `&mt LCTRL Z`，补充了 Uro's Timeless 理念中的局部按压特性。~~ (已废弃/移除)
-- [x] **Nav 层 Alt-Tab Swapper**：在 Nav 层 Q 位添加了名为 `&swapper` 的宏，实现基于 ZMK 原生宏（macro）的快速窗口切换体验。
-- [x] **鼠标层疾/缓模式**：结合 input processors scaler 的特性在文件顶端新增 `zip_snipe` 和 `zip_turbo` 调节器。构建并引用 `M_SNIPE` 和 `M_TURBO` 双层图层，布置在右手侧底层 `N` 与 `M` 位置，允许微操“防手抖”慢移与大跨度瞬移。
-
-### 右外侧拇指键精简与切层优化（2026-03-04）
-
-- [x] **恢复核心区 OSM Shift**：测试确认 `&skq LSHFT` 实际上单点时会向 Windows 完美发送孤立的 Shift 按键，因此撤回之前错误的全局替换操作，恢复左右手中行的 `&skq LSHFT`（OSM），维持 Callum-style 设计的完整性。
-- [x] **拇指键采用纯切层修饰 tlt**：利用现有的拇指切层行为，将右外侧拇指键配置为 `&tlt MEDIA LSHFT`。实现单点精准输出 LSHFT（切中英文），长按触发切层 MO（进入 Media 层），彻底解决单按和长按的需求痛点。
-- [x] **去除 tlt 的空闲保护**：从 `thumb_layer_tap` 行为中彻底移除 `require-prior-idle-ms` 参数。以防在输入字母后马上长按拇指（因触发 idle 保护导致长按被吃掉）从而意外发送单次敲击的问题。
-- [x] **移除废弃组合键**：废弃 `D+F` 切换输入法组合键设计，采用独立的拇指 Shift 替代。
+- [x] Nav 层 Alt-Tab Swapper（`&swapper` 宏）→ [`config/lily58.keymap:106-117`](config/lily58.keymap)
+- [x] 鼠标层 Snipe/Turbo 模式 → [`config/lily58.keymap:31-43`](config/lily58.keymap)（速度宏定义）
+- [x] 拇指键 `&tlt MEDIA LSHFT` 精简 + 去除 idle 保护 → [`config/lily58.keymap:95-102`](config/lily58.keymap)
+- [x] 废弃 `D+F` 组合键，采用独立拇指 Shift 替代
 
 ### 鼠标层指针速度优化（2026-03-04）
 
-- [x] **ZMK 鼠标层的指针速度优化**：在 `lily58.keymap` 中覆写 `&mmv` 和 `&msc` 默认属性，并使用正确的 `ZMK_POINTING_DEFAULT_MOVE_VAL` 增加基础移动速度和滚轮速度，解决原生鼠标移动过慢痛点。
+- [x] 覆写 `&mmv` 和 `&msc` 默认属性 → [`config/lily58.keymap:56-66`](config/lily58.keymap)
+- [x] `ZMK_POINTING_DEFAULT_MOVE_VAL 1500` / `SCRL_VAL 20` → [`config/lily58.keymap:27-28`](config/lily58.keymap)
 
 ### 双核 36 键改造（2026-03-03）
 
-- [x] **Base 层外围全置空**：数字行 + 外侧列全部 `&none`，模拟 Corne 36 键物理约束
-- [x] **Legacy 层兜底**：新增 Layer 7 完整 QWERTY（右 SHIFT 位 = `&to BASE`），Fun 层热键切换
-- [x] **拇指 Layer-Tap 防误触 (tlt)**：新建 behavior（tap-preferred + require-prior-idle-ms 125ms），替换所有 `&lt`
-- [x] **OSM 分离**：`skq`（quick-release）仅保留 Shift，新建 `sk`（无 quick-release）给 Ctrl/Alt/GUI
-- [x] **K_CANCEL 后悔药**：Fun 层 Q 位，一键清除误按的 Sticky Key
-- [x] **鼠标层点击下放**：右手下行 M/,/. 改为 LCLK/MCLK/RCLK，对侧解耦
-- [x] **Sym 层补 `'`**：P 位加入单引号（外侧列屏蔽后的唯一入口）
-- [x] **Combo D+F 放宽**：timeout 70ms + require-prior-idle-ms 150ms（防 `default` 等误触）
+- [x] Base 层外围全 `&none`，模拟 Corne 36 键约束
+- [x] 拇指 `tlt` 防误触行为 + OSM 分离（`skq` / `skn`）
+- [x] K_CANCEL 后悔药、鼠标层点击下放、Sym 层补 `'`
 
 ### 层架构重构（2026-03-02）
 
-- [x] Layer 2 & 3 分隔重排：NUM 层定于左拇指 SPACE 触发，SYM 层移至右拇指 ENTER 触发
-- [x] Nav 层收纳优化：解决 C(→) 超格，收纳至 3x5 核心区
-- [x] Nav 层 GUI↔BSPC 互换：GUI 移至 R 位，BSPC 降级至 T 位
-- [x] Caps Word：Nav 层 G 位独立键 + F+J Combo 双触发
+- [x] NUM/SYM 层分离重排、Nav 层收纳优化
+- [x] Caps Word 双触发（F+J Combo + Nav 层 G 位）
 
 ### 初始实现（2026-03-01）
 
-- [x] Callum-style `skq` 行为定义（快速释放 OSM）
-- [x] JK Combo = Escape
-- [x] Base 层：QWERTY 核心 + 3 拇指分工
-- [x] Num 层：右手纯数字九宫格 + 左手算术运算符
-- [x] Sym 层：左手符号阵列 + 右手 OSM 修饰
-- [x] Fun 层：F 键对齐九宫格 + BT + Bootloader
-- [x] GitHub Actions 编译验证通过
+- [x] Callum-style `skq` 行为定义 + JK Combo
+- [x] 全 7 层架构 + GitHub Actions 编译验证通过

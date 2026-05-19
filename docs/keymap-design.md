@@ -1,6 +1,8 @@
-# 34 / 36 / 58 键位设计体系（ZMK 统一架构）
+# 34 / 36 / 58 键位设计体系（跨平台统一架构：ZMK + RMK）
 
-> 本方案是跨硬件阵列的终极键位设计，当前主要维护 `lily58` (58键)、`silakka54/corne` (54/36键) 和 `dolphin1` / `sweep` (34键) 分支，通过"双核驱动"和"Combo 降维"实现完美兼容体验。
+> 本方案是跨硬件阵列、跨固件平台的终极键位设计。同时维护 ZMK（`lily58`, `silakka54`, `cradio`, `dolphin1`, `bgkeeb`）和 RMK（`dolphin1`）两套固件实现。设计以两平台**能力交集**为基线，ZMK 独有能力作为可选的增强项（不影响 RMK 核心体验）。
+> 
+> 当前实现文件：[`config/dolphin1.keymap`](../config/dolphin1.keymap) (ZMK) · [`~/projects/rmk-dolphin/nrf52840_split/keyboard.toml`](../../rmk-dolphin/nrf52840_split/keyboard.toml) (RMK)
 
 ### 34 vs 36 vs 58 键：硬件拇指键差异与降维映射
 
@@ -102,7 +104,7 @@
 ┌─────┬─────┬─────┬─────┬─────┬─────┐               ┌─────┬─────┬─────┬─────┬─────┬─────┐
 │none │none │none │none │none │none │               │none │none │none │none │none │none │
 ├─────┼─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┼─────┤
-│none │SWAPP│S-TAB│ RET │L-SHIFT│BSPC │             │C(←) │ C-D │ C-U │C(→) │ DEL │none │
+│none │SWAPP│S-TAB│none │L-SHIFT│none │             │C(←) │ C-D │ C-U │C(→) │ DEL │none │
 ├─────┼─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┼─────┤
 │none │ GUI │ ALT │CTRL │LSHFT│CAPW │               │  ←  │  ↓  │  ↑  │  →  │ C(DEL)│none │
 ├─────┼─────┼─────┼─────┼─────┼─────┼─────┐   ┌─────┼─────┼─────┼─────┼─────┼─────┼─────┤
@@ -112,10 +114,11 @@
                   └─────┴─────┴─────┴─────┘   └─────┴─────┴─────┴─────┘
 ```
 
-- **左手上行**（编辑快捷区）：`SWAPP | S-TAB | RET | L-SHIFT | BSPC`
+- **左手上行**（编辑快捷区）：`SWAPP | S-TAB | L-SHIFT`
   - `SWAPP`（`&swapper` 宏）：位于原 `Q` 键位，轻点切换应用（同 Alt-Tab），按住不放可保留 Alt 状态并通过连续轻点快速遍历窗口。
   - `L-SHIFT`（`&kp LSHFT`）：**普通 hold 型 Shift**，按住不放配合右手方向键，实现 Shift+方向键连续选中文本
   - 与中行的 `&skq LSHFT`（OSM 点击型）**用途不同**：上行适合连续选中，中行适合单次大写或单次 Shift 组合
+  - `RET` 和 `BSPC` 已移除（冗余：Nav 层右拇指键已对侧解耦为纯 `&kp RET` / `&kp BSPC`，可直接长按连发）
 - **左手中行**（OSM 修饰键 + Caps Word）：`GUI | ALT | CTRL | SHIFT | CAPW`
 - **左手下行**（剪贴板区）：`C(Z) | C(X) | C(C) | C(V)`，与 Base 层位置一致，零记忆成本
 - **右手上行**（跳跃线）：`C(←) | C-D | C-U | C(→) | DEL`，按词跳跃 + Vim 半页翻页
@@ -241,26 +244,61 @@
   - 中行 `LSHFT | CTRL | ALT | GUI`
 
 
-## ZMK 实现要点
+## 跨平台兼容性设计
 
-### `&trans` 透传机制
+> 键位设计以 ZMK 和 RMK 的**能力交集**为基线，确保核心体验两个平台一致。
+> ZMK 独有能力作为**可选增强项**，不影响 RMK 用户正常使用。
 
-非 Base 层的空白位置使用 `&trans`（transparent），表示该键**穿透到下一层**。与 `&none`（完全屏蔽，按了无任何反应）不同，`&trans` 会让按键事件继续向下查找，最终落到 Base 层。这意味着在任何层中，未定义功能的键位仍可正常使用 Base 层的字母/符号。
+### 平台能力对照
 
-### OSM 行为：skq（仅 Shift）+ sk（Ctrl/Alt/GUI）
+| 能力 | ZMK | RMK | 兼容策略 |
+|------|-----|-----|---------|
+| Layer-Tap | `&tlt` balanced | `LT(layer,key)` + flow_tap | 等价，参数独立调优 |
+| OSM 修饰键 | `skq` (quick-release) / `skn` (chain) | `OSM(mod)` 统一行为，chain 模式（下一个键 RELEASE 时释放） | 核心行为一致；quick-release 仅 Shift 用，RMK 缺此机制但实践中差异小。如需可 patch `update_osm` |
+| Combo | per-combo `require-prior-idle-ms` 冷却 | 全局 `require_prior_idle_ms` 冷却窗口（patch） | 行为等价，RMK 为全局配置（非 per-combo） |
+| Caps Word | `&caps_word` + `continue-list` | `CapsWordToggle`（无 continue-list 配置） | continue-list 是 ZMK 增强 |
+| 鼠标移动 | `&mmv` + 加速曲线 | `Mouse*` + `MouseKeyConfig` 加速参数 | 两平台均有加速，参数独立调优 |
+| 鼠标滚轮 | `&msc` + 加速曲线 | `MouseWheel*` + `MouseKeyConfig` 加速参数 | 同上 |
+| Snipe / Turbo | 影子层 + 自定义速度宏 | **不支持**（无鼠标速度分级） | ZMK 独占 |
+| K_CANCEL | 支持 | **不支持** | ZMK 独占；RMK Fun 层 Q 位改用 `ClearEeprom` |
+| 长按连发 | `&kp` 对侧解耦后自动连发 | 同机制，`Enter`/`Backspace` 等覆写为裸键码 | 完全等价 |
+| BLE 控制 | `BT0-3`, `BT_CLR`, `BT_PRV` 等 | `User0-8`（按公式映射） | 键位相同，底层映射不同 |
 
-> `skq`（quick-release）仅保留给 Shift，防止快速输入时大写字母连带。
-> `sk`（无 quick-release）给 Ctrl/Alt/GUI，支持 `Ctrl+Alt+Delete` 等链式组合键。
+### 设计约束（平台兼容）
+
+| 编号 | 约束 | 原因 |
+|------|------|------|
+| XPLAT-01 | 核心层键位两平台行为一致 | 切换固件零适应成本 |
+| XPLAT-02 | Combo 冷却两平台均已支持 | RMK 通过 patch 实现全局 `require_prior_idle_ms` |
+| XPLAT-03 | ZMK 增强项不依赖，RMK 用户不受影响 | Snipe/Turbo、鼠标加速等属于锦上添花 |
+| XPLAT-04 | 对侧解耦键位两平台完全对齐 | 确保长按连发体验一致 |
+
+
+## 固件实现要点
+
+### `&trans` / `_` 透传机制
+
+非 Base 层的空白位置使用透传符号（ZMK: `&trans`, RMK: `_`），表示该键**穿透到下一层**。与屏蔽符号（ZMK: `&none`, RMK: `_` 用于未连接引脚位置）不同，透传会让按键事件继续向下查找，最终落到 Base 层。这意味着在任何层中，未定义功能的键位仍可正常使用 Base 层的字母/符号。
+
+### OSM 行为（Sticky Key）
+
+> **ZMK**：区分 `skq`（quick-release，下一个键按下时释放）和 `skn`（chain，下一个键松开时释放）两种行为。
+> **RMK**：统一 `OSM(mod)`，当前**只支持 chain 模式**（下一个键 RELEASE 时释放 OSM），无 `quick-release` 概念。全局超时 `timeout = “1s”` 防止 OSM 卡住。
+>
+> quick-release 的核心区别：按下 Shift → 按 a → Shift 在 a 按下的瞬间释放。如果按住 a 不放，连发的是小写 `aaaa...`。RMK 的 chain 模式则是 Shift 在 a 松开时才释放，按住 a 连发的是大写 `AAAA...`。实际使用中差异很小。
+>
+> 如需让 RMK 支持 quick-release，只需将 `oneshot.rs` 中 `update_osm` 的 `!event.pressed` 改为 `event.pressed`。
 >
 > **【特别注意】关于中英文切换与 LSHFT 的硬性绑定**：
-> 在 Windows 环境（如微信输入法、微软拼音等）下，中英文切换的钩子往往只识别 **左 Shift (`LSHFT`)**。因此在本配置中，即使是在属于“右手操作区”的拇指键或镜像层（如 Sym/Mouse 层的右侧修饰区域），涉及单次 Shift 触发的地方均使用了 `&skq LSHFT` 而不是 `&skq RSHFT`，彻底拔除输入法无法识别中文切换钩子的隐患。
+> 在 Windows 环境（如微信输入法、微软拼音等）下，中英文切换的钩子往往只识别 **左 Shift (`LSHFT`)**。因此在本配置中，即使是在属于”右手操作区”的拇指键或镜像层（如 Sym/Mouse 层的右侧修饰区域），涉及单次 Shift 触发的地方均使用了 `LSHFT` 而不是 `RSHFT`，彻底拔除输入法无法识别中文切换钩子的隐患。
 
 ```dts
+// ZMK: behaviors 定义
 behaviors {
     // 快速释放型 OSM（仅用于 Shift）
     skq: sticky_key_quick_release {
-        compatible = "zmk,behavior-sticky-key";
-        label = "STICKY_KEY_QUICK_RELEASE";
+        compatible = “zmk,behavior-sticky-key”;
+        label = “STICKY_KEY_QUICK_RELEASE”;
         #binding-cells = <1>;
         bindings = <&kp>;
         release-after-ms = <1000>;
@@ -269,9 +307,9 @@ behaviors {
     };
 
     // 普通 OSM（用于 Ctrl/Alt/GUI，支持链式组合）
-    sk: sticky_key_normal {
-        compatible = "zmk,behavior-sticky-key";
-        label = "STICKY_KEY_NORMAL";
+    skn: sticky_key_normal {
+        compatible = “zmk,behavior-sticky-key”;
+        label = “STICKY_KEY_NORMAL”;
         #binding-cells = <1>;
         bindings = <&kp>;
         release-after-ms = <1000>;
@@ -281,19 +319,27 @@ behaviors {
 };
 ```
 
-### 拇指 Layer-Tap (tlt)
+```toml
+# RMK: keyboard.toml 对应配置
+[behavior.one_shot]
+timeout = “1s”
+# 使用: OSM(LShift), OSM(LCtrl), OSM(LAlt), OSM(LGui)
+# 无 quick-release 区分，所有 OSM 行为统一
+```
 
-> 替代默认 `&lt`，使用 `balanced` 风味。
-> `balanced`：按住拇指后对侧手有任何按键动作即判定为 Hold（切层），比 `tap-preferred` 响应更快、更符合跨手切层意图。
-> **⚠️ 必须移除 `require-prior-idle-ms`**：由于我们在右外侧拇指使用了 `&tlt MEDIA LSHFT`（长按切满键/单击Shift切输入法），若加上 idle 保护延迟，在快速敲击字母后立刻按下拇指准备切层时，ZMK 会将长按状态“没收”并强制输出点击，导致意外输出 Shift 把输入法切断！
+### 拇指 Layer-Tap
+
+> **ZMK**：`&tlt` 替代默认 `&lt`，使用 `balanced` 风味。`balanced`：按住拇指后对侧手有任何按键动作即判定为 Hold（切层），比 `tap-preferred` 响应更快、更符合跨手切层意图。**⚠️ 必须移除 `require-prior-idle-ms`**：由于我们在右外侧拇指使用了 `&tlt MEDIA LSHFT`（长按切层/单击 Shift 切输入法），若加上 idle 保护延迟，在快速敲击字母后立刻按下拇指准备切层时，ZMK 会将长按状态”没收”并强制输出点击，导致意外输出 Shift 把输入法切断！
+> **RMK**：`LT(layer,key)` + `[behavior.morse]` flow_tap 机制。`hold_on_other_press = true` 等同于 ZMK 的 balanced 逻辑。
 
 ```dts
+// ZMK
 behaviors {
     tlt: thumb_layer_tap {
-        compatible = "zmk,behavior-hold-tap";
-        label = "THUMB_LAYER_TAP";
+        compatible = “zmk,behavior-hold-tap”;
+        label = “THUMB_LAYER_TAP”;
         #binding-cells = <2>;
-        flavor = "balanced";
+        flavor = “balanced”;
         tapping-term-ms = <200>;
         quick-tap-ms = <150>;              // 短时间内再次按下自动走 Tap
         bindings = <&mo>, <&kp>;
@@ -301,31 +347,102 @@ behaviors {
 };
 ```
 
+```toml
+# RMK
+[behavior.morse]
+enable_flow_tap = true
+prior_idle_time = “180ms”
+hold_on_other_press = true
+hold_timeout = “200ms”
+gap_timeout = “150ms”
+```
+
 ### 拇指对侧解耦与长按续发 (Hold-to-Repeat)
 
-> **痛点**：对于设置了 `Layer-Tap`（如 `&tlt MOUSE BSPC`）的拇指键，如果想要连续删除文字，必须“双击并长按”才能触发自带的连发（Auto-Repeat）机制，这在日常使用中不够顺手。
+> **痛点**：对于设置了 `Layer-Tap`（如 `&tlt MOUSE BSPC` / `LT(4,Backspace)`）的拇指键，如果想要连续删除文字，必须”双击并长按”才能触发自带的连发（Auto-Repeat）机制，这在日常使用中不够顺手。
 
-**解决方案：对侧切层解耦**。在配置的各个功能层（如 Nav、Num、Sym、Fun 层）中，我们不再保留另一侧拇指键的 `&trans`（这会继承 Base 层的 `&tlt` 行为），而是**显式地将其替换为对应的普通按键 `&kp`**。
-例如，在按住左手拇指进入 `Nav` 层时，原本在 Base 层的右拇指 `BSPC` 键会由 `&trans` 被覆写为纯粹的 `&kp BSPC`。
-这样一来，**按住左拇指（切层）的同时，按住右拇指就可以直接触发系统级别的长按续发（连续删除）**，极大提升了退格、空格、回车等高频按键的长按连发体验！而且此方案不影响 Num 层中原本已经是 `&kp N0` 的正常连发功能。
+**解决方案：对侧切层解耦**。在各个功能层（如 Nav、Num、Sym、Fun 层）中，我们不再保留另一侧拇指键的透传符号（ZMK: `&trans`, RMK: `_`），而是**显式地将其替换为对应的普通按键**（ZMK: `&kp XXX`, RMK: 裸键码）。
+例如，在按住左手拇指进入 `Nav` 层时，原本在 Base 层的右拇指 `BSPC` (ZMK) / `Backspace` (RMK) 会由透传被覆写为纯粹的按键。
+这样一来，**按住左拇指（切层）的同时，按住右拇指就可以直接触发系统级别的长按续发（连续删除）**，极大提升了退格、空格、回车等高频按键的长按连发体验！此方案不影响 Num 层中原本已经是 `&kp N0` / `Kc0` 的正常连发功能。
 
-### K_CANCEL 后悔药
+> 两平台实现完全等价，仅符号不同。
 
-在 Function 层 Q 位（`&kp K_CANCEL`），一键清除误按的 Sticky Key 状态。当不小心触发了 OSM 修饰键但不想使用时，按住 ESC 切 Fun 层 → 点 Q 位即可取消。
+### K_CANCEL 后悔药（ZMK 独占）
 
-### S + D = Escape (Combo)
+在 Function 层 Q 位（ZMK: `&kp K_CANCEL`），一键清除误按的 Sticky Key 状态。当不小心触发了 OSM 修饰键但不想使用时，按住 ESC 切 Fun 层 → 点 Q 位即可取消。
 
-同时按下 `S` 和 `D` 触发 `Escape`，此组合键利用五笔高频数据分析得出（Top300 零命中），占据着绝对的安全区，退出 Insert 模式变成潜意识动作。key-positions `<26 27>`（Lily58 矩阵）。
+> **RMK 不支持 `K_CANCEL`**。RMK 的 Fun 层 Q 位改为 `ClearEeprom`（清除 keymap 配置），功能不同。OSM 修饰键超时（1s）后自动释放，实际影响有限。
 
-### J + K = LSHFT (Combo)
+### Combo 系统
 
-同时按下 `J` 和 `K` 触发 `LSHFT`，既可以用作快速切换中英文输入法的单点按键，也可通过长按来作为普通的 Shift 使用，彻底解放左手小指。key-positions `<31 32>`（Lily58 矩阵）。
+> **ZMK**：per-combo `key-positions` + `require-prior-idle-ms` 冷却窗口（150-200ms），在该窗口内按键不会触发 Combo，有效防止快速打字时的误触。
+> **RMK**：无 per-combo 冷却机制，仅全局 `timeout = “50ms”`。因此 RMK 下 Combo 更敏感，**选键必须保守**。
 
-### 双拇指 Combo (Dolphin1 / Sweep 34键终极适配)
+#### S + D = Escape
 
-为彻底适应 34 键只有 2 个拇指键的极简配列（如 Dolphin1 / Sweep），将原本在 36 键体系里位于“第三个拇指键”的外侧功能，完美收容到内侧两个拇指键的 Combo 触发中：
+同时按下 `S` 和 `D` 触发 `Escape`。此组合键利用五笔高频数据分析得出（Top300 零命中），占据着绝对的安全区，退出 Insert 模式变成潜意识动作。
+
+```dts
+// ZMK: key-positions <26 27>（Lily58 矩阵）
+s_d_esc: s_d_esc {
+    timeout-ms = <50>;
+    require-prior-idle-ms = <200>;
+    key-positions = <26 27>;
+    bindings = <&kp ESC>;
+};
+```
+
+```toml
+# RMK
+{ actions = [“S”, “D”], output = “Escape”, layer = 0 }
+```
+
+#### J + K = LSHFT
+
+同时按下 `J` 和 `K` 触发 `LSHFT`，既可以用作快速切换中英文输入法的单点按键，也可通过长按来作为普通的 Shift 使用，彻底解放左手小指。
+
+```dts
+// ZMK: key-positions <31 32>（Lily58 矩阵）
+j_k_lsft: j_k_lsft {
+    timeout-ms = <50>;
+    require-prior-idle-ms = <150>;
+    key-positions = <31 32>;
+    bindings = <&kp LSHFT>;
+};
+```
+
+```toml
+# RMK
+{ actions = [“J”, “K”], output = “LShift”, layer = 0 }
+```
+
+#### 双拇指 Combo (34键适配)
+
+为彻底适应 34 键只有 2 个拇指键的极简配列，将原本在 36 键体系里位于”第三个拇指键”的外侧功能，完美收容到内侧两个拇指键的 Combo 触发中：
 - **左手（SPACE + TAB）同按**：仅触发 `Fun` 层切换（因 `ESC` 单按已由 `S+D` Combo 完美承载）
 - **右手（ENTER + BSPC）同按**：仅触发 `Media` 层切换（因 `LSHFT` 单按已由 `J+K` Combo 完美承载）
+
+```dts
+// ZMK
+left_combo: left_combo {
+    timeout-ms = <50>;
+    require-prior-idle-ms = <150>;
+    key-positions = <52 53>;
+    bindings = <&mo FUN>;
+};
+right_combo: right_combo {
+    timeout-ms = <50>;
+    require-prior-idle-ms = <150>;
+    key-positions = <54 55>;
+    bindings = <&mo MEDIA>;
+};
+```
+
+```toml
+# RMK: 使用 LT 键名而非矩阵位置
+{ actions = [“LT(1,Space)”, “LT(2,Tab)”], output = “MO(5)” }
+{ actions = [“LT(3,Enter)”, “LT(4,Backspace)”], output = “MO(6)” }
+```
 
 ### Caps Word（F + J Combo / Nav 层左手原 G 键位）
 
@@ -333,51 +450,57 @@ behaviors {
 - **F + J 同时按**（Combo）：双手食指归位键（Home Row），Base 层直接触发，最快捷
 - **Nav 层食指内侧（左手原 G 键位处）**：按住左手拇指（系统 Nav 层）后，用左手食指点击内侧按键触发。
 
-激活后输入的字母自动大写，遇到非字母/数字/下划线时自动取消。非常适合输入 `CONST_VALUE`、`MY_VARIABLE` 等蛇形命名。已配置 `continue-list = <UNDERSCORE MINUS>`，连字符 `-` 也不会中断大写，支持 `MY-CONST` 风格命名。
+激活后输入的字母自动大写，遇到非字母/数字/下划线时自动取消。非常适合输入 `CONST_VALUE`、`MY_VARIABLE` 等蛇形命名。
 
+ZMK 额外配置了 `continue-list = <UNDERSCORE MINUS>`，连字符 `-` 也不会中断大写，支持 `MY-CONST` 风格命名。
+> **RMK** 使用 `CapsWordToggle`，目前无 `continue-list` 等效配置。
 
+### 鼠标层指针速度
 
-### ZMK 鼠标层的指针速度优化（&mmv）
+两平台均有加速能力，参数独立调优。
 
-- **现状**：Mouse 层使用了 `&mmv MOVE_UP` 等。
-- **痛点分析**：ZMK 默认的鼠标移动速度是线性的，如果不配置自定义配置项，鼠标移动会慢得让人想砸键盘，根本无法替代实体鼠标。
-- **优化方案**：在 `lily58.keymap` 顶部（注意：**必须**定义在 `#include <dt-bindings/zmk/pointing.h>` 之前）重新定义鼠标移动（`&mmv`）和滚轮（`&msc`）的基础速度与加速曲线。
-
-由于开启了新的 `CONFIG_ZMK_POINTING=y` 特性，应使用 `ZMK_POINTING` 的宏定义而非旧的 `ZMK_MOUSE`。
+**ZMK**：通过 `&mmv` / `&msc` 覆写 `acceleration-exponent`、`time-to-max-speed-ms` 实现。
 
 ```dts
-#define ZMK_POINTING_DEFAULT_MOVE_VAL 1500  // 提高基础移动速度
-#define ZMK_POINTING_DEFAULT_SCRL_VAL 20    // 提高滚轮速度
+#define ZMK_POINTING_DEFAULT_MOVE_VAL 1500
+#define ZMK_POINTING_DEFAULT_SCRL_VAL 20
 #include <dt-bindings/zmk/pointing.h>
 
-// 覆写 mmv 和 msc 的默认属性
 &mmv {
-    acceleration-exponent = <1>;      // 1为线性，2为二次加速
-    time-to-max-speed-ms = <500>;     // 达到最大速度的时间
-    delay-ms = <0>;
-};
-
-&msc {
-    acceleration-exponent = <1>;      // 1为线性，2为二次加速
-    time-to-max-speed-ms = <500>;     // 达到最大速度的时间
+    acceleration-exponent = <1>;
+    time-to-max-speed-ms = <500>;
     delay-ms = <0>;
 };
 ```
 
-### 瞬时速度降维/升维：Snipe & Turbo
+**RMK**：通过 `MouseKeyConfig` 控制加速（默认 `repeat_interval_ms = 20ms`, `move_delta = 5`, `max_speed = 3x`, `ticks_to_max = 50`）。
 
-为满足细致微操（如 IDE 内代码断点或者设计软件里的像素推拉）的需求，右手手指按住离合键触发"影子图层"（Shadow layers），让指针以 1/4 慢速（Snipe）或 2倍 高速（Turbo）位移。
+```toml
+# RMK 鼠标键加速参数（默认值，可在 keyboard.toml 中覆写部分）
+# initial_delay_ms = 100      # 按下后首次移动延迟
+# repeat_interval_ms = 20     # 连续移动间隔
+# move_delta = 5              # 每步像素
+# max_speed = 3               # 最大速度倍率
+# ticks_to_max = 50           # 达到最大速度的步数
+```
 
-> **实现原理**：`input-processor-scaler` 仅适用于物理指针设备（trackball/trackpad）的 Input Listener，对鼠标模拟 (`&mmv`) 无效。因此改用**自定义速度宏**：利用 ZMK `pointing.h` 中的 `MOVE_X()`/`MOVE_Y()` 宏定义不同速度值，在影子层中直接绑定到 `&mmv`，覆写 Mouse 层的移动键位。`&mmv` 的加速曲线（`acceleration-exponent`、`time-to-max-speed-ms`）依然对所有速度档位生效，区别仅在于速度天花板不同。
+### 瞬时速度降维/升维：Snipe & Turbo（ZMK 独占）
 
-### ZMK Studio 与免配对码连接
+为满足细致微操（如 IDE 内代码断点或设计软件里的像素推拉）的需求，右手手指按住离合键触发"影子图层"（Shadow layers），让指针以 1/4 慢速（Snipe）或 2倍 高速（Turbo）位移。
 
-为了方便随时调整键位配置，本方案开启了 ZMK Studio 支持，并关闭了基于 PIN 码的安全验证与锁：
+> **实现原理**：利用 ZMK `pointing.h` 中的 `MOVE_X()`/`MOVE_Y()` 宏定义不同速度值，在影子层中直接绑定到 `&mmv`，覆写 Mouse 层的移动键位。
 
-- **开启 ZMK Studio**：通过 `CONFIG_ZMK_STUDIO=y`，允许直接在浏览器中（配合 ZMK Studio 网页端）实时调整键位，无需重新编译固件。
-- **免去蓝牙验证与 Studio 解锁 PIN 码**：
-  - ZMK Studio 默认出于安全考虑是锁定的（需要按特定快捷键解锁）。为提升调试体验，使用 `CONFIG_ZMK_STUDIO_LOCKING=n` 默认免解锁。
-  - 关闭蓝牙安全配对码功能（移除 `CONFIG_ZMK_BLE_PASSKEY_ENTRY=y`），从而在蓝牙配对时无需盲打 6 位数字 PIN 码。
+> **RMK 不支持**：无鼠标速度分级能力，Mouse 层移动速度固定。Snipe/Turbo 可视为 ZMK 的增强功能，不影响 RMK 日常使用。
+
+### ZMK Studio（ZMK 独占）
+
+为了方便随时调整键位配置，ZMK 开启了 ZMK Studio 支持并关闭了 PIN 码验证：
+
+- `CONFIG_ZMK_STUDIO=y` — 允许浏览器中实时调键，无需重新编译
+- `CONFIG_ZMK_STUDIO_LOCKING=n` — 免 PIN 码解锁
+- 关闭 `CONFIG_ZMK_BLE_PASSKEY_ENTRY=y` — 蓝牙配对无需盲打 6 位 PIN 码
+
+> **RMK** 不支持 ZMK Studio。RMK 改键需直接编辑 `keyboard.toml` 重新编译。
 
 ## 进化路线图
 

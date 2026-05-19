@@ -187,7 +187,7 @@
         nav_layer {
             display-name = "Nav";
 // ┌─────┬─────┬─────┬─────┬─────┐               ┌─────┬─────┬─────┬─────┬─────┐
-// │ SWP │S-TAB│ RET │LSHFT│BSPC │               │C(←) │ C-D │ C-U │C(→) │ DEL │
+// │ SWP │S-TAB│none │LSHFT│none │               │C(←) │ C-D │ C-U │C(→) │ DEL │
 // ├─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┤
 // │ GUI │ ALT │CTRL │LSHFT│CAPW │               │  ←  │  ↓  │  ↑  │  →  │C(DEL)│
 // ├─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┤
@@ -196,7 +196,7 @@
 //             │     │     │▓▓▓▓▓│     │   │     │     │     │     │
 //             └─────┴─────┴─────┴─────┘   └─────┴─────┴─────┴─────┘
             bindings = <
-&swapper   &kp LS(TAB) &kp RET    &kp LSHFT  &kp BSPC                  &kp LC(LEFT) &kp LC(D)  &kp LC(U)  &kp LC(RIGHT) &kp DEL
+&swapper   &kp LS(TAB) &none    &kp LSHFT  &none                  &kp LC(LEFT) &kp LC(D)  &kp LC(U)  &kp LC(RIGHT) &kp DEL
 &skn LGUI  &skn LALT   &skn LCTRL &skq LSHFT &caps_word                &kp LEFT     &kp DOWN   &kp UP     &kp RIGHT     &kp LC(DEL)
 &kp LC(Z)  &kp LC(X)   &kp LC(C)  &kp LC(V)  &trans                    &kp HOME     &kp PG_DN  &kp PG_UP  &kp END       &kp LC(BSPC)
             &trans      &none      &trans     &trans                    &kp RET      &kp BSPC   &none      &trans
