@@ -14,6 +14,7 @@
  * Layer 4: Mouse    - 左手鼠标移动/滚轮/点击 + 右手 OSM
  * Layer 5: Function - 左手 OSM/BT + 右手 F 键九宫格
  * Layer 6: Media    - 左手媒体/音量/亮度 + 右手 OSM
+ * Layer 7: NavMac   - Nav 的 Mac 版 (Cmd 剪贴板, Option 词跳)
  *
  * Lily58 独有未移植: Snipe (1/4速鼠标), Turbo (2x速鼠标)
  *
@@ -29,13 +30,14 @@
 #define ZMK_POINTING_DEFAULT_SCRL_VAL 20
 #include <dt-bindings/zmk/pointing.h>
 
-#define BASE  0
-#define NAV   1
-#define NUM   2
-#define SYM   3
-#define MOUSE 4
-#define FUN   5
-#define MEDIA 6
+#define BASE     0
+#define NAV      1
+#define NUM      2
+#define SYM      3
+#define MOUSE    4
+#define FUN      5
+#define MEDIA    6
+#define NAV_MAC  7
 
 // Cradio 键位编号 (34 键):
 //  0  1  2  3  4       5  6  7  8  9
@@ -99,6 +101,19 @@
                 , <&macro_tap &kp TAB>
                 , <&macro_pause_for_release>
                 , <&macro_release &kp LALT>
+                ;
+        };
+
+        swapper_mac: swapper_mac {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <30>;
+            tap-ms = <30>;
+            bindings
+                = <&macro_press &kp LGUI>
+                , <&macro_tap &kp TAB>
+                , <&macro_pause_for_release>
+                , <&macro_release &kp LGUI>
                 ;
         };
     };
@@ -286,6 +301,25 @@
 &trans  &kp C_PREV  &kp C_VOL_DN &kp C_VOL_UP &kp C_NEXT     &trans  &skq LSHFT &skn RCTRL &skn RALT &skn RGUI
 &trans  &kp C_MUTE  &kp C_BRI_DN &kp C_BRI_UP &kp C_PP       &trans  &trans     &trans     &trans    &trans
                                  &kp SPACE    &kp TAB          &trans  &trans
+            >;
+        };
+
+        nav_mac_layer {
+            display-name = "NavMac";
+// ┌─────┬─────┬─────┬─────┬─────┐   ┌─────┬─────┬─────┬─────┬─────┐
+// │ SWP │S-TAB│none │LSHFT│none │   │A(←) │ C-D │ C-U │A(→) │ DEL │
+// ├─────┼─────┼─────┼─────┼─────┤   ├─────┼─────┼─────┼─────┼─────┤
+// │ GUI │ ALT │CTRL │LSHFT│CAPW │   │  ←  │  ↓  │  ↑  │  →  │A(DEL)│
+// ├─────┼─────┼─────┼─────┼─────┤   ├─────┼─────┼─────┼─────┼─────┤
+// │G(Z) │G(X) │G(C) │G(V) │     │   │HOME │PgDn │PgUp │ END │A(BS)│
+// └─────┴─────┴─────┼─────┼─────┤   ├─────┼─────┼─────┴─────┴─────┘
+//                   │▓▓▓▓▓│     │   │     │     │
+//                   └─────┴─────┘   └─────┴─────┘
+            bindings = <
+&swapper_mac &kp LS(TAB)  &none      &kp LSHFT  &none           &kp LA(LEFT) &kp LC(D)  &kp LC(U)  &kp LA(RIGHT) &kp DEL
+&skn LGUI    &skn LALT    &skn LCTRL &skq LSHFT &caps_word      &kp LEFT     &kp DOWN   &kp UP     &kp RIGHT     &kp LA(DEL)
+&kp LG(Z)   &kp LG(X)    &kp LG(C)  &kp LG(V)  &trans          &kp HOME     &kp PG_DN  &kp PG_UP  &kp END       &kp LA(BSPC)
+                                      &trans     &trans          &kp RET      &kp BSPC
             >;
         };
     };
