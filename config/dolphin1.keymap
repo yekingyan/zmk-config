@@ -269,7 +269,7 @@
         media_layer {
             display-name = "Media";
 // ┌─────┬─────┬─────┬─────┬─────┐   ┌─────┬─────┬─────┬─────┬─────┐
-// │     │     │     │     │     │   │     │     │     │     │     │
+// │BOOT │     │     │     │     │   │     │     │     │     │BOOT │
 // ├─────┼─────┼─────┼─────┼─────┤   ├─────┼─────┼─────┼─────┼─────┤
 // │     │PREV │VOL_D│VOL_U│NEXT │   │     │LSHFT│CTRL │ ALT │ GUI │
 // ├─────┼─────┼─────┼─────┼─────┤   ├─────┼─────┼─────┼─────┼─────┤
@@ -278,7 +278,7 @@
 //                   │     │     │   │     │     │
 //                   └─────┴─────┘   └─────┴─────┘
             bindings = <
-&trans  &trans      &trans       &trans       &trans          &trans  &trans     &trans     &trans    &trans
+&bootloader  &trans      &trans       &trans       &trans          &trans  &trans     &trans     &trans    &bootloader
 &trans  &kp C_PREV  &kp C_VOL_DN &kp C_VOL_UP &kp C_NEXT     &trans  &skq LSHFT &skn RCTRL &skn RALT &skn RGUI
 &trans  &kp C_MUTE  &kp C_BRI_DN &kp C_BRI_UP &kp C_PP       &trans  &trans     &trans     &trans    &trans
                                  &kp SPACE    &kp TAB          &trans  &trans

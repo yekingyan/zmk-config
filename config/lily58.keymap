@@ -314,7 +314,7 @@
         media_layer {
             display-name = "Media";
 // ┌─────┬─────┬─────┬─────┬─────┬─────┐               ┌─────┬─────┬─────┬─────┬─────┬─────┐
-// │none │none │none │none │none │none │               │none │none │none │none │none │none │
+// │BOOT │none │none │none │none │none │               │none │none │none │none │none │BOOT │
 // ├─────┼─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┼─────┤
 // │none │     │     │     │     │     │               │     │     │     │     │     │none │
 // ├─────┼─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┼─────┤
@@ -325,7 +325,7 @@
 //                   │none │     │     │     │   │     │     │▓▓▓▓▓│none │
 //                   └─────┴─────┴─────┴─────┘   └─────┴─────┴─────┴─────┘
             bindings = <
-&none  &none  &none       &none       &none       &none                     &none  &none      &none      &none     &none     &none
+&bootloader  &none  &none       &none       &none       &none                     &none  &none      &none      &none     &none     &bootloader
 &none  &trans &trans      &trans      &trans      &trans                    &trans &trans     &trans     &trans    &trans    &none
 &none  &trans &kp C_PREV  &kp C_VOL_DN &kp C_VOL_UP &kp C_NEXT            &trans &skq LSHFT &skn RCTRL  &skn RALT  &skn RGUI  &none
 &none  &trans &kp C_MUTE  &kp C_BRI_DN &kp C_BRI_UP &kp C_PP &none  &none   &trans &trans     &trans     &trans    &trans    &none
