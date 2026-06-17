@@ -198,7 +198,7 @@
             bindings = <
 &swapper   &kp LS(TAB) &none    &kp LSHFT  &none                  &kp LC(LEFT) &kp LC(D)  &kp LC(U)  &kp LC(RIGHT) &kp DEL
 &skn LGUI  &skn LALT   &skn LCTRL &skq LSHFT &caps_word                &kp LEFT     &kp DOWN   &kp UP     &kp RIGHT     &kp LC(DEL)
-&kp LC(Z)  &kp LC(X)   &kp LC(C)  &kp LC(V)  &trans                    &kp HOME     &kp PG_DN  &kp PG_UP  &kp END       &kp LC(BSPC)
+&kp LC(Z)  &kp LC(X)   &kp LC(C)  &kp LC(V)  &none                     &kp HOME     &kp PG_DN  &kp PG_UP  &kp END       &kp LC(BSPC)
             &trans      &none      &trans     &trans                    &kp RET      &kp BSPC   &none      &trans
             >;
 
@@ -217,9 +217,9 @@
 //             │     │     │     │▓▓▓▓▓│   │     │  0  │     │     │
 //             └─────┴─────┴─────┴─────┘   └─────┴─────┴─────┴─────┘
             bindings = <
-&trans     &trans    &trans     &trans     &trans                     &kp DOT &kp N7 &kp N8 &kp N9 &kp MINUS
-&skn LGUI  &skn LALT &skn LCTRL &skq LSHFT &kp BSPC                  &trans &kp N4 &kp N5 &kp N6 &kp PLUS
-&trans     &kp FSLH  &kp ASTRK  &kp EQUAL  &trans                    &trans &kp N1 &kp N2 &kp N3 &trans
+&none      &none     &none      &none      &none                      &kp DOT &kp N7 &kp N8 &kp N9 &kp MINUS
+&skn LGUI  &skn LALT &skn LCTRL &skq LSHFT &kp BSPC                  &none  &kp N4 &kp N5 &kp N6 &kp PLUS
+&none      &kp FSLH  &kp ASTRK  &kp EQUAL  &none                     &none  &kp N1 &kp N2 &kp N3 &none
             &trans    &none      &trans     &trans                    &kp RET &kp N0 &none  &trans
             >;
 
@@ -241,7 +241,7 @@
 &kp EXCL  &kp AT   &kp HASH &kp DLLR &kp PRCNT                   &kp CARET &kp AMPS   &kp ASTRK  &kp EQUAL  &kp SQT
 &kp LPAR  &kp LBRC &kp LBKT &kp LT   &kp UNDER                  &kp PIPE  &skq LSHFT &skn RCTRL &skn RALT  &skn RGUI
 &kp RPAR  &kp RBRC &kp RBKT &kp GT   &kp GRAVE                  &kp BSLH  &kp TILDE  &kp COLON  &kp DQT    &kp QMARK
-           &trans   &none    &kp SPACE &kp TAB                    &trans    &trans     &none      &trans
+           &trans   &none    &kp SPACE &kp TAB                    &trans    &none      &none      &trans
             >;
 
             sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;
@@ -259,9 +259,9 @@
 //             │     │▓▓▓▓▓│     │     │   │     │     │     │     │
 //             └─────┴─────┴─────┴─────┘   └─────┴─────┴─────┴─────┘
             bindings = <
-&kp K_CANCEL &out OUT_BLE  &out OUT_USB  &trans       &bt BT_CLR                &trans &kp F7 &kp F8 &kp F9 &kp F12
-&skn LGUI    &skn LALT     &skn LCTRL    &skq LSHFT   &trans                    &trans &kp F4 &kp F5 &kp F6 &kp F11
-&bt BT_SEL 0 &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3 &trans                   &trans &kp F1 &kp F2 &kp F3 &kp F10
+&none &none  &none  &none        &bt BT_CLR                &none  &kp F7 &kp F8 &kp F9 &kp F12
+&skn LGUI    &skn LALT     &skn LCTRL    &skq LSHFT   &none                     &none  &kp F4 &kp F5 &kp F6 &kp F11
+&bt BT_SEL 0 &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3 &none                    &none  &kp F1 &kp F2 &kp F3 &kp F10
               &trans        &trans        &trans       &trans                    &kp RET &kp BSPC &none  &trans
             >;
 
@@ -280,9 +280,9 @@
 //             │     │MCLK │RCLK │LCLK │   │     │▓▓▓▓▓│     │     │
 //             └─────┴─────┴─────┴─────┘   └─────┴─────┴─────┴─────┘
             bindings = <
-&kp LC(Z) &kp LC(Y)      &kp LC(LG(LEFT)) &kp LC(LG(RIGHT)) &trans                          &trans      &trans     &trans     &trans    &trans
-&trans    &mmv MOVE_LEFT &mmv MOVE_UP     &mmv MOVE_DOWN     &mmv MOVE_RIGHT                 &trans      &skq LSHFT &skn RCTRL &skn RALT &skn RGUI
-&trans    &msc SCRL_LEFT &msc SCRL_UP     &msc SCRL_DOWN     &msc SCRL_RIGHT                 &mo M_SNIPE &mo M_TURBO &trans    &trans    &trans
+&kp LC(Z) &kp LC(Y)      &kp LC(LG(LEFT)) &kp LC(LG(RIGHT)) &none                           &none       &none      &none      &none     &none
+&none     &mmv MOVE_LEFT &mmv MOVE_UP     &mmv MOVE_DOWN     &mmv MOVE_RIGHT                 &none       &skq LSHFT &skn RCTRL &skn RALT &skn RGUI
+&none     &msc SCRL_LEFT &msc SCRL_UP     &msc SCRL_DOWN     &msc SCRL_RIGHT                 &mo M_SNIPE &mo M_TURBO &none     &none     &none
            &trans         &mkp MCLK        &mkp RCLK          &mkp LCLK                      &trans      &trans     &none      &trans
             >;
 
@@ -301,9 +301,9 @@
 //             │     │     │     │     │   │     │     │▓▓▓▓▓│     │
 //             └─────┴─────┴─────┴─────┘   └─────┴─────┴─────┴─────┘
             bindings = <
-&bootloader &trans     &trans       &trans       &trans                       &trans &trans     &trans     &trans    &bootloader
-&trans &kp C_PREV &kp C_VOL_DN &kp C_VOL_UP &kp C_NEXT                  &trans &skq LSHFT &skn RCTRL &skn RALT &skn RGUI
-&trans &kp C_MUTE &kp C_BRI_DN &kp C_BRI_UP &kp C_PP                    &trans &trans     &trans     &trans    &trans
+&bootloader &none      &none        &none        &none                        &none  &none      &none      &none     &bootloader
+&none  &kp C_PREV &kp C_VOL_DN &kp C_VOL_UP &kp C_NEXT                  &none  &skq LSHFT &skn RCTRL &skn RALT &skn RGUI
+&none  &kp C_MUTE &kp C_BRI_DN &kp C_BRI_UP &kp C_PP                    &none  &none      &none      &none     &none
         &trans    &none        &kp SPACE    &kp TAB                      &trans &trans     &trans     &trans
             >;
 

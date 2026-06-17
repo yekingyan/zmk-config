@@ -43,6 +43,7 @@ CONFIG_SYSTEM_WORKQUEUE_STACK_SIZE=2048
 
 ### 2.3 修改 `keymap` 键位 (必备条件)
 因为要在插线状态下测试**蓝牙**断联，必须配置强制输出通道切换热键。
+当前 keymap 已移除 `OUT_BLE`/`OUT_USB`，调试时需临时添加。
 请在键位图中包含输出头文件，并在某一层级配置 `&out OUT_BLE` 功能：
 
 ```c

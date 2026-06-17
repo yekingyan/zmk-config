@@ -210,7 +210,7 @@
 &none &none     &none       &none     &none     &none                   &none       &none     &none     &none        &none       &none
 &none &swapper   &kp LS(TAB)  &none    &kp LSHFT  &none                 &kp LC(LEFT) &kp LC(D)  &kp LC(U)  &kp LC(RIGHT) &kp DEL      &none
 &none &skn LGUI   &skn LALT     &skn LCTRL  &skq LSHFT &caps_word               &kp LEFT     &kp DOWN   &kp UP     &kp RIGHT     &kp LC(DEL)  &none
-&none &kp LC(Z)  &kp LC(X)    &kp LC(C)  &kp LC(V)  &trans &none    &none    &kp HOME     &kp PG_DN  &kp PG_UP  &kp END       &kp LC(BSPC) &none
+&none &kp LC(Z)  &kp LC(X)    &kp LC(C)  &kp LC(V)  &none  &none    &none    &kp HOME     &kp PG_DN  &kp PG_UP  &kp END       &kp LC(BSPC) &none
                                &none     &trans     &trans &none    &none    &trans       &trans     &none
             
             >;
@@ -232,10 +232,10 @@
 //                   │     │     │▓▓▓▓▓│none │   │none │     │  0  │     │
 //                   └─────┴─────┴─────┴─────┘   └─────┴─────┴─────┴─────┘
             bindings = <
-&none &none   &none    &none       &none    &none                   &none &none &none &none &none    &none
-&none &trans   &trans    &trans       &trans    &trans                   &kp DOT &kp N7 &kp N8 &kp N9 &kp MINUS &none
-&none &skn LGUI  &skn LALT  &skn LCTRL   &skq LSHFT &kp BSPC              &trans &kp N4 &kp N5 &kp N6 &kp PLUS  &none
-&none &trans   &kp FSLH  &kp ASTRK   &kp EQUAL &trans &none    &none   &trans &kp N1 &kp N2 &kp N3 &trans    &none
+&none &none    &none     &none        &none     &none                    &none &none &none &none &none    &none
+&none &none    &none     &none        &none     &none                    &kp DOT &kp N7 &kp N8 &kp N9 &kp MINUS &none
+&none &skn LGUI  &skn LALT  &skn LCTRL   &skq LSHFT &kp BSPC              &none  &kp N4 &kp N5 &kp N6 &kp PLUS  &none
+&none &none    &kp FSLH  &kp ASTRK   &kp EQUAL &none  &none    &none   &none  &kp N1 &kp N2 &kp N3 &none     &none
                           &none       &trans    &trans &none    &none   &trans &kp N0 &none
             
             >;
@@ -261,7 +261,7 @@
 &none &kp EXCL  &kp AT   &kp HASH &kp DLLR &kp PRCNT             &kp CARET &kp AMPS    &kp ASTRK  &kp EQUAL   &kp SQT  &none
 &none &kp LPAR  &kp LBRC &kp LBKT &kp LT   &kp UNDER             &kp PIPE  &skq LSHFT  &skn RCTRL  &skn RALT    &skn RGUI  &none
 &none &kp RPAR  &kp RBRC &kp RBKT &kp GT   &kp GRAVE &none &none &kp BSLH  &kp TILDE   &kp COLON  &kp DQT     &kp QMARK &none
-                          &none   &trans   &trans    &none &none &trans &trans      &none
+                          &none   &trans   &trans    &none &none &trans &none       &none
             
             >;
 
@@ -283,9 +283,9 @@
 //                   └─────┴─────┴─────┴─────┘   └─────┴─────┴─────┴─────┘
             bindings = <
 &none &none       &none       &none       &none       &none                       &none &none &none &none &none  &none
-&none &kp K_CANCEL &out OUT_BLE &out OUT_USB &trans       &bt BT_CLR                   &trans &kp F7 &kp F8 &kp F9 &kp F12 &none
-&none &skn LGUI     &skn LALT     &skn LCTRL    &skq LSHFT   &trans                      &trans &kp F4 &kp F5 &kp F6 &kp F11 &none
-&none &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &trans &none    &none  &trans &kp F1 &kp F2 &kp F3 &kp F10 &none
+&none &none  &none  &none  &none        &bt BT_CLR                   &none  &kp F7 &kp F8 &kp F9 &kp F12 &none
+&none &skn LGUI     &skn LALT     &skn LCTRL    &skq LSHFT   &none                       &none  &kp F4 &kp F5 &kp F6 &kp F11 &none
+&none &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &none  &none    &none  &none  &kp F1 &kp F2 &kp F3 &kp F10 &none
                                  &none       &trans       &trans     &none    &none   &trans &trans &none
             
             >;
@@ -308,9 +308,9 @@
 //                   └─────┴─────┴─────┴─────┘   └─────┴─────┴─────┴─────┘
             bindings = <
 &none &none     &none     &none           &none            &none                         &none &none     &none     &none    &none    &none
-&none &kp LC(Z)  &kp LC(Y)  &kp LC(LG(LEFT)) &kp LC(LG(RIGHT)) &trans                         &trans &trans     &trans     &trans    &trans    &none
-&none &trans  &mmv MOVE_LEFT &mmv MOVE_UP  &mmv MOVE_DOWN  &mmv MOVE_RIGHT                &trans &skq LSHFT &skn RCTRL  &skn RALT  &skn RGUI  &none
-&none &trans  &msc SCRL_LEFT &msc SCRL_UP  &msc SCRL_DOWN  &msc SCRL_RIGHT &none   &none  &mo M_SNIPE &mo M_TURBO &trans    &trans    &trans    &none
+&none &kp LC(Z)  &kp LC(Y)  &kp LC(LG(LEFT)) &kp LC(LG(RIGHT)) &none                          &none  &none      &none      &none     &none     &none
+&none &none   &mmv MOVE_LEFT &mmv MOVE_UP  &mmv MOVE_DOWN  &mmv MOVE_RIGHT                &none  &skq LSHFT &skn RCTRL  &skn RALT  &skn RGUI  &none
+&none &none   &msc SCRL_LEFT &msc SCRL_UP  &msc SCRL_DOWN  &msc SCRL_RIGHT &none   &none  &mo M_SNIPE &mo M_TURBO &none     &none     &none     &none
                                     &mkp MCLK         &mkp RCLK         &mkp LCLK       &none   &none  &trans &trans     &none
             
             >;
@@ -332,10 +332,10 @@
 //                   │     │     │     │none │   │none │     │     │▓▓▓▓▓│
 //                   └─────┴─────┴─────┴─────┘   └─────┴─────┴─────┴─────┘
             bindings = <
-&bootloader &none &none      &none      &none      &none                    &none &none     &none     &none    &none    &bootloader
-&none &trans &trans      &trans      &trans      &trans                    &trans &trans     &trans     &trans    &trans    &none
-&none &trans &kp C_PREV  &kp C_VOL_DN &kp C_VOL_UP &kp C_NEXT            &trans &skq LSHFT &skn RCTRL  &skn RALT  &skn RGUI  &none
-&none &trans &kp C_MUTE  &kp C_BRI_DN &kp C_BRI_UP &kp C_PP &none &none  &trans &trans     &trans     &trans    &trans    &none
+&bootloader &none &none       &none       &none       &none                     &none  &none      &none      &none     &none     &bootloader
+&none &none  &none       &none       &none       &none                     &none  &none      &none      &none     &none     &none
+&none &none  &kp C_PREV  &kp C_VOL_DN &kp C_VOL_UP &kp C_NEXT            &none  &skq LSHFT &skn RCTRL  &skn RALT  &skn RGUI  &none
+&none &none  &kp C_MUTE  &kp C_BRI_DN &kp C_BRI_UP &kp C_PP &none &none  &none  &none      &none      &none     &none     &none
                           &none      &trans      &trans    &none   &none  &trans &trans     &none
             
             >;

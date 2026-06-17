@@ -189,7 +189,7 @@
 ```
 
 - 左手 = 系统工具 + OSM 修饰键 + 蓝牙操作：
-  - 上行 `K_CANCEL | BLE | USB | BTCLR`：系统工具、输出模式切换与蓝牙绑定清除
+  - 上行 `BTCLR`：蓝牙绑定清除
   - 中行 `GUI | ALT | CTRL | LSHFT`（与 Nav/Num 层一致）
   - 下行 `BT0 | BT1 | BT2 | BT3`（蓝牙通道选择）
 - 右手 = F 键九宫格（与 Num 层数字严格对齐）：
@@ -263,7 +263,7 @@
 | 鼠标移动 | `&mmv` + 加速曲线 | `Mouse*` + `MouseKeyConfig` 加速参数 | 两平台均有加速，参数独立调优 |
 | 鼠标滚轮 | `&msc` + 加速曲线 | `MouseWheel*` + `MouseKeyConfig` 加速参数 | 同上 |
 | Snipe / Turbo | 影子层 + 自定义速度宏 | **不支持**（无鼠标速度分级） | ZMK 独占 |
-| K_CANCEL | 支持 | **不支持** | ZMK 独占；RMK Fun 层 Q 位改用 `ClearEeprom` |
+| K_CANCEL | 支持（已从 keymap 移除） | **不支持** | 已移除；RMK Fun 层 Q 位用 `ClearEeprom` |
 | 长按连发 | `&kp` 对侧解耦后自动连发 | 同机制，`Enter`/`Backspace` 等覆写为裸键码 | 完全等价 |
 | BLE 控制 | `BT0-3`, `BT_CLR`, `BT_PRV` 等 | `User0-8`（按公式映射） | 键位相同，底层映射不同 |
 
@@ -281,7 +281,7 @@
 
 ### `&trans` / `_` 透传机制
 
-非 Base 层的空白位置使用透传符号（ZMK: `&trans`, RMK: `_`），表示该键**穿透到下一层**。与屏蔽符号（ZMK: `&none`, RMK: `_` 用于未连接引脚位置）不同，透传会让按键事件继续向下查找，最终落到 Base 层。这意味着在任何层中，未定义功能的键位仍可正常使用 Base 层的字母/符号。
+非 Base 层中，**仅拇指键**使用透传符号（ZMK: `&trans`, RMK: `_`），确保跨层切换和基本功能键（Enter/Backspace/Space/Tab）可用。其余未分配功能的字母区位置统一使用屏蔽符号（ZMK: `&none`），防止误触时打出意外字符。
 
 ### OSM 行为（Sticky Key）
 
@@ -370,11 +370,9 @@ gap_timeout = “150ms”
 
 > 两平台实现完全等价，仅符号不同。
 
-### K_CANCEL 后悔药（ZMK 独占）
+### K_CANCEL 后悔药（已移除）
 
-在 Function 层 Q 位（ZMK: `&kp K_CANCEL`），一键清除误按的 Sticky Key 状态。当不小心触发了 OSM 修饰键但不想使用时，按住 ESC 切 Fun 层 → 点 Q 位即可取消。
-
-> **RMK 不支持 `K_CANCEL`**。RMK 的 Fun 层 Q 位改为 `ClearEeprom`（清除 keymap 配置），功能不同。OSM 修饰键超时（1s）后自动释放，实际影响有限。
+~~在 Function 层 Q 位（ZMK: `&kp K_CANCEL`），一键清除误按的 Sticky Key 状态。~~ 已从所有 keymap 移除——OSM 修饰键超时（1s）后自动释放，实际影响有限。RMK Fun 层 Q 位为 `ClearEeprom`。
 
 ### Combo 系统
 
