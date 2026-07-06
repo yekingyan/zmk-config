@@ -28,6 +28,7 @@
 - [x] 根因确认（时钟漂移）
 - [x] 终极方案实施（RC 振荡器 / 外部晶振切换）
 - [x] 二轮优化（1M PHY 降级 + 实验性安全配对）
+- [x] 三轮优化（核动力防卡死满血版：1000mAh永不休眠、放宽晶振 250PPM 容差、队列拓宽、接入官方实验性调度）
 - [ ] 长期稳定性观察（持续监控中）
 
 ### 规划
@@ -219,6 +220,7 @@ cp build/zephyr/zmk.uf2 /media/$USER/NICENANO/
 - [MCU 参考](docs/mcu-reference.md) — nRF52840 / Nice!Nano 技术细节
 - [专家咨询记录](docs/expert-consultation.md) — 社区咨询与方案讨论
 - [部署说明](docs/deploy.md) — 固件烧录与 OTA 流程
+- [Dongle 三模改造方案](docs/dongle-migration-plan.md) — 📋 待定，复用坏引脚主控做 Dongle 接收器的完整落地方案（未实施）
 
 ---
 
