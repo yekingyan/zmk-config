@@ -247,12 +247,11 @@ CONFIG_ZMK_STUDIO_LOCKING=n
 **文件 E：`cradio_dongle.overlay`**
 ```dts
 #include <dt-bindings/zmk/matrix_transform.h>
-#include <layouts/cuddlykeyboards/ferris.dtsi>
 
 / {
     chosen {
         zmk,kscan = &mock_kscan;
-        zmk,physical-layout = &cuddlykeyboards_ferris_layout;
+        zmk,matrix-transform = &default_transform;
     };
 
     default_transform: keymap_transform_0 {
@@ -272,11 +271,6 @@ CONFIG_ZMK_STUDIO_LOCKING=n
         columns = <0>;
         rows = <0>;
     };
-};
-
-&cuddlykeyboards_ferris_layout {
-    transform = <&default_transform>;
-    kscan = <&mock_kscan>;
 };
 ```
 
