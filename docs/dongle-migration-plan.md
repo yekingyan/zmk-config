@@ -167,3 +167,121 @@ CONFIG_BT_CTLR_TX_PWR_PLUS_8=y
 - [ ] 是否需要给 Dongle 分配独立的 `zmk,physical-layout` 或仅需最小化 identity（作为纯粹的 BLE central + USB HID bridge）。
 - [ ] BLE-01 / BLE-02（见 [plan.md 设计约束](../plan.md#设计约束)）是否需要同步应用到 `lily58_dongle.conf`（坏引脚主控是否也是克隆板，是否有时钟漂移风险）。
 - [ ] 与现有双模固件的共存策略：是否保留旧 `lily58_left.conf` 双模逻辑作为可切换分支（如通过 `cmake-args -DZMK_CONFIG` 类似 Silakka54 的做法），避免每次改造都要完全替换现有主力配置。
+
+---
+
+## 七、落地实践案例：Sweep (cradio) 实操（2026-07-15 已实施）
+
+本方案已于 2026-07-15 在 Sweep (cradio) 键盘上成功完成实施落地。以下为完整的实操配置。
+
+### 1. 左手机身从机配置
+
+新建 [`config/cradio_left_dongle.conf`](../config/cradio_left_dongle.conf)：
+```ini
+# 强制左手降级为从机 (Peripheral)
+CONFIG_ZMK_SPLIT_BLE_ROLE_CENTRAL=n
+
+# 降级为从机后极度省电，开启 15 分钟深度休眠
+CONFIG_ZMK_SLEEP=y
+CONFIG_ZMK_IDLE_SLEEP_TIMEOUT=900000
+
+# 降级为从机后关闭 ZMK Studio 
+CONFIG_ZMK_STUDIO=n
+```
+
+### 2. 新建 Dongle Shield
+
+目录：`boards/shields/cradio_dongle/`
+
+**文件 A：`Kconfig.shield`**
+```text
+config SHIELD_CRADIO_DONGLE
+    def_bool $(shields_list_contains,cradio_dongle)
+```
+
+**文件 B：`Kconfig.defconfig`**
+```text
+if SHIELD_CRADIO_DONGLE
+
+config ZMK_KEYBOARD_NAME
+    default "Dolphin Dongle"
+
+endif
+```
+
+**文件 C：`cradio_dongle.zmk.yml`**
+```yaml
+file_format: "1"
+id: cradio_dongle
+name: Dolphin Dongle
+type: shield
+requires: [pro_micro]
+features:
+  - keys
+```
+
+**文件 D：`cradio_dongle.conf`**
+```ini
+# 强制设置为主机 (Central)
+CONFIG_ZMK_SPLIT_BLE_ROLE_CENTRAL=y
+
+# Dongle 需要连接左手和右手两个从机
+CONFIG_ZMK_SPLIT_BLE_CENTRAL_PERIPHERALS=2
+
+# 最大蓝牙连接数：5个主机连接 + 2个分体连接 = 7
+CONFIG_BT_MAX_CONN=7
+CONFIG_BT_MAX_PAIRED=7
+
+# 增加蓝牙发射功率，提升信号稳定性
+CONFIG_BT_CTLR_TX_PWR_PLUS_8=y
+```
+
+**文件 E：`cradio_dongle.overlay`**
+```dts
+#include <dt-bindings/zmk/matrix_transform.h>
+#include "cradio.dtsi"
+
+/ {
+    chosen {
+        zmk,kscan = &mock_kscan;
+        zmk,matrix-transform = &default_transform;
+    };
+
+    mock_kscan: mock_kscan_0 {
+        compatible = "zmk,kscan-mock";
+        columns = <0>;
+        rows = <0>;
+    };
+};
+```
+
+### 3. 修改构建矩阵
+
+在 [`build.yaml`](../build.yaml) 的 `include:` 列表中追加：
+```yaml
+  # sweep (cradio) dongle 三模改造
+  - board: nice_nano//zmk
+    shield: cradio_dongle
+    snippet: studio-rpc-usb-uart
+    artifact-name: sweep_dongle
+  - board: nice_nano//zmk
+    shield: cradio_left
+    cmake-args: -DEXTRA_CONF_FILE="${GITHUB_WORKSPACE}/config/cradio_left_dongle.conf"
+    artifact-name: sweep_left_dongle_mode
+  - board: nice_nano//zmk
+    shield: cradio_right
+    artifact-name: sweep_right_dongle_mode
+```
+
+### 4. 落地验证与蓝牙配对重置
+
+实操中已验证通过的重置配对 SOP：
+1. **清理配对**：将三个 nice!nano 分别拖入 `settings_reset.uf2` 进行闪存清理。
+2. **刷入固件**：
+   - 将 `sweep_dongle.uf2` 刷入 Dongle 接收器。
+   - 将 `sweep_left_dongle_mode.uf2` 刷入左手机身。
+   - 将 `sweep_right_dongle_mode.uf2` 刷入右手机身。
+3. **建立配对**：
+   - 先给 Dongle 通电。
+   - 键盘左右手拔掉 USB 线，使用电池开机，两端会在几秒内依次自动连接到 Dongle。
+   - 此时在电脑/手机的蓝牙列表里搜索，即可看到设备广播名称为 **`Dolphin Dongle`**。

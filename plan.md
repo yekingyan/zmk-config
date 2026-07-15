@@ -128,7 +128,7 @@ zmk-config/
 |------|------|-----------|-------------|-----------|------|---------|
 | Lily58 | 58 | 4（3 核心 + 1 冗余） | [`config/lily58.keymap`](config/lily58.keymap) | [`config/lily58.conf`](config/lily58.conf) | 9 | Snipe/Turbo 影子层、ZMK Studio |
 | Silakka54 | 58 | 4（3 核心 + 1 辅助） | [`config_silakka54/lily58.keymap`](config_silakka54/lily58.keymap) | [`config_silakka54/lily58.conf`](config_silakka54/lily58.conf) | 9 | RC 振荡器、平滑滚动 |
-| Sweep | 34 | 2 | [`config/cradio.keymap`](config/cradio.keymap) | [`config/cradio.conf`](config/cradio.conf) | 7 | 双拇指 Combo 切层 |
+| Sweep | 34 | 2 | [`config/cradio.keymap`](config/cradio.keymap) | [`config/cradio.conf`](config/cradio.conf) | 7 | 双拇指 Combo 切层、支持 Dongle 模式 |
 | Dolphin1 | 34 | 2 | [`config/dolphin1.keymap`](config/dolphin1.keymap) | [`config/dolphin1.conf`](config/dolphin1.conf) | 7 | 自制 PCB，= Sweep 布局，[RMK 固件](https://github.com/haobogu/rmk) keymap: [`~/projects/rmk-dolphin/nrf52840_split/keyboard.toml`](../rmk-dolphin/nrf52840_split/keyboard.toml) |
 | BGKeeB | 38 | 4 | [`config/bgkeeb.keymap`](config/bgkeeb.keymap) | [`config/bgkeeb.conf`](config/bgkeeb.conf) | 9 | 旋钮、Snipe/Turbo |
 
@@ -220,7 +220,7 @@ cp build/zephyr/zmk.uf2 /media/$USER/NICENANO/
 - [MCU 参考](docs/mcu-reference.md) — nRF52840 / Nice!Nano 技术细节
 - [专家咨询记录](docs/expert-consultation.md) — 社区咨询与方案讨论
 - [部署说明](docs/deploy.md) — 固件烧录与 OTA 流程
-- [Dongle 三模改造方案](docs/dongle-migration-plan.md) — 📋 待定，复用坏引脚主控做 Dongle 接收器的完整落地方案（未实施）
+- [Dongle 三模改造方案](docs/dongle-migration-plan.md) — 📋 Lily58 待定；已于 2026-07-15 完成 Sweep (cradio) 的 Dongle 固件改造，参见 `boards/shields/cradio_dongle` 盾板定义。
 
 ---
 
@@ -236,6 +236,12 @@ cp build/zephyr/zmk.uf2 /media/$USER/NICENANO/
 ---
 
 ## 已完成归档
+
+### Sweep (cradio) Dongle 接收器固件支持（2026-07-15）
+
+- [x] 创建 `cradio_dongle` 接收器 Shield 并在 overlay 中配置 `zmk,kscan-mock` 过滤幽灵按键，蓝牙广播名称设置为 `"Dolphin Dongle"`
+- [x] 新增 `config/cradio_left_dongle.conf` 配置，通过 `cmake-args` 覆盖将左手强制降级为 Peripheral 从机角色，同时开启休眠、关闭 Studio
+- [x] 更新 `build.yaml` 矩阵，追加 `sweep_dongle`、`sweep_left_dongle_mode` 以及 `sweep_right_dongle_mode` 构建目标
 
 ### Dolphin1 Shield 对比审查与修复（2026-04-01）
 

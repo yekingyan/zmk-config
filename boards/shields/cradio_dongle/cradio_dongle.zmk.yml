@@ -1,0 +1,7 @@
+file_format: "1"
+id: cradio_dongle
+name: Dolphin Dongle
+type: shield
+requires: [pro_micro]
+features:
+  - keys

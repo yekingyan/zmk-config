@@ -20,6 +20,18 @@ include:
   - board: nice_nano//zmk
     shield: cradio_right
     artifact-name: sweep_right
+  # sweep (cradio) dongle 三模改造
+  - board: nice_nano//zmk
+    shield: cradio_dongle
+    snippet: studio-rpc-usb-uart
+    artifact-name: sweep_dongle
+  - board: nice_nano//zmk
+    shield: cradio_left
+    cmake-args: -DEXTRA_CONF_FILE="${GITHUB_WORKSPACE}/config/cradio_left_dongle.conf"
+    artifact-name: sweep_left_dongle_mode
+  - board: nice_nano//zmk
+    shield: cradio_right
+    artifact-name: sweep_right_dongle_mode
   # dolphin1 (自制 Sweep PCB)
   - board: nice_nano//zmk
     shield: dolphin1_left
