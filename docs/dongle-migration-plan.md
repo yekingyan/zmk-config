@@ -45,13 +45,19 @@ CONFIG_ZMK_SPLIT_ROLE_CENTRAL=n
 
 # 降级为从机后功耗极低，开启 15 分钟无操作深度休眠
 CONFIG_ZMK_SLEEP=y
-CONFIG_ZMK_IDLE_SLEEP_TIMEOUT=900000
+CONFIG_ZMK_IDLE_SLEEP_TIMEOUT=900000 # 15分钟休眠
 
 # 从机端不需要开启 ZMK Studio 
 CONFIG_ZMK_STUDIO=n
 ```
 
-> **注意**：右手保持现状（原本就是 Peripheral 不变），所以我们不需要新建右手专属配置，直接在构建矩阵里重用普通的 `cradio_right` 构建即可。
+新建 [`config/cradio_right_dongle.conf`](../config/cradio_right_dongle.conf) 用以在 Dongle 模式下为右手机身开启休眠（原双模普通模式下右手因电池大保持不休眠，而在从机模式下开启休眠可节省电量）：
+
+```ini
+# 降级为从机后开启深度休眠（从机端休眠能极大省电）
+CONFIG_ZMK_SLEEP=y
+CONFIG_ZMK_IDLE_SLEEP_TIMEOUT=900000 # 15分钟休眠
+```
 
 ### 2. 新建 Dongle Shield 盾板
 
@@ -161,6 +167,7 @@ CONFIG_ZMK_STUDIO_LOCKING=n
     artifact-name: sweep_left_dongle_mode
   - board: nice_nano//zmk
     shield: cradio_right
+    cmake-args: -DEXTRA_CONF_FILE="${GITHUB_WORKSPACE}/config/cradio_right_dongle.conf"
     artifact-name: sweep_right_dongle_mode
 ```
 

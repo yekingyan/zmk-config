@@ -1,9 +1,9 @@
 /*
  * Ferris Sweep (cradio) 34 键布局
- * 从 Lily58 "双核驱动" 精简而来，保留 Callum OSM + Vim Nav 核心
+ * Callum OSM + Vim Nav 核心
  *
  * 布局：3x5+2 (每侧 17 键)
- * 拇指键：与 Lily58 内侧 4 键完全一致，砍掉最外侧 ESC 和 LSHFT
+ * 拇指键：
  *   左: SPACE(NAV) TAB(NUM)  |  右: ENTER(SYM) BSPC(MOUSE)
  *   FUN = 左双拇指 combo  |  MEDIA = 右双拇指 combo
  *
@@ -15,8 +15,6 @@
  * Layer 5: Function - 左手 OSM/BT + 右手 F 键九宫格
  * Layer 6: Media    - 左手媒体/音量/亮度 + 右手 OSM
  * Layer 7: NavMac   - Nav 的 Mac 版 (Cmd 剪贴板, Option 词跳)
- *
- * Lily58 独有未移植: Snipe (1/4速鼠标), Turbo (2x速鼠标)
  *
  * SPDX-License-Identifier: MIT
  */
@@ -256,8 +254,6 @@
 // └─────┴─────┴─────┼─────┼─────┤   ├─────┼─────┼─────┴─────┴─────┘
 //                   │RCLK │LCLK │   │     │▓▓▓▓▓│
 //                   └─────┴─────┘   └─────┴─────┘
-// 注: Lily58 拇指有 MCLK(中键), Sweep 只有 2 拇指键放不下
-// 注: Lily58 行3右手有 Snipe/Turbo 层切换, Sweep 未移植
             bindings = <
 &kp LC(Z)  &kp LC(Y)      &kp LC(LG(LEFT)) &kp LC(LG(RIGHT)) &none               &none   &none      &none      &none     &none
 &none      &mmv MOVE_LEFT &mmv MOVE_UP     &mmv MOVE_DOWN     &mmv MOVE_RIGHT     &none   &skq LSHFT &skn RCTRL &skn RALT &skn RGUI

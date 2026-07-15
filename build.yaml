@@ -31,6 +31,7 @@ include:
     artifact-name: sweep_left_dongle_mode
   - board: nice_nano//zmk
     shield: cradio_right
+    cmake-args: -DEXTRA_CONF_FILE="${GITHUB_WORKSPACE}/config/cradio_right_dongle.conf"
     artifact-name: sweep_right_dongle_mode
   # dolphin1 (自制 Sweep PCB)
   - board: nice_nano//zmk
