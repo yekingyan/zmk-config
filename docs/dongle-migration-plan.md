@@ -271,6 +271,7 @@ CONFIG_ZMK_STUDIO_LOCKING=n
         compatible = "zmk,kscan-mock";
         columns = <0>;
         rows = <0>;
+        events = <0>;
     };
 };
 
