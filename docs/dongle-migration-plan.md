@@ -197,6 +197,7 @@ CONFIG_ZMK_STUDIO=n
 ```text
 config SHIELD_CRADIO_DONGLE
     def_bool $(shields_list_contains,cradio_dongle)
+    select ZMK_SPLIT
 ```
 
 **文件 B：`Kconfig.defconfig`**
@@ -205,6 +206,9 @@ if SHIELD_CRADIO_DONGLE
 
 config ZMK_KEYBOARD_NAME
     default "Dolphin Dongle"
+
+config ZMK_SPLIT_ROLE_CENTRAL
+    def_bool y
 
 endif
 ```
@@ -234,6 +238,10 @@ CONFIG_BT_MAX_PAIRED=7
 
 # 增加蓝牙发射功率，提升信号稳定性
 CONFIG_BT_CTLR_TX_PWR_PLUS_8=y
+
+# 启用 ZMK Studio 支持（供 Dongle 接收器免 PIN 改键）
+CONFIG_ZMK_STUDIO=y
+CONFIG_ZMK_STUDIO_LOCKING=n
 ```
 
 **文件 E：`cradio_dongle.overlay`**
