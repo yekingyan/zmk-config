@@ -179,7 +179,7 @@ CONFIG_BT_CTLR_TX_PWR_PLUS_8=y
 新建 [`config/cradio_left_dongle.conf`](../config/cradio_left_dongle.conf)：
 ```ini
 # 强制左手降级为从机 (Peripheral)
-CONFIG_ZMK_SPLIT_BLE_ROLE_CENTRAL=n
+CONFIG_ZMK_SPLIT_ROLE_CENTRAL=n
 
 # 降级为从机后极度省电，开启 15 分钟深度休眠
 CONFIG_ZMK_SLEEP=y
@@ -227,7 +227,7 @@ features:
 **文件 D：`cradio_dongle.conf`**
 ```ini
 # 强制设置为主机 (Central)
-CONFIG_ZMK_SPLIT_BLE_ROLE_CENTRAL=y
+CONFIG_ZMK_SPLIT_ROLE_CENTRAL=y
 
 # Dongle 需要连接左手和右手两个从机
 CONFIG_ZMK_SPLIT_BLE_CENTRAL_PERIPHERALS=2
