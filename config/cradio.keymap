@@ -56,7 +56,7 @@
 };
 
 &caps_word {
-    continue-list = <UNDERSCORE MINUS>;
+    continue-list = <UNDERSCORE MINUS BSPC DEL>;
 };
 
 / {
@@ -191,7 +191,7 @@
 // ┌─────┬─────┬─────┬─────┬─────┐   ┌─────┬─────┬─────┬─────┬─────┐
 // │ SWP │S-TAB│none │LSHFT│none │   │C(←) │ C-D │ C-U │C(→) │ DEL │
 // ├─────┼─────┼─────┼─────┼─────┤   ├─────┼─────┼─────┼─────┼─────┤
-// │ GUI │ ALT │CTRL │LSHFT│CAPW │   │  ←  │  ↓  │  ↑  │  →  │C(DEL)│
+// │ GUI │ ALT │CTRL │LSHFT│CAPS │   │  ←  │  ↓  │  ↑  │  →  │C(DEL)│
 // ├─────┼─────┼─────┼─────┼─────┤   ├─────┼─────┼─────┼─────┼─────┤
 // │C(Z) │C(X) │C(C) │C(V) │ ME  │   │HOME │PgDn │PgUp │ END │C(BS)│
 // └─────┴─────┴─────┼─────┼─────┤   ├─────┼─────┼─────┴─────┴─────┘
@@ -199,7 +199,7 @@
 //                   └─────┴─────┘   └─────┴─────┘
             bindings = <
 &swapper   &kp LS(TAB)  &none    &kp LSHFT  &none       &kp LC(LEFT) &kp LC(D)  &kp LC(U)  &kp LC(RIGHT) &kp DEL
-&skn LGUI  &skn LALT    &skn LCTRL &skq LSHFT &caps_word      &kp LEFT     &kp DOWN   &kp UP     &kp RIGHT     &kp LC(DEL)
+&skn LGUI  &skn LALT    &skn LCTRL &skq LSHFT &kp CAPS      &kp LEFT     &kp DOWN   &kp UP     &kp RIGHT     &kp LC(DEL)
 &kp LC(Z)  &kp LC(X)    &kp LC(C)  &kp LC(V)  &none           &kp HOME     &kp PG_DN  &kp PG_UP  &kp END       &kp LC(BSPC)
                                     &trans     &trans          &kp RET       &kp BSPC
             >;
@@ -305,7 +305,7 @@
 // ┌─────┬─────┬─────┬─────┬─────┐   ┌─────┬─────┬─────┬─────┬─────┐
 // │ SWP │S-TAB│none │LSHFT│none │   │A(←) │ C-D │ C-U │A(→) │ DEL │
 // ├─────┼─────┼─────┼─────┼─────┤   ├─────┼─────┼─────┼─────┼─────┤
-// │ GUI │ ALT │CTRL │LSHFT│CAPW │   │  ←  │  ↓  │  ↑  │  →  │A(DEL)│
+// │ GUI │ ALT │CTRL │LSHFT│CAPS │   │  ←  │  ↓  │  ↑  │  →  │A(DEL)│
 // ├─────┼─────┼─────┼─────┼─────┤   ├─────┼─────┼─────┼─────┼─────┤
 // │G(Z) │G(X) │G(C) │G(V) │     │   │HOME │PgDn │PgUp │ END │A(BS)│
 // └─────┴─────┴─────┼─────┼─────┤   ├─────┼─────┼─────┴─────┴─────┘
@@ -313,7 +313,7 @@
 //                   └─────┴─────┘   └─────┴─────┘
             bindings = <
 &swapper_mac &kp LS(TAB)  &none      &kp LSHFT  &none           &kp LA(LEFT) &kp LC(D)  &kp LC(U)  &kp LA(RIGHT) &kp DEL
-&skn LGUI    &skn LALT    &skn LCTRL &skq LSHFT &caps_word      &kp LEFT     &kp DOWN   &kp UP     &kp RIGHT     &kp LA(DEL)
+&skn LGUI    &skn LALT    &skn LCTRL &skq LSHFT &kp CAPS      &kp LEFT     &kp DOWN   &kp UP     &kp RIGHT     &kp LA(DEL)
 &kp LG(Z)   &kp LG(X)    &kp LG(C)  &kp LG(V)  &trans          &kp HOME     &kp PG_DN  &kp PG_UP  &kp END       &kp LA(BSPC)
                                       &trans     &trans          &kp RET      &kp BSPC
             >;
