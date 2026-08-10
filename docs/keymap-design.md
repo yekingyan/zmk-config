@@ -1,6 +1,6 @@
 # 34 / 36 / 58 键位设计体系（跨平台统一架构：ZMK + RMK）
 
-> 本方案是跨硬件阵列、跨固件平台的终极键位设计。同时维护 ZMK（`lily58`, `silakka54`, `cradio`, `dolphin1`, `bgkeeb`）和 RMK（`dolphin1`）两套固件实现。设计以两平台**能力交集**为基线，ZMK 独有能力作为可选的增强项（不影响 RMK 核心体验）。
+> 本方案是跨硬件阵列、跨固件平台的终极键位设计。同时维护 ZMK（`lily58`, `silakka54`, `cradio`, `dolphin1`, `dolphin36`, `bgkeeb`）和 RMK（`dolphin1`）两套固件实现。设计以两平台**能力交集**为基线，ZMK 独有能力作为可选的增强项（不影响 RMK 核心体验）。
 > 
 > 当前实现文件：[`config/dolphin1.keymap`](../config/dolphin1.keymap) (ZMK) · [`~/projects/rmk-dolphin/nrf52840_split/keyboard.toml`](../../rmk-dolphin/nrf52840_split/keyboard.toml) (RMK)
 
@@ -15,12 +15,16 @@
   右拇指：ENTER(SYM) │ BSPC(MOU)
   ```
 
-- **Silakka54 / Corne (36 键核心)**（每侧 **3 个**拇指键）：
+- **Silakka54 / Corne / Dolphin36 (36 键核心)**（每侧 **3 个**拇指键）：
   黄金标准 `3x5+3` 布局，保留三个核心切层键。
   ```text
-  左拇指：ESC(FUN) │ SPACE(NAV) │ TAB(NUM) │ none
-  右拇指：none     │ ENTER(SYM) │ BSPC(MOU) │ LSHFT(MED)
+  左拇指：ESC(FUN) │ SPACE(NAV) │ TAB(NUM)
+  右拇指：ENTER(SYM) │ BSPC(MOU) │ LSHFT(MED)
   ```
+  > Dolphin36 / Corne 就是纯粹的 3 拇指；Silakka54 物理上多一颗外侧键，置 `&none` 封印，
+  > 因此排布写成 `ESC │ SPACE │ TAB │ none` 与 `none │ ENTER │ BSPC │ LSHFT`。
+  > Dolphin36 另外保留双拇指 Combo（左 SPACE+TAB → FUN，右 ENTER+BSPC → MEDIA）作为冗余触发，
+  > 与 34 键的肌肉记忆完全兼容。
 
 - **Lily58 (58 键)**（每侧 **4 个**拇指键）：
   在拥有 3 个核心切层键的基础上，利用物理冗余空间提供容错率，整体**右移一位**，外侧放假键 `&none` 以逼迫手指内收。

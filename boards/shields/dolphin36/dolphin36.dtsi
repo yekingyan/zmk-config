@@ -1,0 +1,81 @@
+/*
+ * Dolphin36 — 基于 Ferris Sweep 加宽拇指区的自制 36 键分体键盘
+ *
+ * 与 Sweep(cradio, 34 键) 的唯一硬件区别：每侧拇指区多一颗键（SW18），
+ * 即 3x5+3 的 Corne 黄金布局。SW1~SW17 的 pin 分配与原版 cradio 完全一致
+ * （注意：Dolphin1 的 Q/B 两键 pin 6 与 pin 7 是互换的，本板不跟随 Dolphin1），
+ * 新增的 SW18 占用 pro_micro 仅剩的 pin 0（D0/RX, P0.08）。
+ *
+ * ⚠ pro_micro 排针共 18 个可用 GPIO（0~10 + 14,15,16 + 18~21，无 11/12/13/17），
+ *   36 键（每侧 18 键）直连扫描正好用满，没有余量。
+ *
+ * 拇指区物理位置 ↔ SW 编号 ↔ keymap position（左手，从外到内）：
+ *   SW18 → pos 30 (ESC / FUN)      ← 相对 34 键新增的那颗键（最外侧）
+ *   SW16 → pos 31 (SPACE / NAV)    ← 与 cradio 的 Thumb 1 相同
+ *   SW17 → pos 32 (TAB / NUM)      ← 与 cradio 的 Thumb 2 相同
+ * 右手镜像（从内到外）：SW17 → pos 33 (ENTER/SYM), SW16 → pos 34 (BSPC/MOU),
+ *   SW18 → pos 35 (LSHFT/MEDIA)
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <dt-bindings/zmk/matrix_transform.h>
+#include <layouts/foostan/corne/5column.dtsi>
+
+/ {
+    chosen {
+        zmk,kscan = &kscan0;
+        zmk,physical-layout = &foostan_corne_5col_layout;
+    };
+
+    default_transform: keymap_transform_0 {
+        compatible = "zmk,matrix-transform";
+        columns = <36>;
+        rows = <1>;
+        map = <
+        RC(0,0)  RC(0,1)  RC(0,2)  RC(0,3)  RC(0,4)    RC(0,22) RC(0,21) RC(0,20) RC(0,19) RC(0,18)
+        RC(0,5)  RC(0,6)  RC(0,7)  RC(0,8)  RC(0,9)    RC(0,27) RC(0,26) RC(0,25) RC(0,24) RC(0,23)
+        RC(0,10) RC(0,11) RC(0,12) RC(0,13) RC(0,14)   RC(0,32) RC(0,31) RC(0,30) RC(0,29) RC(0,28)
+                 RC(0,17) RC(0,15) RC(0,16)            RC(0,34) RC(0,33) RC(0,35)
+        >;
+    };
+
+    kscan0: kscan {
+        compatible = "zmk,kscan-gpio-direct";
+        wakeup-source;
+
+        input-gpios
+        // 第一排 (Top Row: Q W E R T)
+        = <&pro_micro  7 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)> // SW1  → Q
+        , <&pro_micro 18 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)> // SW2  → W
+        , <&pro_micro 19 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)> // SW3  → E
+        , <&pro_micro 20 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)> // SW4  → R
+        , <&pro_micro 21 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)> // SW5  → T
+
+        // 第二排 (Middle Row: A S D F G)
+        , <&pro_micro 15 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)> // SW6  → A
+        , <&pro_micro 14 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)> // SW7  → S
+        , <&pro_micro 16 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)> // SW8  → D
+        , <&pro_micro 10 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)> // SW9  → F
+        , <&pro_micro  1 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)> // SW10 → G
+
+        // 第三排 (Bottom Row: Z X C V B)
+        , <&pro_micro  2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)> // SW11 → Z
+        , <&pro_micro  3 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)> // SW12 → X
+        , <&pro_micro  4 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)> // SW13 → C
+        , <&pro_micro  5 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)> // SW14 → V
+        , <&pro_micro  6 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)> // SW15 → B
+
+        // 拇指键簇 (Thumb Cluster, 每侧 3 键)
+        , <&pro_micro  8 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)> // SW16 → Thumb 中 (SPACE / BSPC)
+        , <&pro_micro  9 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)> // SW17 → Thumb 内 (TAB / ENTER)
+        , <&pro_micro  0 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)> // SW18 → Thumb 外 (ESC / LSHFT) ← 新增
+        ;
+    };
+
+};
+
+&foostan_corne_5col_layout {
+    transform = <&default_transform>;
+    kscan = <&kscan0>;
+};

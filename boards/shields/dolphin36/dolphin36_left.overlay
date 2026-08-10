@@ -1,0 +1,6 @@
+/*
+ * Dolphin36 左手 overlay
+ * SPDX-License-Identifier: MIT
+ */
+
+#include "dolphin36.dtsi"

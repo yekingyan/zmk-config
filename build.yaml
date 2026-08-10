@@ -43,6 +43,16 @@ include:
     shield: dolphin1_right
     # snippet: zmk-usb-logging
     artifact-name: dolphin1_right
+  # dolphin36 (自制 3x5+3 36 键 PCB)
+  - board: nice_nano//zmk
+    shield: dolphin36_left
+    snippet: studio-rpc-usb-uart
+    # snippet: zmk-usb-logging
+    artifact-name: dolphin36_left
+  - board: nice_nano//zmk
+    shield: dolphin36_right
+    # snippet: zmk-usb-logging
+    artifact-name: dolphin36_right
   # silakka54
   - board: nice_nano//zmk
     shield: lily58_left

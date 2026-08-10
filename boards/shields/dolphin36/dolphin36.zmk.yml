@@ -1,0 +1,11 @@
+file_format: "1"
+id: dolphin36
+name: Dolphin36
+type: shield
+url: https://github.com/yekingyan/zmk-config
+requires: [pro_micro]
+features:
+  - keys
+siblings:
+  - dolphin36_left
+  - dolphin36_right

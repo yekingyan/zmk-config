@@ -1,0 +1,11 @@
+/*
+ * Dolphin36 右手 overlay
+ * 右手 18 键整体偏移到矩阵 18~35 列
+ * SPDX-License-Identifier: MIT
+ */
+
+#include "dolphin36.dtsi"
+
+&default_transform {
+    col-offset = <18>;
+};

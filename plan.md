@@ -48,8 +48,11 @@
 | `S+D` | pos 26+27 (L58) / 11+12 (34k) | ESC | Base | ✅ | [`config/lily58.keymap:123-129`](config/lily58.keymap) |
 | `F+J` | pos 28+31 (L58) / 13+16 (34k) | Caps Word | Base | ✅ | [`config/lily58.keymap:132-138`](config/lily58.keymap) |
 | `J+K` | pos 31+32 (L58) / 16+17 (34k) | LSHFT | Base | ✅ | [`config/lily58.keymap:141-147`](config/lily58.keymap) |
-| 左双拇指 | pos 52+53 (L58) / 30+31 (34k) | FUN 层 | Base | ✅ | [`config/lily58.keymap:150-155`](config/lily58.keymap) |
-| 右双拇指 | pos 54+55 (L58) / 32+33 (34k) | MEDIA 层 | Base | ✅ | [`config/lily58.keymap:158-163`](config/lily58.keymap) |
+| 左双拇指 | pos 52+53 (L58) / 30+31 (34k) / 31+32 (36k) | FUN 层 | Base | ✅ | [`config/lily58.keymap:150-155`](config/lily58.keymap) |
+| 右双拇指 | pos 54+55 (L58) / 32+33 (34k) / 33+34 (36k) | MEDIA 层 | Base | ✅ | [`config/lily58.keymap:158-163`](config/lily58.keymap) |
+
+> **Dolphin36 例外**：36 键拇指区已有物理 ESC（左外）与 LSHFT（右外），主键区三个 combo（`S+D` / `F+J` / `J+K`）已全部移除，仅保留两个双拇指切层 combo。
+> 副作用：Caps Word 在 Dolphin36 上暂无触发入口（`&caps_word` 属性覆写仍保留，随时可挂回键位）。
 
 **Sweep 拇指区降维变化**：
 
@@ -104,12 +107,14 @@ zmk-config/
 │   ├── cradio.conf            # Sweep 蓝牙配置
 │   ├── dolphin1.keymap        # Dolphin1 自制 PCB 34 键（= cradio 布局）
 │   ├── dolphin1.conf          # Dolphin1 蓝牙配置
+│   ├── dolphin36.keymap       # Dolphin36 自制 PCB 36 键（3x5+3，cradio 核心区 + 第 3 拇指键）
+│   ├── dolphin36.conf         # Dolphin36 蓝牙配置
 │   ├── bgkeeb.keymap          # BGKeeB 38 键（3x5+4 拇指 + 旋钮，含 Snipe/Turbo）
 │   └── bgkeeb.conf            # BGKeeB 蓝牙配置
 ├── config_silakka54/          # Silakka54 独立配置（通过 cmake-args 切换）
 │   ├── lily58.keymap          # Silakka54 版 58 键（拇指区 3+1 布局）
 │   └── lily58.conf            # Silakka54 蓝牙（RC 振荡器）
-├── boards/shields/            # 自定义 Shield 定义（dolphin1, bgkeeb）
+├── boards/shields/            # 自定义 Shield 定义（dolphin1, dolphin36, bgkeeb, cradio_dongle）
 ├── build.yaml                 # GitHub Actions 构建矩阵
 ├── docs/                      # 文档
 │   ├── keymap-design.md       # 键位设计体系（真相源，ZMK + RMK 跨平台）
@@ -128,8 +133,9 @@ zmk-config/
 |------|------|-----------|-------------|-----------|------|---------|
 | Lily58 | 58 | 4（3 核心 + 1 冗余） | [`config/lily58.keymap`](config/lily58.keymap) | [`config/lily58.conf`](config/lily58.conf) | 9 | Snipe/Turbo 影子层、ZMK Studio |
 | Silakka54 | 58 | 4（3 核心 + 1 辅助） | [`config_silakka54/lily58.keymap`](config_silakka54/lily58.keymap) | [`config_silakka54/lily58.conf`](config_silakka54/lily58.conf) | 9 | RC 振荡器、平滑滚动 |
-| Sweep | 34 | 2 | [`config/cradio.keymap`](config/cradio.keymap) | [`config/cradio.conf`](config/cradio.conf) | 7 | 双拇指 Combo 切层、支持 Dongle 模式 |
+| Sweep | 34 | 2 | [`config/cradio.keymap`](config/cradio.keymap) | [`config/cradio.conf`](config/cradio.conf) | 8 | 双拇指 Combo 切层、NavMac 备用层、支持 Dongle 模式 |
 | Dolphin1 | 34 | 2 | [`config/dolphin1.keymap`](config/dolphin1.keymap) | [`config/dolphin1.conf`](config/dolphin1.conf) | 7 | 自制 PCB，= Sweep 布局，[RMK 固件](https://github.com/haobogu/rmk) keymap: [`~/projects/rmk-dolphin/nrf52840_split/keyboard.toml`](../rmk-dolphin/nrf52840_split/keyboard.toml) |
+| Dolphin36 | 36 | 3 | [`config/dolphin36.keymap`](config/dolphin36.keymap) | [`config/dolphin36.conf`](config/dolphin36.conf) | 8 | 自制 PCB，3x5+3 黄金布局，cradio pin 序 + SW18(pin 0)；NavMac 备用层；仅保留双拇指 Combo |
 | BGKeeB | 38 | 4 | [`config/bgkeeb.keymap`](config/bgkeeb.keymap) | [`config/bgkeeb.conf`](config/bgkeeb.conf) | 9 | 旋钮、Snipe/Turbo |
 
 ### 设计变更时需同步的文件清单
@@ -144,8 +150,9 @@ zmk-config/
 | 3 | `config_silakka54/lily58.keymap` | Silakka54 (58键, 9层) |
 | 4 | `config/cradio.keymap` | Sweep (34键, 7层) |
 | 5 | `config/dolphin1.keymap` | Dolphin1 ZMK (34键, 7层) |
-| 6 | `config/bgkeeb.keymap` | BGKeeB (38键, 9层) |
-| 7 | `~/projects/rmk-dolphin/nrf52840_split/keyboard.toml` | Dolphin1 RMK 固件 |
+| 6 | `config/dolphin36.keymap` | Dolphin36 ZMK (36键, 7层) |
+| 7 | `config/bgkeeb.keymap` | BGKeeB (38键, 9层) |
+| 8 | `~/projects/rmk-dolphin/nrf52840_split/keyboard.toml` | Dolphin1 RMK 固件 |
 
 ### 核心 Behavior 定义（各 keymap 共享）
 
@@ -186,6 +193,8 @@ zmk-config/
 | 6 | Media | 右拇指 LSHFT 长按 / 右双拇指 Combo | 左手 | 右手 |
 
 > Lily58 额外包含 Layer 7 (M_SNIPE) 和 Layer 8 (M_TURBO) 影子层
+> Sweep (cradio) / Dolphin36 额外包含 Layer 7 (NAV_MAC)：Nav 的 Mac 版（Cmd 剪贴板 + Option 词跳），
+> 无按键直达，需用 ZMK Studio 把左拇指改成 `&tlt NAV_MAC SPACE` 才生效
 > 完整键位布局图 → [docs/keymap-design.md § 键位布局总览](docs/keymap-design.md#键位布局总览)
 
 ---
@@ -236,6 +245,15 @@ cp build/zephyr/zmk.uf2 /media/$USER/NICENANO/
 ---
 
 ## 已完成归档
+
+### Dolphin36 自制 36 键（3x5+3）配置新增（2026-08-10）
+
+- [x] 新增 `boards/shields/dolphin36` 盾板：18 直连 GPIO（SW1~SW17 沿用原版 cradio pin 序，新增 SW18 占用仅剩的 pro_micro pin 0 / D0-RX），pro_micro 18 个可用 GPIO 正好用满
+- [x] 36 键 matrix-transform + 右手 `col-offset = <18>`，物理布局复用官方 `foostan_corne_5col_layout`
+- [x] 新增 [`config/dolphin36.keymap`](config/dolphin36.keymap)：3×5 核心区与 cradio 完全一致，拇指区升级为 3 键（左 ESC(FUN)/SPACE(NAV)/TAB(NUM)，右 ENTER(SYM)/BSPC(MOU)/LSHFT(MED)），并携带 cradio 的 NavMac 备用层
+- [x] 双拇指 Combo 保留为冗余触发（SPACE+TAB → FUN，ENTER+BSPC → MEDIA）；主键区 `S+D` / `F+J` / `J+K` 三个 combo 移除（拇指区已有物理 ESC 与 LSHFT，Caps Word 暂无入口）
+- [x] 新增 `config/dolphin36.conf` / `dolphin36_left.conf` / `dolphin36_right.conf`（与 Dolphin1 蓝牙策略一致）
+- [x] [`build.yaml`](build.yaml) 追加 `dolphin36_left`（带 Studio）与 `dolphin36_right` 构建目标
 
 ### Sweep (cradio) Dongle 接收器固件支持（2026-07-15）
 
