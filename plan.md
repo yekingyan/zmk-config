@@ -45,14 +45,12 @@
 
 | Combo | 键位 | 功能 | 层 | 状态 | 源码位置 |
 |-------|------|------|----|------|---------|
-| `S+D` | pos 26+27 (L58) / 11+12 (34k) | ESC | Base | ✅ | [`config/lily58.keymap:123-129`](config/lily58.keymap) |
-| `F+J` | pos 28+31 (L58) / 13+16 (34k) | Caps Word | Base | ✅ | [`config/lily58.keymap:132-138`](config/lily58.keymap) |
-| `J+K` | pos 31+32 (L58) / 16+17 (34k) | LSHFT | Base | ✅ | [`config/lily58.keymap:141-147`](config/lily58.keymap) |
-| 左双拇指 | pos 52+53 (L58) / 30+31 (34k) / 31+32 (36k) | FUN 层 | Base | ✅ | [`config/lily58.keymap:150-155`](config/lily58.keymap) |
-| 右双拇指 | pos 54+55 (L58) / 32+33 (34k) / 33+34 (36k) | MEDIA 层 | Base | ✅ | [`config/lily58.keymap:158-163`](config/lily58.keymap) |
+| `S+D` | pos 26+27 (L58) / 11+12 (34k) | ESC | Base | ✅ (34/58k) | [`config/lily58.keymap:123-129`](config/lily58.keymap) |
+| `J+K` | pos 31+32 (L58) / 16+17 (34k) | LSHFT | Base | ✅ (34/58k) | [`config/lily58.keymap:132-138`](config/lily58.keymap) |
+| 左双拇指 | pos 52+53 (L58) / 30+31 (34k) / 31+32 (36k) | FUN 层 | Base | ✅ (全系) | [`config/lily58.keymap:141-146`](config/lily58.keymap) |
+| 右双拇指 | pos 54+55 (L58) / 32+33 (34k) / 33+34 (36k) | MEDIA 层 | Base | ✅ (全系) | [`config/lily58.keymap:149-154`](config/lily58.keymap) |
 
-> **Dolphin36 例外**：36 键拇指区已有物理 ESC（左外）与 LSHFT（右外），主键区三个 combo（`S+D` / `F+J` / `J+K`）已全部移除，仅保留两个双拇指切层 combo。
-> 副作用：Caps Word 在 Dolphin36 上暂无触发入口（`&caps_word` 属性覆写仍保留，随时可挂回键位）。
+> **主键区 Combo 优化**：`F+J = Caps Word` 已在全系（ZMK/QMK/RMK）中全面移除（Caps Word 统一由 Nav 层主行 G 位触发）。Dolphin36 则进一步移除了 `S+D` 与 `J+K`，仅保留双拇指切层 Combo。
 
 **Sweep 拇指区降维变化**：
 

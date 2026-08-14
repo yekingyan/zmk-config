@@ -110,7 +110,7 @@
 ├─────┼─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┼─────┤
 │none │SWAPP│S-TAB│none │L-SHIFT│none │             │C(←) │ C-D │ C-U │C(→) │ DEL │none │
 ├─────┼─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┼─────┤
-│none │ GUI │ ALT │CTRL │LSHFT│CAPW │               │  ←  │  ↓  │  ↑  │  →  │ C(DEL)│none │
+│none │ GUI │ ALT │CTRL │LSHFT│CAPS │               │  ←  │  ↓  │  ↑  │  →  │ C(DEL)│none │
 ├─────┼─────┼─────┼─────┼─────┼─────┼─────┐   ┌─────┼─────┼─────┼─────┼─────┼─────┼─────┤
 │none │C(Z) │C(X) │C(C) │C(V) │     │none │   │none │HOME│PgDn│ PgUp│ END │ C(BS)│none │
 └─────┴─────┴─────┼─────┼─────┼─────┼─────┤   ├─────┼─────┼─────┼─────┴─────┴─────┴─────┘
@@ -123,7 +123,8 @@
   - `L-SHIFT`（`&kp LSHFT`）：**普通 hold 型 Shift**，按住不放配合右手方向键，实现 Shift+方向键连续选中文本
   - 与中行的 `&skq LSHFT`（OSM 点击型）**用途不同**：上行适合连续选中，中行适合单次大写或单次 Shift 组合
   - `RET` 和 `BSPC` 已移除（冗余：Nav 层右拇指键已对侧解耦为纯 `&kp RET` / `&kp BSPC`，可直接长按连发）
-- **左手中行**（OSM 修饰键 + Caps Word）：`GUI | ALT | CTRL | SHIFT | CAPW`
+- **左手中行**（OSM 修饰键 + Caps Lock）：`GUI | ALT | CTRL | SHIFT | CAPS`
+  - `CAPS`（`&kp CAPS` / `KC_CAPS` / `CapsLock`）：系统级大写锁定（Caps Lock），一键切换全局大写状态。
 - **左手下行**（剪贴板区）：`C(Z) | C(X) | C(C) | C(V)`，与 Base 层位置一致，零记忆成本
 - **右手上行**（跳跃线）：`C(←) | C-D | C-U | C(→) | DEL`，按词跳跃 + Vim 半页翻页
 - **右手中行**（方向键）：`← | ↓ | ↑ | → | C(DEL)`，HJKL 映射

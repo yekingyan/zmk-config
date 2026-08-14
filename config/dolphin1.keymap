@@ -113,14 +113,6 @@
             require-prior-idle-ms = <200>;
         };
 
-        // F + J = Caps Word
-        combo_caps_word {
-            timeout-ms = <50>;
-            key-positions = <13 16>;
-            bindings = <&caps_word>;
-            layers = <BASE>;
-            require-prior-idle-ms = <200>;
-        };
 
         // J + K = LSHFT
         combo_lshft {

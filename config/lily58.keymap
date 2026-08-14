@@ -128,14 +128,6 @@
             require-prior-idle-ms = <200>;
         };
 
-        // F + J = Caps Word（双食指归位键，输入蛇形命名超方便）
-        combo_caps_word {
-            timeout-ms = <50>;
-            key-positions = <28 31>;  // F 和 J
-            bindings = <&caps_word>;
-            layers = <BASE>;
-            require-prior-idle-ms = <200>;
-        };
 
         // J + K = LSHFT (单次中英切换 / 长按 Shift)
         combo_lshft {
