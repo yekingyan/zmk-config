@@ -246,14 +246,14 @@
 // ├─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┤
 // │ GUI │ ALT │CTRL │LSHFT│     │               │     │ F4  │ F5  │ F6  │ F11 │
 // ├─────┼─────┼─────┼─────┼─────┤               ├─────┼─────┼─────┼─────┼─────┤
-// │ BT0 │ BT1 │ BT2 │ BT3 │     │               │     │ F1  │ F2  │ F3  │ F10 │
+// │ BT0 │ BT1 │ BT2 │ BT3 │ BT4 │               │     │ F1  │ F2  │ F3  │ F10 │
 // └─────┴─────┼─────┼─────┼─────┼─────┐   ┌─────┼─────┼─────┼─────┴─────┴─────┘
 //             │     │▓▓▓▓▓│     │     │   │     │     │     │     │
 //             └─────┴─────┴─────┴─────┘   └─────┴─────┴─────┴─────┘
             bindings = <
 &none &none  &none  &none        &bt BT_CLR                &none  &kp F7 &kp F8 &kp F9 &kp F12
 &skn LGUI    &skn LALT     &skn LCTRL    &skq LSHFT   &none                     &none  &kp F4 &kp F5 &kp F6 &kp F11
-&bt BT_SEL 0 &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3 &none                    &none  &kp F1 &kp F2 &kp F3 &kp F10
+&bt BT_SEL 0 &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3 &bt BT_SEL 4                     &none  &kp F1 &kp F2 &kp F3 &kp F10
               &trans        &trans        &trans       &trans                    &kp RET &kp BSPC &none  &trans
             >;
 

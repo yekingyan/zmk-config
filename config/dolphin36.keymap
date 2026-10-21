@@ -11,15 +11,14 @@
  *          主键区 S+D / F+J / J+K 已移除（拇指区已有物理 ESC 与 LSHFT）
  *
  * Layer 0: Base     - QWERTY
- * Layer 1: Nav      - 左手 OSM + 右手 Vim HJKL
- * Layer 2: Numpad   - 左手算术运算 + 右手纯数字九宫格
- * Layer 3: Symbols  - 左手符号区 + 右手 OSM 修饰键
- * Layer 4: Mouse    - 左手鼠标移动/滚轮/点击 + 右手 OSM
- * Layer 5: Function - 左手 OSM/BT + 右手 F 键九宫格
- * Layer 6: Media    - 左手媒体/音量/亮度 + 右手 OSM
- * Layer 7: NavMac   - Nav 的 Mac 版 (Cmd 剪贴板, Option 词跳)
- *                     备用层，无按键直达；用 ZMK Studio 把左拇指 SPACE 改成
- *                     `&tlt NAV_MAC SPACE` 即可切到 Mac 模式（与 cradio 一致）
+ * Layer 1: BaseMac  - Mac 模式开关层（FUN+Y 切换）：全透明，仅左拇指 SPACE 进入 NavMac
+ * Layer 2: Nav      - 左手 OSM + 右手 Vim HJKL
+ * Layer 3: Numpad   - 左手算术运算 + 右手纯数字九宫格
+ * Layer 4: Symbols  - 左手符号区 + 右手 OSM 修饰键
+ * Layer 5: Mouse    - 左手鼠标移动/滚轮/点击 + 右手 OSM
+ * Layer 6: Function - 左手 OSM/BT + 右手 F 键九宫格（Y 位 = Win/Mac 模式开关）
+ * Layer 7: Media    - 左手媒体/音量/亮度 + 右手 OSM
+ * Layer 8: NavMac   - Nav 的 Mac 版 (Cmd 剪贴板, Option 词跳)
  *
  * SPDX-License-Identifier: MIT
  */
@@ -34,13 +33,14 @@
 #include <dt-bindings/zmk/pointing.h>
 
 #define BASE     0
-#define NAV      1
-#define NUM      2
-#define SYM      3
-#define MOUSE    4
-#define FUN      5
-#define MEDIA    6
-#define NAV_MAC  7
+#define BASE_MAC 1
+#define NAV      2
+#define NUM      3
+#define SYM      4
+#define MOUSE    5
+#define FUN      6
+#define MEDIA    7
+#define NAV_MAC  8
 
 // Dolphin36 键位编号 (36 键):
 //  0  1  2  3  4       5  6  7  8  9
@@ -135,7 +135,7 @@
             timeout-ms = <50>;
             key-positions = <31 32>;
             bindings = <&mo FUN>;
-            layers = <BASE>;
+            layers = <BASE BASE_MAC>;
         };
 
         // 右双拇指 (ENTER + BSPC) = MEDIA 层（冗余触发，等价于长按 LSHFT）
@@ -143,7 +143,7 @@
             timeout-ms = <50>;
             key-positions = <33 34>;
             bindings = <&mo MEDIA>;
-            layers = <BASE>;
+            layers = <BASE BASE_MAC>;
         };
     };
 
@@ -167,6 +167,17 @@
 &kp A  &kp S  &kp D  &kp F  &kp G       &kp H  &kp J  &kp K      &kp L    &kp SEMI
 &kp Z  &kp X  &kp C  &kp V  &kp B       &kp N  &kp M  &kp COMMA  &kp DOT  &kp FSLH
        &tlt FUN ESC  &tlt NAV SPACE  &tlt NUM TAB    &tlt SYM RET  &tlt MOUSE BSPC  &tlt MEDIA LSHFT
+            >;
+        };
+
+        base_mac_layer {
+            display-name = "BaseMac";
+// Mac 模式开关层（FUN + Y 切换）：全透明，仅左拇指 SPACE 改为进入 NAV_MAC
+            bindings = <
+&trans  &trans  &trans  &trans  &trans      &trans  &trans  &trans  &trans  &trans
+&trans  &trans  &trans  &trans  &trans      &trans  &trans  &trans  &trans  &trans
+&trans  &trans  &trans  &trans  &trans      &trans  &trans  &trans  &trans  &trans
+       &trans  &tlt NAV_MAC SPACE  &trans          &trans  &trans  &trans
             >;
         };
 
@@ -249,18 +260,18 @@
         fun_layer {
             display-name = "Fun";
 // ┌─────┬─────┬─────┬─────┬─────┐   ┌─────┬─────┬─────┬─────┬─────┐
-// │     │     │     │     │BTCLR│   │     │ F7  │ F8  │ F9  │ F12 │
+// │     │     │     │     │BTCLR│   │ MAC │ F7  │ F8  │ F9  │ F12 │
 // ├─────┼─────┼─────┼─────┼─────┤   ├─────┼─────┼─────┼─────┼─────┤
 // │ GUI │ ALT │CTRL │LSHFT│     │   │     │ F4  │ F5  │ F6  │ F11 │
 // ├─────┼─────┼─────┼─────┼─────┤   ├─────┼─────┼─────┼─────┼─────┤
-// │ BT0 │ BT1 │ BT2 │ BT3 │     │   │     │ F1  │ F2  │ F3  │ F10 │
+// │ BT0 │ BT1 │ BT2 │ BT3 │ BT4 │   │     │ F1  │ F2  │ F3  │ F10 │
 // └─────┴─────┼─────┼─────┼─────┤   ├─────┼─────┼─────┼─────┴─────┘
 //             │▓▓▓▓▓│     │     │   │ENTER│BSPC │LSHFT│
 //             └─────┴─────┴─────┘   └─────┴─────┴─────┘
             bindings = <
-&none         &none         &none         &none         &bt BT_CLR   &none    &kp F7   &kp F8  &kp F9  &kp F12
+&none         &none         &none         &none         &bt BT_CLR   &tog BASE_MAC    &kp F7   &kp F8  &kp F9  &kp F12
 &skn LGUI     &skn LALT     &skn LCTRL    &skq LSHFT    &none        &none    &kp F4   &kp F5  &kp F6  &kp F11
-&bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3  &none        &none    &kp F1   &kp F2  &kp F3  &kp F10
+&bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3 &bt BT_SEL 4         &none    &kp F1   &kp F2  &kp F3  &kp F10
               &trans        &trans        &trans                     &kp RET  &kp BSPC &kp LSHFT
             >;
         };
@@ -286,7 +297,7 @@
 
         nav_mac_layer {
             display-name = "NavMac";
-// Nav 的 Mac 版：剪贴板走 Cmd，词跳/删词走 Option。备用层，需 Studio 改键直达
+// Nav 的 Mac 版：剪贴板走 Cmd，词跳/删词走 Option。由 BaseMac 层（FUN+Y 开关）的左拇指进入
 // ┌─────┬─────┬─────┬─────┬─────┐   ┌─────┬─────┬─────┬─────┬─────┐
 // │ SWP │S-TAB│none │LSHFT│none │   │A(←) │ C-D │ C-U │A(→) │ DEL │
 // ├─────┼─────┼─────┼─────┼─────┤   ├─────┼─────┼─────┼─────┼─────┤

@@ -131,9 +131,9 @@ zmk-config/
 |------|------|-----------|-------------|-----------|------|---------|
 | Lily58 | 58 | 4（3 核心 + 1 冗余） | [`config/lily58.keymap`](config/lily58.keymap) | [`config/lily58.conf`](config/lily58.conf) | 9 | Snipe/Turbo 影子层、ZMK Studio |
 | Silakka54 | 58 | 4（3 核心 + 1 辅助） | [`config_silakka54/lily58.keymap`](config_silakka54/lily58.keymap) | [`config_silakka54/lily58.conf`](config_silakka54/lily58.conf) | 9 | RC 振荡器、平滑滚动 |
-| Sweep | 34 | 2 | [`config/cradio.keymap`](config/cradio.keymap) | [`config/cradio.conf`](config/cradio.conf) | 8 | 双拇指 Combo 切层、NavMac 备用层、支持 Dongle 模式 |
+| Sweep | 34 | 2 | [`config/cradio.keymap`](config/cradio.keymap) | [`config/cradio.conf`](config/cradio.conf) | 9 | 双拇指 Combo 切层、FUN+Y 切 Win/Mac Nav、支持 Dongle 模式 |
 | Dolphin1 | 34 | 2 | [`config/dolphin1.keymap`](config/dolphin1.keymap) | [`config/dolphin1.conf`](config/dolphin1.conf) | 7 | 自制 PCB，= Sweep 布局，[RMK 固件](https://github.com/haobogu/rmk) keymap: [`~/projects/rmk-dolphin/nrf52840_split/keyboard.toml`](../rmk-dolphin/nrf52840_split/keyboard.toml) |
-| Dolphin36 | 36 | 3 | [`config/dolphin36.keymap`](config/dolphin36.keymap) | [`config/dolphin36.conf`](config/dolphin36.conf) | 8 | 自制 PCB，3x5+3 黄金布局，cradio pin 序 + SW18(pin 0)；NavMac 备用层；仅保留双拇指 Combo |
+| Dolphin36 | 36 | 3 | [`config/dolphin36.keymap`](config/dolphin36.keymap) | [`config/dolphin36.conf`](config/dolphin36.conf) | 9 | 自制 PCB，3x5+3 黄金布局，cradio pin 序 + SW18(pin 0)；FUN+Y 切 Win/Mac Nav；仅保留双拇指 Combo |
 | BGKeeB | 38 | 4 | [`config/bgkeeb.keymap`](config/bgkeeb.keymap) | [`config/bgkeeb.conf`](config/bgkeeb.conf) | 9 | 旋钮、Snipe/Turbo |
 
 ### 设计变更时需同步的文件清单
@@ -191,8 +191,8 @@ zmk-config/
 | 6 | Media | 右拇指 LSHFT 长按 / 右双拇指 Combo | 左手 | 右手 |
 
 > Lily58 额外包含 Layer 7 (M_SNIPE) 和 Layer 8 (M_TURBO) 影子层
-> Sweep (cradio) / Dolphin36 额外包含 Layer 7 (NAV_MAC)：Nav 的 Mac 版（Cmd 剪贴板 + Option 词跳），
-> 无按键直达，需用 ZMK Studio 把左拇指改成 `&tlt NAV_MAC SPACE` 才生效
+> Sweep (cradio) / Dolphin36 层号不同：Layer 1 为 BASE_MAC（Mac 模式开关层，全透明仅覆盖左拇指 SPACE → `&tlt NAV_MAC SPACE`），
+> 其后 Nav~Media 顺延为 2~7，Layer 8 为 NAV_MAC（Cmd 剪贴板 + Option 词跳）。FUN+Y = `&tog BASE_MAC` 切换 Win/Mac 版 Nav
 > 完整键位布局图 → [docs/keymap-design.md § 键位布局总览](docs/keymap-design.md#键位布局总览)
 
 ---
@@ -243,6 +243,13 @@ cp build/zephyr/zmk.uf2 /media/$USER/NICENANO/
 ---
 
 ## 已完成归档
+
+### Sweep / Dolphin36 Win/Mac Nav 一键切换（2026-10-21）
+
+- [x] 新增 Layer 1 `BASE_MAC`（必须紧贴 BASE，否则会盖住上层的拇指键），全透明，仅左拇指 SPACE 改为 `&tlt NAV_MAC SPACE`
+- [x] FUN 层 Y 位 = `&tog BASE_MAC`（Win ⇄ Mac 开关）；fun+z/c 仍只切蓝牙，模式与蓝牙通道解耦（兼容 USB / Dongle）
+- [x] 所有 combo `layers` 补 `BASE_MAC`（combo 只认最高激活层）
+- 注意：层状态不持久化，重启回 Win；刷机后需在 ZMK Studio 执行 Restore Stock Settings 清掉旧的手动改键
 
 ### Dolphin36 自制 36 键（3x5+3）配置新增（2026-08-10）
 
